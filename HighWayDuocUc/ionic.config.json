@@ -1,0 +1,7 @@
+{
+  "name": "HighWayDuocUc",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
