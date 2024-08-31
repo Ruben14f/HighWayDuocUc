@@ -1,27 +1,51 @@
-#container {
+ion-content{
+  --overflow: hidden; // evita que se desplaze hacia abajo
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Centra verticalmente el logo y el título si están en la misma fila */
+  max-width: 350px;
+}
+
+#container-login {
   text-align: center;
-
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  max-width: 300px;
+  margin: 0 auto;
 }
 
-#container strong {
+#titulo-inicio-sesion{
+  justify-content: center;
+  padding-bottom: 50px;
+}
+
+ion-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+ion-input {
+  margin-bottom: 10px;
   font-size: 20px;
-  line-height: 26px;
+  color: white;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+h5{
+  color: white;
 }
 
-#container a {
-  text-decoration: none;
+.container-password-ocultar-contra{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+
+
+
+
+

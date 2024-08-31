@@ -35,3 +35,14 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+ion-content {
+  --background: linear-gradient(90deg, #ff1c1c 0%, #1962cf 100%); // 90deg es el angulo de izquierda a derecha para el degradado
+  // linear-gradient es una funcion de css que sirve para realizar degradado
+}
+
+
+ion-content {
+  /* Asegúrate de que no haya reglas que oculten el contenido */
+  background-color: var(--ion-background-color);
+}
