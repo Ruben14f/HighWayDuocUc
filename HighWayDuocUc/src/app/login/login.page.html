@@ -1,0 +1,35 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <div class="logo-container">
+      <ion-img id="logo" src="assets/img/Logo.png">LOGO</ion-img>
+    </div>
+    <ion-title id="titulo-inicio-sesion" size="large" style="color: white;">Iniciar Sesión</ion-title>
+  </ion-header>
+  <div id="container-login">
+    <div>
+      <ion-input type="email" label="Correo" label-placement="floating" fill="solid"
+        placeholder="juanito@gmail.com"></ion-input>
+      <div class="container-password-ocultar-contra">
+        <ion-input
+        [(ngModel)]="password"
+        [type]="passwordType" label="Contraseña"
+        label-placement="floating"
+        fill="solid"
+        placeholder="********"></ion-input>
+
+
+        <!-- name="{{passwordType === 'password' ? 'eye-off' : 'eye'}}" ESTA SECCION INDICA QUE SI passwordType es password el icono sera eye-off(Diciendo que la contraseña esta oculta), de caso contrario seria eye (la contraseña esta visible) -->
+        <ion-icon name="{{passwordType === 'password' ? 'eye-off' : 'eye'}}"
+          (click)="togglePasswordVisibility()"> <!--(click)="togglePasswordVisibility() es un evento de angular el cual se activa o llama cuando se hace click, en este caso click al icono activa esta funcion  -->
+        </ion-icon>
+
+      </div>
+    </div>
+    <br>
+    <h5>¿Olvidaste tu contraseña?</h5>
+    <h5>Registrarse</h5>
+  </div>
+</ion-content>
+
+
+<!--para ir a esta pagina se debe linkear desde el home o en el navegador anotar la direcion http://localhost:8100/login-->
