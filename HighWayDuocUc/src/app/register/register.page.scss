@@ -1,0 +1,47 @@
+//ESTILOS MAS GENERALES PARA EL CONTENEDOR DEL FORMULARIO DE REGISTRO
+
+ion-content{
+  --overflow: hidden; // evita que se desplaze hacia abajo
+  display: flex;
+  flex-direction: column;
+}
+
+#titulo-registro{
+  line-height: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+#container-registro {
+  text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+  color: white ;
+  font-size: 20px;
+}
+
+
+//ESTILOS PARA EL BOTON DE REGISTRARSE
+
+#registrarse-btn{
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  --color: white;
+}
+
+#registrarse-btn:hover {
+  --background: #1962cf;
+  --color: #ffffff;
+}
+
+ion-button{
+  font-size: 20px;
+}
+
+.datos-registro{
+  margin: 20px;
+}
+
+

@@ -1,0 +1,79 @@
+ion-content {
+  --overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh; /* Asegura que el contenido ocupe la altura completa de la ventana */
+}
+
+#titulo-perfil-conductor{
+  line-height: 150px;
+  display: flex;
+  justify-content: center;
+}
+
+#container-registro-driver{
+  text-align: center;
+  max-width: 300px;
+  margin: 0 auto;
+  color: white ;
+  font-size: 20px;
+}
+
+
+//ESTILOS PARA EL BOTON DE REGISTRARSE
+
+#registrarse-btn{
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  margin-bottom: 50px;
+  --color: white;
+}
+
+#registrarse-btn:hover {
+  --background: #1962cf;
+  --color: #ffffff;
+}
+
+ion-button{
+  font-size: 20px;
+}
+
+.datos-registro-driver{
+  margin: 20px;
+}
+
+
+// BOTON GROUP DE AUTO O MOTO
+
+#select-vehicle{
+  display: flex;
+  padding-left: 20px;
+}
+
+ion-segment{
+  max-width: 200px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+ion-segment-button {
+  --background-checked:gray ; /* Color de fondo cuando está seleccionado */
+  --color-checked: #ffffff; /* Color del texto cuando está seleccionado */
+  --indicator-color: gray ; /* Color del indicador debajo del botón */
+}
+
+
+.foto-vehicle{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#img-vehicle{
+  display: flex;
+  width: 150px;
+}
+

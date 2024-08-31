@@ -1,3 +1,6 @@
+
+//ESTILOS MAS GENERALES PARA EL CONTENEDOR DEL FORMULARIO DE REGISTRO
+
 ion-content{
   --overflow: hidden; // evita que se desplaze hacia abajo
   display: flex;
@@ -44,8 +47,15 @@ h5{
   align-items: center;
 }
 
+#iniciar-sesion-btn {
+  --color: white;
+  font-size: 20px;
+}
 
-
+#iniciar-sesion-btn:hover {
+  --background: #1962cf;
+  --color: #ffffff;
+}
 
 
 
