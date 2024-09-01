@@ -16,7 +16,7 @@ export class LoginPage{
   constructor(private router: Router) {}
 
   paraRegistros() {
-    this.router.navigate(['/point-register']);
+    this.router.navigate(['/register']);
   }
 
   //Para el tema de olvidar la contraseña

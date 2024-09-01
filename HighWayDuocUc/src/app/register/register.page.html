@@ -1,14 +1,22 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
-      <ion-title id="titulo-registro" size="large" style="color: white;">Registro</ion-title>
+    <ion-title id="titulo-registro" size="large" style="color: white;">Registro</ion-title>
   </ion-header>
- <div id="container-registro">
-  <ion-input class="datos-registro" type="text" label="Nombre" label-placement="floating" fill="solid"></ion-input>
-  <ion-input class="datos-registro" type="text" label="Apellido" label-placement="floating" fill="solid"></ion-input>
-  <ion-input class="datos-registro" type="email" label="Correo Registro" label-placement="floating" fill="solid"></ion-input>
-  <ion-input class="datos-registro" type="password" label="Contraseña" label-placement="floating" fill="solid"></ion-input>
- </div>
+  <div id="container-registro">
+    <ion-input class="datos-registro" type="text" label="Nombre" label-placement="floating" fill="solid"></ion-input>
+    <ion-input class="datos-registro" type="text" label="Apellido" label-placement="floating" fill="solid"></ion-input>
+    <ion-input class="datos-registro" type="text" label="Carrera que cursa" label-placement="floating"
+      fill="solid"></ion-input>
+    <ion-input class="datos-registro" type="text" label="Lugar donde vive" label-placement="floating"
+      fill="solid"></ion-input>
+    <ion-input class="datos-registro" type="email" label="Correo Registro" label-placement="floating"
+      fill="solid"></ion-input>
+    <ion-input class="datos-registro" type="password" label="Contraseña" label-placement="floating"
+      fill="solid"></ion-input>
+  </div>
+  
   <div id="registrarse-btn">
-    <ion-button fill="Outline" >Registrarse</ion-button>
+    <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
+    <ion-button (click)="paraRegistrarse()" fill="Outline">Registrarse</ion-button>
   </div>
 </ion-content>

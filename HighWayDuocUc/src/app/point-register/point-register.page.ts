@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-point-register',
@@ -7,15 +8,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./point-register.page.scss'],
 })
 export class PointRegisterPage {
+  
+  navController = inject(NavController);
+
 
   constructor(private router: Router) { }
 
-  paraPasajero() {
+  /*paraPasajero() {
     this.router.navigate(['/register']);
-  }
+  }*/
   paraConductor() {
     this.router.navigate(['/register-driver']);
   }
 
+  async volver(){
+    this.navController.pop()
+  }
 
 }

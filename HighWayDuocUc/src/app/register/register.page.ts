@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject} from '@angular/core';
+import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage{
 
-  constructor() { }
+  navController = inject(NavController);
 
-  ngOnInit() {
+  constructor(private router: Router) { }
+
+  paraRegistrarse() {
+    this.router.navigate(['/point-register']);
   }
 
+  async volver(){
+    this.navController.pop()
+  }
+    
 }

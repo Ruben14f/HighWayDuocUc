@@ -1,29 +1,28 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>OMAGAAAAA</ion-title>
-  </ion-toolbar>
-</ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="medium">Elija como quiere registrarse</ion-title>
+      <ion-title size="medium">Elija como quiere <br> registrarse</ion-title>
     </ion-toolbar>
   </ion-header>
-</ion-content>
+  <div class="tipo-de-cuenta">
+    <ion-buttons slot="secondary">
+      <ion-button fill="solid" >
+        <ion-icon slot="start" name="accessibility-outline"></ion-icon>
+        Pasajero
+      </ion-button>
+    </ion-buttons>
+    <br>
+    <ion-buttons slot="primary">
+      <ion-button fill="solid" (click)="paraConductor()">
+        Conductor
+        <ion-icon slot="end" name="car-sport-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </div>
 
-<ion-toolbar>
-  <ion-buttons slot="secondary">
-    <ion-button fill="solid" (click)="paraPasajero()">
-      <ion-icon slot="start" name="accessibility-outline"></ion-icon>
-      Pasajero
-    </ion-button>
-  </ion-buttons>
-  <ion-buttons slot="primary">
-    <ion-button fill="solid" (click)="paraConductor()">
-      Conductor
-      <ion-icon slot="end" name="car-sport-outline"></ion-icon>
-    </ion-button>
-  </ion-buttons>
-</ion-toolbar>
+  <div id="volver">
+    <ion-button (click)="volver()" fill="Outline" >Volver</ion-button>
+  </div>
+</ion-content>
 

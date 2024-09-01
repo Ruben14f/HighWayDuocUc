@@ -23,11 +23,13 @@ ion-content {
 
 //ESTILOS PARA EL BOTON DE REGISTRARSE
 
+
+
+
 #registrarse-btn{
   display: flex;
-  justify-content: center;
-  padding-top: 50px;
-  margin-bottom: 50px;
+  justify-content: space-around;
+  margin: 30px 50px;
   --color: white;
 }
 
@@ -76,4 +78,5 @@ ion-segment-button {
   display: flex;
   width: 150px;
 }
+
 

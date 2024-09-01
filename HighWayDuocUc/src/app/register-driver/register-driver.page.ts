@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject} from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-register-driver',
   templateUrl: './register-driver.page.html',
   styleUrls: ['./register-driver.page.scss'],
 })
-export class RegisterDriverPage implements OnInit {
+export class RegisterDriverPage{
+
+  navController = inject(NavController);
 
   constructor() { }
 
-  ngOnInit() {
+  async volver(){
+    this.navController.pop();
   }
 
 }

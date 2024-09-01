@@ -3,7 +3,8 @@
     <ion-title id="titulo-perfil-conductor" size="large" style="color: white;">Perfil Conductor</ion-title>
   </ion-header>
   <div id="container-registro-driver">
-    <ion-input class="datos-registro-driver" type="text" label="Carrera que cursa" label-placement="floating" fill="solid"></ion-input>
+    <ion-input class="datos-registro-driver" type="text" label="Carrera que cursa" label-placement="floating"
+      fill="solid"></ion-input>
     <br>
     <label id="select-vehicle">Tipo de Vehiculo</label>
     <ion-segment>
@@ -14,18 +15,20 @@
         <ion-label>Moto</ion-label>
       </ion-segment-button>
     </ion-segment>
-    <ion-input class="datos-registro-driver" type="email" label="Matricula Vehiculo" label-placement="floating" fill="solid"></ion-input>
-    <ion-input class="datos-registro-driver" type="password" label="Lugar donde vive" label-placement="floating" fill="solid"></ion-input>
+    <ion-input class="datos-registro-driver" type="email" label="Matricula Vehiculo" label-placement="floating"
+      fill="solid"></ion-input>
+    <ion-input class="datos-registro-driver" type="password" label="Lugar donde vive" label-placement="floating"
+      fill="solid"></ion-input>
 
     <br>
     <div class="foto-vehicle">
       <label>Foto del Vehiculo</label>
       <br>
-      <ion-img id="img-vehicle"src="assets/img/FotoPrueba.jpg"></ion-img>
+      <ion-img id="img-vehicle" src="assets/img/FotoPrueba.jpg"></ion-img>
     </div>
-   </div>
-
-    <div id="registrarse-btn">
-      <ion-button fill="Outline" >Registrarse</ion-button>
-    </div>
+  </div>
+  <div id="registrarse-btn">
+    <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
+    <ion-button fill="Outline">Registrarse</ion-button>
+  </div>
 </ion-content>
