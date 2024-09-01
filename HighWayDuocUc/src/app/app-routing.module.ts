@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
   {
+    path: 'point-register',
+    loadChildren: () => import('./point-register/point-register.module').then( m => m.PointRegisterPageModule)
+  },
+  {
     path: 'register',
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
@@ -23,6 +27,11 @@ const routes: Routes = [
     path: 'register-driver',
     loadChildren: () => import('./register-driver/register-driver.module').then( m => m.RegisterDriverPageModule)
   },
+  {
+    path: 'point-register',
+    loadChildren: () => import('./point-register/point-register.module').then( m => m.PointRegisterPageModule)
+  },
+
 ];
 
 @NgModule({

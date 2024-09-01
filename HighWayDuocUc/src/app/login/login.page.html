@@ -27,8 +27,19 @@
     <ion-button fill="Outline" id="iniciar-sesion-btn">Iniciar Sesion</ion-button>
     </div>
     <br>
-    <h5>¿Olvidaste tu contraseña?</h5>
-    <h5>Registrarse</h5>
+    <!--Barra para el olvido de las contraseñas-->
+    <h5 (click)="olvidoSuContrasenia()">¿Olvidaste tu contraseña?</h5>
+    <ion-modal [isOpen]="isModalOpen">
+      <ng-template>
+        <ion-content>
+          <h2>EN MANTENCIÓN</h2>
+          <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
+          <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    <!--Para los registros-->
+    <h5 (click)="paraRegistros()">Registrarse</h5>
   </div>
 </ion-content>
 
