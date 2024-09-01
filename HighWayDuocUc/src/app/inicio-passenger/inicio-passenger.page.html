@@ -1,0 +1,42 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-title id="titulo-registro" size="large" style="color: white;">INICIO</ion-title>
+  </ion-header>
+  <div class="container-inicio">
+    <div class="modo-perfil-container">
+      <div class="modo-cuenta">
+        <span style="color: white;">Modo Conductor</span>
+      </div>
+      <div class="avatar">
+        <ion-icon name="person-circle-outline"></ion-icon>
+        <span>Perfil</span>
+      </div>
+    </div>
+
+    <div class="opciones-inicio">
+      <div class="opciones">
+        <ion-button>Algunos filtros</ion-button>
+      </div>
+      <div class="opciones">
+        <ion-button (click)="irHistorialViajes()" >Historial de viajes</ion-button>
+      </div>
+    </div>
+
+    <div class="viajes">
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 1</span>
+      </div>
+      <br>
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 2</span>
+      </div>
+      <br>
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 3</span>
+      </div>
+    </div>
+  </div>
+</ion-content>

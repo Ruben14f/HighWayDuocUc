@@ -30,7 +30,15 @@ const routes: Routes = [
   {
     path: 'point-register',
     loadChildren: () => import('./point-register/point-register.module').then( m => m.PointRegisterPageModule)
+  },  {
+    path: 'inicio-passenger',
+    loadChildren: () => import('./inicio-passenger/inicio-passenger.module').then( m => m.InicioPassengerPageModule)
   },
+  {
+    path: 'travel-history',
+    loadChildren: () => import('./travel-history/travel-history.module').then( m => m.TravelHistoryPageModule)
+  },
+
 
 ];
 

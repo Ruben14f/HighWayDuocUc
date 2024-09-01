@@ -1,0 +1,31 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+      <ion-title id="titulo-historial" size="large"style="color: white">Historial de viajes</ion-title>
+  </ion-header>
+  <div class="viajes">
+    <div class="viajes-realizados">
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 1</span>
+      </div>
+      <br>
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 2</span>
+      </div>
+      <br>
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 3</span>
+      </div>
+      <div class="viaje">
+        <ion-icon name="car-outline"></ion-icon>
+        <span>Viaje 4</span>
+      </div>
+    </div>
+  </div>
+  
+  <div id="volver-btn">
+    <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
+  </div>
+</ion-content>
