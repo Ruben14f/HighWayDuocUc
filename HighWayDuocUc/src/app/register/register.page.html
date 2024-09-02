@@ -2,21 +2,42 @@
   <ion-header collapse="condense">
     <ion-title id="titulo-registro" size="large" style="color: white;">Registro</ion-title>
   </ion-header>
-  <div id="container-registro">
-    <ion-input class="datos-registro" type="text" label="Nombre" label-placement="floating" fill="solid"></ion-input>
-    <ion-input class="datos-registro" type="text" label="Apellido" label-placement="floating" fill="solid"></ion-input>
-    <ion-input class="datos-registro" type="text" label="Carrera que cursa" label-placement="floating"
-      fill="solid"></ion-input>
-    <ion-input class="datos-registro" type="text" label="Lugar donde vive" label-placement="floating"
-      fill="solid"></ion-input>
-    <ion-input class="datos-registro" type="email" label="Correo Registro" label-placement="floating"
-      fill="solid"></ion-input>
-    <ion-input class="datos-registro" type="password" label="Contraseña" label-placement="floating"
-      fill="solid"></ion-input>
-  </div>
-  
-  <div id="registrarse-btn">
-    <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
-    <ion-button (click)="paraRegistrarse()" fill="Outline">Registrarse</ion-button>
-  </div>
+  <form [formGroup]="registerForm" (ngSubmit)="paraRegistrarse()">
+    <div id="container-registro">
+      <ion-input formControlName="nombre" class="datos-registro" type="text" label="Nombre" label-placement="floating" fill="solid"></ion-input>
+      <ion-input formControlName="apellido" class="datos-registro" type="text" label="Apellido" label-placement="floating" fill="solid"></ion-input>
+
+      <!-- Select de Sede -->
+      <ion-item>
+        <ion-label>Sede</ion-label>
+        <ion-select formControlName="sede" placeholder="Selecciona una sede">
+          <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">
+            {{ sede.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Select de Carrera -->
+      <ion-item>
+        <ion-label>Carrera</ion-label>
+        <ion-select formControlName="carrera" placeholder="Selecciona una carrera" [disabled]="!carrerasFiltradas.length">
+          <ion-select-option *ngFor="let carrera of carrerasFiltradas" [value]="carrera.id">
+            {{ carrera.nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-input formControlName="lugar" class="datos-registro" type="text" label="Lugar donde vive" label-placement="floating"
+        fill="solid"></ion-input>
+      <ion-input formControlName="correo" class="datos-registro" type="email" label="Correo Registro" label-placement="floating"
+        fill="solid"></ion-input>
+      <ion-input formControlName="contraseña" class="datos-registro" type="password" label="Contraseña" label-placement="floating"
+        fill="solid"></ion-input>
+    </div>
+
+    <div id="registrarse-btn">
+      <ion-button type="button" (click)="volver()" fill="Outline">Volver</ion-button>
+      <ion-button type="submit" fill="Outline">Registrarse</ion-button>
+    </div>
+  </form>
 </ion-content>

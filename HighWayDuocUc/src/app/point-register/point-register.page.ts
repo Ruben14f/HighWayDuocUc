@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-point-register',
@@ -8,15 +8,27 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./point-register.page.scss'],
 })
 export class PointRegisterPage {
-  
+
   navController = inject(NavController);
 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private alertController: AlertController) { }
 
-  /*paraPasajero() {
-    this.router.navigate(['/register']);
-  }*/
+  async paraPasajero() {
+    // Mostrar mensaje de "Registro correcto"
+    const alert = await this.alertController.create({
+      header: 'Registro correcto',
+      message: 'Te has registrado como Pasajero exitosamente.',
+      buttons: ['OK'],
+    });
+    await alert.present();
+
+    // Redirigir a la pantalla de login después de cerrar el mensaje
+    alert.onDidDismiss().then(() => {
+      this.router.navigate(['/login']);
+    });
+  }
+
   paraConductor() {
     this.router.navigate(['/register-driver']);
   }

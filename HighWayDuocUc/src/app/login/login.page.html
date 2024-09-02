@@ -8,7 +8,7 @@
   <div id="container-login">
     <div>
       <ion-input type="email" label="Correo" label-placement="floating" fill="solid"
-        placeholder="juanito@gmail.com"></ion-input>
+        placeholder="juanito@gmail.com" [(ngModel)]="email"></ion-input>
       <div class="container-password-ocultar-contra">
         <ion-input
         [(ngModel)]="password"
@@ -24,10 +24,10 @@
         </ion-icon>
       </div>
       <br>
-    <ion-button fill="Outline" id="iniciar-sesion-btn">Iniciar Sesion</ion-button>
+      <ion-button fill="Outline" id="iniciar-sesion-btn" (click)="iniciarSesion()">Iniciar Sesión</ion-button>
     </div>
     <br>
-    
+
     <!--Barra para el olvido de las contraseñas-->
     <h5 (click)="olvidoSuContrasenia()">¿Olvidaste tu contraseña?</h5>
     <ion-modal [isOpen]="isModalOpen">
@@ -44,5 +44,3 @@
   </div>
 </ion-content>
 
-
-<!--para ir a esta pagina se debe linkear desde el home o en el navegador anotar la direcion http://localhost:8100/login-->

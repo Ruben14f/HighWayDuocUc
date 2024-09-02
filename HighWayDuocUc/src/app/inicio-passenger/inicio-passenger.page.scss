@@ -4,11 +4,16 @@ ion-content{
   flex-direction: column;
 }
 
-ion-header #titulo-registro{
-  line-height: 150px;
+
+.logo-container2 {
+  width: 200px;
+  height: 200px;
+  padding-bottom: 70px;
   display: flex;
   justify-content: center;
-
+  align-items: center;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .container-inicio{
@@ -17,7 +22,7 @@ ion-header #titulo-registro{
   height: 600px;
   margin: 0px 30px;
   border-radius: 20px;
-  background-color: black;
+  background-color: rgb(5, 5, 5);
 }
 
 .modo-perfil-container{
@@ -25,17 +30,7 @@ ion-header #titulo-registro{
   justify-content: space-between;
 }
 // DISEÑO DE APARTADO MODO CONDUCTOR - MODO PASAJERO
-.modo-cuenta{
-  display: flex;
-  margin-left: 5px;
-  height: 30px;
-  justify-content: space-around;
-  align-items: center;
-  border-radius: 10px;
-  background-color: #0054e9;
-  margin-top: 20px;
-  width: 140px;
-}
+
 
 // DISEÑO AVATAR DE PERFIL
 .avatar{
