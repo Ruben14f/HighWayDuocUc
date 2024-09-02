@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: PointRegisterPage
+  },  {
+    path: 'pasajero-bienvenida',
+    loadChildren: () => import('./pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule)
   }
+
 ];
 
 @NgModule({

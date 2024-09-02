@@ -50,7 +50,7 @@ export class LoginPage{
       const usuario = JSON.parse(usuarioRegistrado);
 
       if (usuario.correo === this.email && usuario.contraseña === this.password) {
-        this.router.navigate(['/inicio-passenger']); // Redirigir al inicio si las credenciales son correctas
+        this.router.navigate(['/welcome']); // Redirigir al inicio si las credenciales son correctas
       } else {
         this.mostrarAlertaError();
       }
