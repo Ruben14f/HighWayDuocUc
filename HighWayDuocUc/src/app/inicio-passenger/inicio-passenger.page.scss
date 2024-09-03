@@ -3,9 +3,14 @@ ion-content{
   display: flex;
   flex-direction: column;
 }
+ion-label{
+
+  color: black;
+}
 
 
 .logo-container2 {
+  padding-top: 20px;
   width: 200px;
   height: 200px;
   padding-bottom: 70px;
@@ -33,9 +38,11 @@ ion-content{
 
 
 // DISEÑO AVATAR DE PERFIL
-.avatar{
+.avatar {
   display: flex;
   flex-direction: column;
+  align-items: flex-end; /* Alinea los elementos al lado derecho */
+  justify-content: flex-start; /* Alinea los elementos completamente arriba */
 }
 
 .avatar ion-icon{
@@ -53,6 +60,7 @@ ion-content{
   display: flex;
   justify-content: space-between;
   margin: 10px 10px;
+  background-color: white;
 
 }
 
@@ -65,4 +73,9 @@ ion-content{
   border: solid 1px white;
   color: white;
   font-size: 20px;
+}
+
+// Toolbar
+ion-toolbar{
+  color: red;
 }

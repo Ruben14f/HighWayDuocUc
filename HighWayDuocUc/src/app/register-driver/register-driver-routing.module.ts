@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: RegisterDriverPage
+  },  {
+    path: 'inicio-conductor',
+    loadChildren: () => import('./inicio-conductor/inicio-conductor.module').then( m => m.InicioConductorPageModule)
   }
+
 ];
 
 @NgModule({

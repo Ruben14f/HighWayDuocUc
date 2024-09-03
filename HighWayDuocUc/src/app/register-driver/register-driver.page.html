@@ -4,7 +4,7 @@
   </ion-header>
   <div id="container-registro-driver">
     <label id="select-vehicle">Tipo de Vehiculo</label>
-    <ion-segment>
+    <ion-segment [(ngModel)]="tipoVehiculo">
       <ion-segment-button value="auto">
         <ion-label>Auto</ion-label>
       </ion-segment-button>
@@ -12,7 +12,7 @@
         <ion-label>Moto</ion-label>
       </ion-segment-button>
     </ion-segment>
-    <ion-input class="datos-registro-driver" type="email" label="Matricula Vehiculo" label-placement="floating"
+    <ion-input class="datos-registro-driver" [(ngModel)]="matricula" type="text" label="Matricula Vehiculo" label-placement="floating"
       fill="solid"></ion-input>
     <br>
     <div class="foto-vehicle">
@@ -23,6 +23,6 @@
   </div>
   <div id="registrarse-btn">
     <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
-    <ion-button fill="Outline">Registrarse</ion-button>
+    <ion-button fill="Outline" (click)="guardarDatosConductor()">Registrarse</ion-button>
   </div>
 </ion-content>

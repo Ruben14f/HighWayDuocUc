@@ -52,7 +52,7 @@ export class DataService {
   ];
 
   constructor() { }
-
+  //Para las opciones de registro
   getSedes(): Observable<Sede[]> {
     return of(this.sedes);
   }
@@ -60,4 +60,11 @@ export class DataService {
   getCarreras(): Observable<Carrera[]> {
     return of(this.carreras);
   }
+
+  //Para el 'inicio-passenger' en filtros
+  getCarrerasPorSede(sedeId: number): Observable<Carrera[]> {
+    const carrerasFiltradas = this.carreras.filter(carrera => carrera.sedeId.includes(sedeId));
+    return of(carrerasFiltradas);
+  }
+
 }

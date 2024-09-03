@@ -10,6 +10,10 @@ const routes: Routes = [
   },  {
     path: 'pasajero-bienvenida',
     loadChildren: () => import('./pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule)
+  },
+  {
+    path: 'conductor-bienvenida',
+    loadChildren: () => import('./conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule)
   }
 
 ];

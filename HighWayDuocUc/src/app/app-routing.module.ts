@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { PasajeroBienvenidaPageModule } from './point-register/pasajero-bienvenida/pasajero-bienvenida.module';
+import { ConductorBienvenidaPage } from './point-register/conductor-bienvenida/conductor-bienvenida.page';
+import { ConductorBienvenidaPageModule } from './point-register/conductor-bienvenida/conductor-bienvenida.module';
 
 const routes: Routes = [
   {
@@ -43,6 +45,14 @@ const routes: Routes = [
   {
     path: 'welcome',
     loadChildren: () => import('./point-register/pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule)
+  },
+  {
+    path: 'inicio-conductor',
+    loadChildren: () => import('./register-driver/inicio-conductor/inicio-conductor.module').then( m => m.InicioConductorPageModule)
+  },
+  {
+    path: 'welcome2',
+    loadChildren: () => import('./point-register/conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule)
   },
 
 

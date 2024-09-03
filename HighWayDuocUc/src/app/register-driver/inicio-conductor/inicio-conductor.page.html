@@ -13,23 +13,10 @@
     </ion-toolbar>
   </ion-header>
 
-
-
   <div class="container-inicio">
     <div class="modo-perfil-container">
       <div class="modo-cuenta">
-        <ion-button color="success">Modo conductor</ion-button>
-      </div>
-    </div>
-
-    <div class="opciones-inicio">
-      <div class="opciones">
-        <ion-select placeholder="Selecciona una sede" (ionChange)="filtrarPorSede($event)">
-          <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</ion-select-option>
-        </ion-select>
-      </div>
-      <div class="opciones">
-        <ion-button (click)="irHistorialViajes()" >Historial de viajes</ion-button>
+        <ion-button color="primary">Modo Pasajero</ion-button>
       </div>
     </div>
 
