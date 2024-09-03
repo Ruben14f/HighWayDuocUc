@@ -1,8 +1,21 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
-      <ion-button color="medium">
+      <ion-button color="medium" (click)="mantencion()">
         <ion-icon name="settings-outline"></ion-icon>
+        <ion-modal [isOpen]="isModalOpen">
+          <ng-template>
+            <ion-content>
+              <h2>EN MANTENCIÓN</h2>
+              <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
+              <p>Después se agregaran:</p>
+              <p>Modo para los usuarios (Oscuro o claro)</p>
+              <p>Sonidos en general</p>
+              <p>Ayuda</p>
+              <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+            </ion-content>
+          </ng-template>
+        </ion-modal>
       </ion-button>
       <div class="user-info" style="position: absolute; top: 15px; right: 50px;">
         <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-label>

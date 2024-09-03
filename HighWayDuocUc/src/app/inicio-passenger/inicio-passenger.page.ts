@@ -10,6 +10,7 @@ import { Sede } from '../register/info-sedes/sede.model';
 })
 export class InicioPassengerPage implements OnInit{
   usuario : any;
+  isModalOpen = false;
 
   constructor(private router: Router, private dataService: DataService) { }
   sedes: Sede[] = [];
@@ -32,5 +33,21 @@ export class InicioPassengerPage implements OnInit{
   irHistorialViajes() {
     this.router.navigate(['/travel-history']);
   }
+  //Para el tema de olvidar la contraseña
+  mantencion() {
+    this.isModalOpen = true;
+    this.reproducirError();
+  }
 
+  closeModal() {
+    this.isModalOpen = false;
+  }
+  //Sonidito para el error de la ruedita
+  reproducirError() {
+    const audio = new Audio('assets/music/error.mp3');
+    //El validador en caso de
+    audio.play().catch(error => {
+      console.error('Error al reproducir el sonido:', error);
+    });
+  }
 }
