@@ -1,43 +1,57 @@
 <ion-content [fullscreen]="true">
   <ion-header>
     <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
-      <ion-button color="medium">
-        <ion-icon name="settings-outline"></ion-icon>
-        <ion-modal [isOpen]="isModalOpen">
-          <ng-template>
-            <ion-content>
-              <h2>EN MANTENCIÓN</h2>
-              <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
-              <p>Después se agregaran:</p>
-              <p>Modo para los usuarios (Oscuro o claro)</p>
-              <p>Sonidos en general</p>
-              <p>Ayuda</p>
-              <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
-      </ion-button>
-      <div class="user-info" style="position: absolute; top: 15px; right: 50px;">
-        <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-label>
-      </div>
-      <div class="avatar" style="position: absolute; top: 8px; right: 16px;">
-        <ion-icon name="person-circle-outline" style="font-size: 24px;" size="large"></ion-icon>
-      </div>
+      <div class="toolbar-container">
+        <ion-button style="margin-left: 8px;" color="medium" (click)="mantencion()">
+          <ion-icon  name="settings-outline"></ion-icon>
+          <ion-modal [isOpen]="isModalOpen">
+            <ng-template>
+              <ion-content>
+                <h2>EN MANTENCIÓN</h2>
+                <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
+                <p>Después se agregaran:</p>
+                <p>Modo para los usuarios (Oscuro o claro)</p>
+                <p>Sonidos en general</p>
+                <p>Ayuda</p>
+                <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+              </ion-content>
+            </ng-template>
+          </ion-modal>
+        </ion-button>
+
+        <div (click)="irPerfil()"style="display: flex; align-items: center;">
+          <div class="user-info" style="top: 15px; margin-right: 4px;">
+            <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-label>
+          </div>
+          <div class="avatar" style=" top: 8px; margin-right: 8px;">
+            <ion-icon color="medium" name="person-circle-outline" style="font-size: 45px;"></ion-icon>
+          </div>
+        </div>
+    </div>
     </ion-toolbar>
   </ion-header>
 
-  <div class="container-inicio">
-    <div class="modo-perfil-container">
-      <div class="modo-cuenta">
-        <ion-button color="primary">Modo Pasajero</ion-button>
-      </div>
-    </div>
+  <br>
 
-    <div class="viajes">
-      <div class="viaje">
-        <ion-icon name="car-outline"></ion-icon>
-        <span>Viaje 1</span>
+  <div class="container-inicio" style="margin-bottom: 80px;">
+    <div class="opciones-inicio">
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Crear viaje</ion-button>
+      </div>
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Mostrar el viaje</ion-button>
+      </div>
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Historial de viajes realizados</ion-button>
       </div>
     </div>
   </div>
+
+  <ion-footer>
+    <ion-toolbar style="--background: rgb(231, 231, 231)">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <ion-button (click)="cambiarModo()" fill="Outline" style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
+    </div>
+    </ion-toolbar>
+  </ion-footer>
 </ion-content>

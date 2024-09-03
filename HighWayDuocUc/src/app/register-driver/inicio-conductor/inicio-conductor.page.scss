@@ -1,0 +1,84 @@
+ion-content{
+  --overflow: hidden; // evita que se desplaze hacia abajo
+  display: flex;
+  flex-direction: column;
+}
+ion-label{
+  color: black;
+}
+
+
+.logo-container2 {
+  padding-top: 20px;
+  width: 200px;
+  height: 200px;
+  padding-bottom: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.container-inicio{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 600px;
+  margin: 0px 15px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.modo-perfil-container{
+  display: flex;
+  justify-content: space-between;
+}
+// DISEÑO DE APARTADO MODO CONDUCTOR - MODO PASAJERO
+
+
+// DISEÑO AVATAR DE PERFIL
+.avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alinea los elementos al lado derecho */
+  justify-content: flex-start; /* Alinea los elementos completamente arriba */
+}
+
+.avatar ion-icon{
+  color: white;
+  font-size: 70px;
+}
+
+.avatar span{
+  color: white;
+  margin-left: 15px;
+}
+
+// DISEÑO OPCIONES
+.opciones-inicio{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: 10px 10px;
+  background-color: white;
+
+}
+
+// DISEÑO DE VIAJES
+
+
+.toolbar-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.opciones{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+

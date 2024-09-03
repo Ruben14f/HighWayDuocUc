@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -8,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 export class InicioConductorPage implements OnInit {
   usuario : any;
   isModalOpen = false;
-  constructor() { }
+  dataService: any;
+
+  constructor(private router: Router) { }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
@@ -32,6 +35,15 @@ export class InicioConductorPage implements OnInit {
       console.error('Error al reproducir el sonido:', error);
     });
   }
+  async cambiarModo(){
+    this.router.navigate(['/inicio-passenger']);
   }
+
+  irPerfil(){
+    this.router.navigate(['/profile']);
+  }
+  }
+
+
 
 

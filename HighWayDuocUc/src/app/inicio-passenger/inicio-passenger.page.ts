@@ -50,4 +50,19 @@ export class InicioPassengerPage implements OnInit{
       console.error('Error al reproducir el sonido:', error);
     });
   }
+
+  irPerfil(){
+    this.router.navigate(['/profile']);
+  }
+
+  cambiarModo(){
+    if(this.usuario?.matricula && this.usuario?.tipoVehiculo){
+      this.router.navigate(['/inicio-conductor'])
+    }else{
+      this.router.navigate(['/register-driver'])
+    }
+
+  }
+
+
 }

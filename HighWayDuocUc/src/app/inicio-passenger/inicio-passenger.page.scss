@@ -4,7 +4,6 @@ ion-content{
   flex-direction: column;
 }
 ion-label{
-
   color: black;
 }
 
@@ -25,9 +24,9 @@ ion-label{
   display: flex;
   flex-direction: column;
   height: 600px;
-  margin: 0px 30px;
+  margin: 0px 15px;
   border-radius: 20px;
-  background-color: rgb(5, 5, 5);
+  background-color: white;
 }
 
 .modo-perfil-container{
@@ -67,15 +66,25 @@ ion-label{
 // DISEÑO DE VIAJES
 .viaje{
   display: flex;
+  background-color: rgb(199, 197, 197);
   margin: 10px;
   padding: 40px;
   border-radius: 10px;
-  border: solid 1px white;
-  color: white;
+  color: black;
   font-size: 20px;
 }
 
-// Toolbar
-ion-toolbar{
-  color: red;
+
+.toolbar-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
+
+.opciones{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+
