@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -8,7 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class InicioConductorPage implements OnInit {
   usuario : any;
   isModalOpen = false;
-  constructor() { }
+  isModalOpen2 = false;
+  constructor(private router: Router) { }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
@@ -23,6 +25,18 @@ export class InicioConductorPage implements OnInit {
 
   closeModal() {
     this.isModalOpen = false;
+  }
+  //Modo Pasajero
+  modoPasajeror() {
+    this.router.navigate(['/inicio-passenger'])
+  }
+
+  //Para el perfil
+  perfilUsuario() {
+    this.isModalOpen2 = true;
+  }
+  setOpen(isOpen: boolean) {
+    this.isModalOpen2 = isOpen;
   }
   //Sonidito para el error de la ruedita
   reproducirError() {

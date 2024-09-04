@@ -54,11 +54,14 @@ export class RegisterPage implements OnInit{
 
   async paraRegistrarse() {
     if (this.registerForm.valid) {
+      const sedeSeleccionada = this.sedes.find(sede => sede.id === this.registerForm.value.sede);
+      const carreraSeleccionada = this.carreras.find(carrera => carrera.id === this.registerForm.value.carrera);
+
       const usuario = {
         nombre: this.registerForm.value.nombre,
         apellido: this.registerForm.value.apellido,
-        sede: this.registerForm.value.sede,
-        carrera: this.registerForm.value.carrera,
+        sede: sedeSeleccionada ? sedeSeleccionada.nombre : '',
+        carrera: carreraSeleccionada ? carreraSeleccionada.nombre : '',
         lugar: this.registerForm.value.lugar,
         correo: this.registerForm.value.correo,
         contraseña: this.registerForm.value.contraseña

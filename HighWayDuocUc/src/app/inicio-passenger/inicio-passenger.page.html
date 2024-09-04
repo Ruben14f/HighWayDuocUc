@@ -21,7 +21,32 @@
         <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-label>
       </div>
       <div class="avatar" style="position: absolute; top: 8px; right: 16px;">
-        <ion-icon name="person-circle-outline" style="font-size: 24px;" size="large"></ion-icon>
+        <ion-icon name="person-circle-outline" style="font-size: 24px;" size="large" (click)="perfilUsuario()"></ion-icon>
+        <ion-modal [isOpen]="isModalOpen2">
+          <ng-template>
+            <ion-header>
+              <ion-toolbar>
+                <ion-title>Tu perfil</ion-title>
+                <ion-buttons slot="end">
+                  <ion-button (click)="setOpen(false)">Cerrar</ion-button>
+                </ion-buttons>
+              </ion-toolbar>
+            </ion-header>
+            <ion-card>
+              <img alt="usuario-img" src="assets/img/Logo.png" />
+              <ion-card-header>
+                <ion-card-title>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <p>Correo: {{usuario?.correo}}</p>
+                <p>Sede: {{usuario?.sede}}</p>
+                <p>Carrera: {{usuario?.carrera}}</p>
+                <p>Tipo de vehículo: {{ usuario?.tipoVehiculo ? usuario.tipoVehiculo : 'Aún no especificado' }}</p>
+                <p>Matrícula: {{ usuario?.matricula ? usuario.matricula : 'Aún no especificada' }}</p>
+              </ion-card-content>
+            </ion-card>
+          </ng-template>
+        </ion-modal>
       </div>
     </ion-toolbar>
   </ion-header>
@@ -31,7 +56,7 @@
   <div class="container-inicio">
     <div class="modo-perfil-container">
       <div class="modo-cuenta">
-        <ion-button color="success">Modo conductor</ion-button>
+        <ion-button color="success" (click)="modoConductor()">Modo conductor</ion-button>
       </div>
     </div>
 
