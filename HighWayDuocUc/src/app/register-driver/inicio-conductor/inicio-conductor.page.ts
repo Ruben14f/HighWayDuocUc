@@ -9,7 +9,12 @@ import { Router } from '@angular/router';
 export class InicioConductorPage implements OnInit {
   usuario : any;
   isModalOpen = false;
+
   isModalOpen2 = false;
+
+  dataService: any;
+
+
   constructor(private router: Router) { }
 
   ngOnInit() {
@@ -46,6 +51,15 @@ export class InicioConductorPage implements OnInit {
       console.error('Error al reproducir el sonido:', error);
     });
   }
+  async cambiarModo(){
+    this.router.navigate(['/inicio-passenger']);
   }
+
+  irPerfil(){
+    this.router.navigate(['/profile']);
+  }
+  }
+
+
 
 

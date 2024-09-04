@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-content style="--background: red;" [fullscreen]="true">
   <ion-header>
     <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
       <ion-button color="medium" (click)="mantencion()">
@@ -48,10 +48,6 @@
           </ng-template>
         </ion-modal>
       </div>
-    </ion-toolbar>
-  </ion-header>
-
-
 
   <div class="container-inicio">
     <div class="modo-perfil-container">
@@ -60,22 +56,36 @@
       </div>
     </div>
 
+=======
+  <div class="container-inicio" style="margin-bottom: 80px;">
+>>>>>>> eed152adf4ca94ee642dae36b02472d7e779f65b
     <div class="opciones-inicio">
       <div class="opciones">
-        <ion-select placeholder="Selecciona una sede" (ionChange)="filtrarPorSede($event)">
+        <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
+        <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede" (ionChange)="filtrarPorSede($event)">
+          <div class="underline"></div>
           <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</ion-select-option>
         </ion-select>
       </div>
       <div class="opciones">
-        <ion-button (click)="irHistorialViajes()" >Historial de viajes</ion-button>
+
+        <ion-button style="--border-radius: 50px;" (click)="irHistorialViajes()" > <ion-icon name="time-outline"></ion-icon> Historial de viajes</ion-button>
       </div>
     </div>
-
     <div class="viajes">
-      <div class="viaje">
-        <ion-icon name="car-outline"></ion-icon>
+      <div class="viaje" style="display: flex; align-items: center; ">
+        <ion-icon name="car-outline" style="font-size: 30px; margin-right: 10px;"></ion-icon>
         <span>Viaje 1</span>
       </div>
     </div>
   </div>
-</ion-content>
+
+  <ion-footer>
+    <ion-toolbar style="--background: rgb(231, 231, 231)">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <ion-button (click)="cambiarModo()" fill="Outline" style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Conductor</ion-button>
+    </div>
+    </ion-toolbar>
+  </ion-footer>
+
+

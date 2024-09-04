@@ -58,11 +58,24 @@
       </div>
     </div>
 
-    <div class="viajes">
-      <div class="viaje">
-        <ion-icon name="car-outline"></ion-icon>
-        <span>Viaje 1</span>
+  <div class="container-inicio" style="margin-bottom: 80px;">
+    <div class="opciones-inicio">
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Crear viaje</ion-button>
+      </div>
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Mostrar el viaje</ion-button>
+      </div>
+      <div class="opciones">
+        <ion-button style="--border-radius: 50px;" > <ion-icon name="time-outline"></ion-icon> Historial de viajes realizados</ion-button>
       </div>
     </div>
   </div>
-</ion-content>
+
+  <ion-footer>
+    <ion-toolbar style="--background: rgb(231, 231, 231)">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <ion-button (click)="cambiarModo()" fill="Outline" style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
+    </div>
+    </ion-toolbar>
+  </ion-footer>

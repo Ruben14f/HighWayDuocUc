@@ -2,12 +2,14 @@ ion-content{
   --overflow: hidden; // evita que se desplaze hacia abajo
   display: flex;
   flex-direction: column;
+  --background: red;
 }
 
-ion-header #titulo-historial{
-  line-height: 150px;
+ion-toolbar #titulo-historial{
   display: flex;
   justify-content: center;
+  color: black;
+  padding: 30px;
 
 }
 
@@ -19,31 +21,35 @@ ion-header #titulo-historial{
   border: solid 1px white;
   color: white;
 }
-.viajes-realizados{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-top: 20px;
-}
+
 .viajes{
   display: flex;
   flex-direction: column;
   height: 550px;
-  margin: 0px 30px;
+  margin: 0px 15px;
   border-radius: 20px;
-  background-color: black;
+  background-color: white;
+}
+
+.viaje{
+  display: flex;
+  background-color: rgb(199, 197, 197);
+  margin: 10px;
+  padding: 40px;
+  border-radius: 10px;
+  color: black;
+  font-size: 20px;
 }
 
 #volver-btn{
   display: flex;
   justify-content: space-around;
   margin: 30px 50px;
-  --color: white;
 }
 
-#volver-btn:hover {
-  --background: #1962cf;
-  --color: #ffffff;
+#volver-btn ion-button{
+  --background: rgb(199, 197, 197);
+  --color: black;
 }
 
 ion-button{

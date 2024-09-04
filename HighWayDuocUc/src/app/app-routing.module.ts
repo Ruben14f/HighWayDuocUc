@@ -53,7 +53,11 @@ const routes: Routes = [
   {
     path: 'welcome2',
     loadChildren: () => import('./point-register/conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule)
+  },  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   },
+
 
 
 ];
