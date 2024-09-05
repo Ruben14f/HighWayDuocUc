@@ -26,7 +26,8 @@
 
       <div class="avatar" style="position: absolute; top: 8px; right: 16px;">
         <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;"
-          (click)="perfilUsuario()"></ion-icon>
+          (click)="perfilUsuario()">
+        </ion-icon>
 
         <!-- Perfil Modal -->
         <ion-modal [isOpen]="isModalOpen2">
@@ -40,7 +41,7 @@
               </ion-toolbar>
             </ion-header>
             <div>
-              <div class="avatar" style=" display:flex; justify-content: center; margin: 10px 0px 70px;">
+              <div class="avatar" style="display:flex; justify-content: center; margin: 10px 0px 70px;">
                 <ion-icon color="medium" name="person-circle-outline" style="font-size: 200px;"></ion-icon>
               </div>
               <ion-item style="border-top: solid 1px #c8c7cc;" lines="full">
@@ -79,7 +80,7 @@
             </div>
             <div class="final" style="display: flex; justify-content: center;">
               <div>
-                <ion-button (click)="setOpen(false)" (click)="logout()" fill="Outline" style="--color: white; --background: red;">Cerrar
+                <ion-button (click)="setOpen(false)" (click)="logout()" fill="Outline" style="--color: white; --background: red; margin-bottom: 50px;">Cerrar
                   Sesion</ion-button>
               </div>
             </div>

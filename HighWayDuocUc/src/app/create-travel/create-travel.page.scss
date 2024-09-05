@@ -1,0 +1,65 @@
+ion-content{
+  --overflow: hidden; // evita que se desplaze hacia abajo
+  display: flex;
+  flex-direction: column;
+  --background: red;
+}
+
+ion-toolbar #titulo-crear-viaje{
+  display: flex;
+  justify-content: center;
+  color: black;
+  padding: 30px;
+}
+
+//DISEÑO DE CONTAINER PARA CREAR EL VIAJE
+.crear-viaje {
+  background: white;
+  height: 600px;
+  margin: 20px 10px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.input-crear-viaje {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.input-crear-viaje label {
+  width: 150px;
+  margin-right: 10px;
+}
+
+.input-field {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+form ion-button{
+  --color:white;
+  --background: red;
+  margin-top: 100px;
+  display:flex;
+}
+
+.input-crear-viaje ion-item {
+  width: 100%;
+}
+
+.crear-viaje ion-button{
+  --color:white;
+  --background: red;
+  display:flex;
+}
+
+
+
+
+

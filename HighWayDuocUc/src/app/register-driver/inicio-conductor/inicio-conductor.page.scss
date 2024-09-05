@@ -19,13 +19,6 @@ ion-content{
 
 .container-inicio{
   display: flex;
-
-  flex-direction: column;
-  height: 600px;
-  margin: 0px 30px;
-  border-radius: 20px;
-  background-color: rgb(5, 5, 5);
-
   flex-direction: row;
   justify-content: center;
   height: 600px;
@@ -39,25 +32,6 @@ ion-content{
   justify-content: space-between;
 }
 // DISEÑO DE APARTADO MODO CONDUCTOR - MODO PASAJERO
-
-
-// DISEÑO AVATAR DE PERFIL
-.avatar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Alinea los elementos al lado derecho */
-  justify-content: flex-start; /* Alinea los elementos completamente arriba */
-}
-
-.avatar ion-icon{
-  color: white;
-  font-size: 70px;
-}
-
-.avatar span{
-  color: white;
-  margin-left: 15px;
-}
 
 // DISEÑO OPCIONES
 .opciones-inicio{
@@ -86,10 +60,6 @@ ion-content{
   font-size: 20px;
 }
 
-// Toolbar
-ion-toolbar{
-  color: red;
-}
 
 //Card para el perfil
 ion-card {

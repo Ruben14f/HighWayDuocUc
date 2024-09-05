@@ -51,14 +51,21 @@ export class InicioConductorPage implements OnInit {
       console.error('Error al reproducir el sonido:', error);
     });
   }
+
   async cambiarModo(){
     this.router.navigate(['/inicio-passenger']);
   }
 
-  irPerfil(){
-    this.router.navigate(['/profile']);
+  async crearViaje(){
+    this.router.navigate(['/create-travel']);
   }
+
+
+  logout(){
+    localStorage.removeItem('usuarioRegistrado');
+    this.router.navigate(['/login']);
   }
+}
 
 
 

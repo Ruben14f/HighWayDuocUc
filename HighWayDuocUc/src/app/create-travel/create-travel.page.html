@@ -1,0 +1,62 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
+      <ion-title id="titulo-crear-viaje" size="large">Crear Viaje</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <br>
+  <br>
+
+  <div class="crear-viaje">
+    <form action="">
+      <div class="input-crear-viaje">
+        <label for="sede-de-salida">Sede del viaje</label>
+        <input class="input-field" type="text" id="sede-de-salida" placeholder="Sede de salida">
+      </div>
+      <div class="input-crear-viaje">
+        <label for="destino">Destino</label>
+        <input class="input-field" type="text" id="destino" placeholder="Destino del viaje">
+      </div>
+      <div class="input-crear-viaje">
+        <label for="hora-salida">Hora de salida</label>
+        <input class="input-field" type="text" id="hora-salida" placeholder="">
+      </div>
+
+      <div class="input-crear-viaje">
+        <label for="pasajeros">Pasajeros</label>
+        <ion-item lines="none">
+          <ion-icon name="people-outline" slot="start" class="text-gray-400"></ion-icon>
+          <ion-select  id="pasajeros" placeholder="Pasajeros" interface="popover">
+            <ion-select-option value="1">1 pasajero</ion-select-option>
+            <ion-select-option value="2">2 pasajeros</ion-select-option>
+            <ion-select-option value="3">3 pasajeros</ion-select-option>
+            <ion-select-option value="4+">4 o 5 pasajeros</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <div class="input-crear-viaje">
+        <label for="precio">Precio</label>
+        <input class="input-field" type="text" id="precio" placeholder="Precio del viaje">
+      </div>
+
+
+      <div class="input-crear-viaje">
+        <label for="pago">Pago</label>
+        <ion-item lines="none">
+          <ion-icon name="card-outline" slot="start" class="text-gray-400"></ion-icon>
+          <ion-select id="metodo-de-pago" placeholder="Metodo de Pago" interface="popover">
+            <ion-select-option value="1">Efectivo</ion-select-option>
+            <ion-select-option value="2">Tarjeta</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+      <ion-button type="submit" fill="Outline">Crear Viaje</ion-button>
+    </form>
+    <ion-button fill="Outline" (click)="volver()">Volver</ion-button>
+  </div>
+
+
+
+</ion-content>
