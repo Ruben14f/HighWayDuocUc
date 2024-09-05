@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-inicio-passenger',
@@ -13,6 +13,7 @@ export class InicioPassengerPage implements OnInit{
   usuario : any;
   isModalOpen = false;
   isModalOpen2 = false;
+  navController = inject(NavController);
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService) { }
   sedes: Sede[] = [];
@@ -22,9 +23,15 @@ export class InicioPassengerPage implements OnInit{
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
+    if (this.usuario?.sede) {
+      this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
+    }
+
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;
     });
+
+
   }
 
   filtrarPorSede(event: any) {
@@ -91,18 +98,9 @@ export class InicioPassengerPage implements OnInit{
     });
   }
 
-  irPerfil(){
-    this.router.navigate(['/profile']);
+  logout(){
+    localStorage.removeItem('usuarioRegistrado');
+    this.router.navigate(['/login']);
   }
-
-  cambiarModo(){
-    if(this.usuario?.matricula && this.usuario?.tipoVehiculo){
-      this.router.navigate(['/inicio-conductor'])
-    }else{
-      this.router.navigate(['/register-driver'])
-    }
-
-  }
-
 
 }

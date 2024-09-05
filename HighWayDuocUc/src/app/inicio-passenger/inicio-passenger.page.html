@@ -3,25 +3,32 @@
     <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
       <ion-button color="medium" (click)="mantencion()">
         <ion-icon name="settings-outline"></ion-icon>
-        <ion-modal [isOpen]="isModalOpen">
-          <ng-template>
-            <ion-content>
-              <h2>EN MANTENCIÓN</h2>
-              <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
-              <p>Después se agregaran:</p>
-              <p>Modo para los usuarios (Oscuro o claro)</p>
-              <p>Sonidos en general</p>
-              <p>Ayuda</p>
-              <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
       </ion-button>
-      <div class="user-info" style="position: absolute; top: 15px; right: 50px;">
-        <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-label>
+
+      <!-- Mantencion Modal -->
+      <ion-modal [isOpen]="isModalOpen">
+        <ng-template>
+          <ion-content>
+            <h2>EN MANTENCIÓN</h2>
+            <p>Para esta entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
+            <p>Después se agregarán:</p>
+            <p>Modo para los usuarios (Oscuro o claro)</p>
+            <p>Sonidos en general</p>
+            <p>Ayuda</p>
+            <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
+      <div class="user-info" style="position: absolute; top: 25px; right: 50px; display: flex; margin-right: 20px;">
+        <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase }}</ion-label>
       </div>
+
       <div class="avatar" style="position: absolute; top: 8px; right: 16px;">
-        <ion-icon name="person-circle-outline" style="font-size: 24px;" size="large" (click)="perfilUsuario()"></ion-icon>
+        <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;"
+          (click)="perfilUsuario()"></ion-icon>
+
+        <!-- Perfil Modal -->
         <ion-modal [isOpen]="isModalOpen2">
           <ng-template>
             <ion-header>
@@ -32,59 +39,91 @@
                 </ion-buttons>
               </ion-toolbar>
             </ion-header>
-            <ion-card>
-              <img alt="usuario-img" src="assets/img/Logo.png" />
-              <ion-card-header>
-                <ion-card-title>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase}}</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                <p>Correo: {{usuario?.correo}}</p>
-                <p>Sede: {{usuario?.sede}}</p>
-                <p>Carrera: {{usuario?.carrera}}</p>
-                <p>Tipo de vehículo: {{ usuario?.tipoVehiculo ? usuario.tipoVehiculo : 'Aún no especificado' }}</p>
-                <p>Matrícula: {{ usuario?.matricula ? usuario.matricula : 'Aún no especificada' }}</p>
-              </ion-card-content>
-            </ion-card>
+            <div>
+              <div class="avatar" style=" display:flex; justify-content: center; margin: 10px 0px 70px;">
+                <ion-icon color="medium" name="person-circle-outline" style="font-size: 200px;"></ion-icon>
+              </div>
+              <ion-item style="border-top: solid 1px #c8c7cc;" lines="full">
+                <ion-icon name="person-outline" slot="start" color="danger"></ion-icon>
+                <ion-label>
+                  <p>Nombre y Apellido</p>
+                  <h2>{{usuario?.nombre | titlecase }} {{usuario?.apellido | titlecase}} </h2>
+                </ion-label>
+              </ion-item>
+
+              <ion-item lines="full">
+                <ion-icon name="business-outline" slot="start" color="danger"></ion-icon>
+                <ion-label>
+                  <p>Sede</p>
+                  <h2>{{usuario?.sede | titlecase }}</h2>
+
+                </ion-label>
+              </ion-item>
+
+
+              <ion-item lines="full">
+                <ion-icon name="home-outline" slot="start" color="danger"></ion-icon>
+                <ion-label>
+                  <p>Direccion</p>
+                  <h2>{{usuario?.lugar | titlecase}}</h2>
+                </ion-label>
+              </ion-item>
+
+              <ion-item lines="full">
+                <ion-icon name="mail-outline" slot="start" color="danger"></ion-icon>
+                <ion-label>
+                  <p>Correo</p>
+                  <h2>{{usuario?.correo | titlecase }}</h2>
+                </ion-label>
+              </ion-item>
+            </div>
+            <div class="final" style="display: flex; justify-content: center;">
+              <div>
+                <ion-button (click)="setOpen(false)" (click)="logout()" fill="Outline" style="--color: white; --background: red;">Cerrar
+                  Sesion</ion-button>
+              </div>
+            </div>
           </ng-template>
+
         </ion-modal>
       </div>
+    </ion-toolbar>
+  </ion-header>
 
-  <div class="container-inicio">
-    <div class="modo-perfil-container">
-      <div class="modo-cuenta">
-        <ion-button color="success" (click)="modoConductor()">Modo conductor</ion-button>
-      </div>
-    </div>
-
+  <br>
+  <br>
+  <!-- Main Content -->
   <div class="container-inicio" style="margin-bottom: 80px;">
-
     <div class="opciones-inicio">
       <div class="opciones">
         <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
-        <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede" (ionChange)="filtrarPorSede($event)">
-          <div class="underline"></div>
+        <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede"
+          (ionChange)="filtrarPorSede($event)">
           <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</ion-select-option>
         </ion-select>
       </div>
       <div class="opciones">
-
-        <ion-button style="--border-radius: 50px;" (click)="irHistorialViajes()" > <ion-icon name="time-outline"></ion-icon> Historial de viajes</ion-button>
+        <ion-button style="--border-radius: 50px;" (click)="irHistorialViajes()">
+          <ion-icon name="time-outline"></ion-icon> Historial de viajes
+        </ion-button>
       </div>
     </div>
+
     <div class="viajes">
-      <div class="viaje" style="display: flex; align-items: center; ">
+      <div class="viaje" style="display: flex; align-items: center;">
         <ion-icon name="car-outline" style="font-size: 30px; margin-right: 10px;"></ion-icon>
         <span>Viaje 1</span>
       </div>
     </div>
   </div>
-
+  <!-- Footer -->
   <ion-footer>
-    <ion-toolbar style="--background: rgb(231, 231, 231)">
-      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-        <ion-button (click)="cambiarModo()" fill="Outline" style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Conductor</ion-button>
-    </div>
+    <ion-toolbar style="--background: rgb(231, 231, 231);">
+      <div class="modo-cuenta">
+        <ion-button (click)="modoConductor()" fill="outline">
+          Modo conductor
+        </ion-button>
+      </div>
     </ion-toolbar>
   </ion-footer>
-
-
+</ion-content>

@@ -2,7 +2,11 @@ ion-content{
   --overflow: hidden; // evita que se desplaze hacia abajo
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100vh; /* Ocupa el 100% de la ventana */
 }
+
+
 ion-label{
   color: black;
 }
@@ -29,31 +33,6 @@ ion-label{
   background-color: white;
 }
 
-.modo-perfil-container{
-  display: flex;
-  justify-content: space-between;
-}
-// DISEÑO DE APARTADO MODO CONDUCTOR - MODO PASAJERO
-
-
-// DISEÑO AVATAR DE PERFIL
-.avatar {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Alinea los elementos al lado derecho */
-  justify-content: flex-start; /* Alinea los elementos completamente arriba */
-}
-
-.avatar ion-icon{
-  color: white;
-  font-size: 70px;
-}
-
-.avatar span{
-  color: white;
-  margin-left: 15px;
-}
-
 // DISEÑO OPCIONES
 .opciones-inicio{
   display: flex;
@@ -75,15 +54,40 @@ ion-label{
 }
 
 
-.toolbar-container{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 //Card para el perfil
 ion-card {
   margin-bottom: 200px;
+}
+
+ion-footer .modo-cuenta{
+  display: flex;
+  justify-content: center;
+}
+
+.modo-cuenta ion-button{
+  --background: rgb(199, 197, 197);
+  --color: black;
+}
+
+@media (min-height: 845px) {
+  ion-footer ion-toolbar{
+    background: black;
+    margin-top: 132px;
+  }
+}
+
+@media (min-height: 882px) {
+  ion-footer ion-toolbar{
+    background: black;
+    margin-top: 135px;
+  }
+}
+
+@media (min-height: 932px) {
+  ion-footer ion-toolbar{
+    background: black;
+    margin-top: 170px;
+  }
 }
 
 
