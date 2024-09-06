@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';  // Combina las importaciones de FormsModule y ReactiveFormsModule
 
 import { IonicModule } from '@ionic/angular';
 
@@ -12,6 +12,7 @@ import { CreateTravelPage } from './create-travel.page';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     CreateTravelPageRoutingModule
   ],

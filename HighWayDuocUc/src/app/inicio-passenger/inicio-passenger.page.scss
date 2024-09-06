@@ -59,15 +59,6 @@ ion-card {
   margin-bottom: 200px;
 }
 
-ion-footer .modo-cuenta{
-  display: flex;
-  justify-content: center;
-}
-
-.modo-cuenta ion-button{
-  --background: rgb(199, 197, 197);
-  --color: black;
-}
 
 @media (min-height: 845px) {
   ion-footer ion-toolbar{

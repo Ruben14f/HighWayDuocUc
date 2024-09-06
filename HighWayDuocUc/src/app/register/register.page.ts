@@ -34,6 +34,9 @@ export class RegisterPage implements OnInit{
       contraseña: ['', [Validators.required, Validators.minLength(6)]]
     })
    }
+
+
+
    ngOnInit() {
     // Obtener sedes y carreras desde el service (data.service.ts)
     this.DataService.getSedes().subscribe(sedes => this.sedes = sedes);

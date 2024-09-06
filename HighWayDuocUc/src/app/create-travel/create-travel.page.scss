@@ -59,7 +59,9 @@ form ion-button{
   display:flex;
 }
 
-
-
+.input-crear-viaje input[type="time"] {
+  width: 90%;
+  box-sizing: border-box;
+}
 
 
