@@ -108,6 +108,7 @@ export class InicioPassengerPage implements OnInit{
 
     setTimeout(() => {
       localStorage.removeItem('usuarioRegistrado');
+      localStorage.removeItem('viajeCreado');
       this.router.navigate(['/login']);
     }, 200);
   }
