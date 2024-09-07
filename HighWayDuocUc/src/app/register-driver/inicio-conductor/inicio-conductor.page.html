@@ -92,7 +92,7 @@
             </div>
             <div class="final" style="display: flex; justify-content: center; margin-bottom: 50px;">
               <div>
-                <ion-button (click)="setOpen(false)" (click)="logout()" fill="Outline"
+                <ion-button (click)="logout()" fill="Outline"
                   style="--color: white; --background: red;">Cerrar
                   Sesion</ion-button>
               </div>
@@ -114,8 +114,8 @@
         <ion-button (click)="crearViaje()" style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Crear viaje</ion-button>
       </div>
       <div class="opciones">
-        <ion-button style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Mostrar el
-          viaje</ion-button>
+        <ion-button (click)="irViajeCreado()" style="--border-radius: 50px;"  ><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Mostrar el
+          viaje creado</ion-button>
       </div>
       <div class="opciones">
         <ion-button style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Historial de viajes

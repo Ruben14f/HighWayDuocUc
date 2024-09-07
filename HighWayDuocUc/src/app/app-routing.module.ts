@@ -53,10 +53,16 @@ const routes: Routes = [
   {
     path: 'welcome2',
     loadChildren: () => import('./point-register/conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule)
-  },  {
+  },
+  {
     path: 'create-travel',
     loadChildren: () => import('./create-travel/create-travel.module').then( m => m.CreateTravelPageModule)
+  },  {
+    path: 'viaje-creado-conductor',
+    loadChildren: () => import('./viaje-creado-conductor/viaje-creado-conductor.module').then( m => m.ViajeCreadoConductorPageModule)
   },
+
+
 
 
 ];

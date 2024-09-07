@@ -11,6 +11,7 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class InicioPassengerPage implements OnInit{
   usuario : any;
+  viajeCreado: any;
   isModalOpen = false;
   isModalOpen2 = false;
   navController = inject(NavController);
@@ -22,6 +23,8 @@ export class InicioPassengerPage implements OnInit{
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+    const viajeCreado = localStorage.getItem('viajeCreado');
+    this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
@@ -37,6 +40,8 @@ export class InicioPassengerPage implements OnInit{
   filtrarPorSede(event: any) {
     this.sedeSeleccionada = event.detail.value;
     // Aquí puedes agregar lógica para filtrar o hacer algo con la sede seleccionada
+
+
   }
 
   irHistorialViajes() {
@@ -98,9 +103,56 @@ export class InicioPassengerPage implements OnInit{
     });
   }
 
-  logout(){
-    localStorage.removeItem('usuarioRegistrado');
-    this.router.navigate(['/login']);
+  logout() {
+    this.setOpen(false);
+
+    setTimeout(() => {
+      localStorage.removeItem('usuarioRegistrado');
+      this.router.navigate(['/login']);
+    }, 200);
   }
+
+  //SE TOMA EL PASAJE POR EL PASAJERO Y LUEGO BAJA LA CANTIDAD DEL ASIENTO DISPONIBLE EN EL CODUCTOR
+  tomarViaje() {
+    const viajeGuardado = localStorage.getItem('viajeCreado');
+    let viajeCreado = viajeGuardado ? JSON.parse(viajeGuardado) : null;
+
+    if (viajeCreado) {
+      viajeCreado.pasajeros = parseInt(viajeCreado.pasajeros) - 1;
+      if (viajeCreado.pasajeros < 0) {
+        this.eliminarViaje();
+      }else{
+        this.viajeTomado();
+        localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
+
+        setTimeout(() => {
+          window.location.reload()
+        }, 1000)
+      }
+    }
+  }
+
+
+  async viajeTomado() {
+    const alert = await this.alertController.create({
+      header:'¡Viaje tomado!',
+      message: 'El viaje ha sido tomado con éxito.',
+      buttons: ['OK']
+    })
+    await alert.present();
+
+    // Reinicia la página para que se actualice el contador de pasajeros
+
+  }
+
+  async eliminarViaje() {
+    const alert = await this.alertController.create({
+      header:'Error',
+      message: 'No se puede tomar viaje ya que no quedan puesto disponible',
+      buttons: ['OK']
+    })
+    await alert.present();
+  }
+
 
 }

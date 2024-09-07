@@ -1,30 +1,16 @@
-ion-content{
-  --overflow: hidden; // evita que se desplaze hacia abajo
+ion-content {
+  --overflow: hidden; /* Evita que se desplace hacia abajo */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh; /* Ocupa el 100% de la ventana */
 }
 
-
-ion-label{
+ion-label {
   color: black;
 }
 
-
-.logo-container2 {
-  padding-top: 20px;
-  width: 200px;
-  height: 200px;
-  padding-bottom: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.container-inicio{
+.container-inicio {
   display: flex;
   flex-direction: column;
   height: 600px;
@@ -33,52 +19,43 @@ ion-label{
   background-color: white;
 }
 
-// DISEÑO OPCIONES
-.opciones-inicio{
+/* Diseño para las opciones al inicio */
+.opciones-inicio {
   display: flex;
   justify-content: space-between;
   margin: 10px 10px;
   background-color: white;
-
 }
 
-// DISEÑO DE VIAJES
-.viaje{
+/* Diseño de las tarjetas de viajes */
+.viaje-card {
   display: flex;
-  background-color: rgb(199, 197, 197);
-  margin: 10px;
-  padding: 40px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
   border-radius: 10px;
-  color: black;
-  font-size: 20px;
+  margin-bottom: 10px;
 }
 
-
-//Card para el perfil
-ion-card {
-  margin-bottom: 200px;
-}
-
-
+/* Diseño adaptable para el footer */
 @media (min-height: 845px) {
-  ion-footer ion-toolbar{
+  ion-footer ion-toolbar {
     background: black;
     margin-top: 132px;
   }
 }
 
 @media (min-height: 882px) {
-  ion-footer ion-toolbar{
+  ion-footer ion-toolbar {
     background: black;
     margin-top: 135px;
   }
 }
 
 @media (min-height: 932px) {
-  ion-footer ion-toolbar{
+  ion-footer ion-toolbar {
     background: black;
     margin-top: 170px;
   }
 }
-
-

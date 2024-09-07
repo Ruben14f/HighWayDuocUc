@@ -1,0 +1,62 @@
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
+      <ion-title id="titulo-crear-viaje" size="large">Viaje Creado</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <br>
+  <br>
+
+  <div class="viaje-creado">
+    <ion-item lines="none">
+      <ion-icon name="business-outline" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Sede</p>
+        <h2>{{usuario?.sede}}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon name="location-outline" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Destino</p>
+        <h2>{{usuario?.lugar}}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon name="time-outline" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Hora de Salida</p>
+        <h2>{{viajeCreado?.hora}}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon name="people-outline" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Pasajeros disponibles</p>
+        <h2>{{viajeCreado?.pasajeros}}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon name="logo-usd" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Precio viaje por persona</p>
+        <h2>{{viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}</h2>
+      </ion-label>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-icon name="card-outline" slot="start" color="danger"></ion-icon>
+      <ion-label>
+        <p>Metodo de Pago</p>
+        <h2>{{viajeCreado?.metodoDePago}}</h2>
+      </ion-label>
+    </ion-item>
+    <ion-button fill="Outline" (click)="volver()">Volver</ion-button>
+  </div>
+
+</ion-content>

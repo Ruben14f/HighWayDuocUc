@@ -80,7 +80,7 @@
             </div>
             <div class="final" style="display: flex; justify-content: center;">
               <div>
-                <ion-button (click)="setOpen(false)" (click)="logout()" fill="Outline" style="--color: white; --background: red; margin-bottom: 50px;">Cerrar
+                <ion-button (click)="logout()" fill="Outline" style="--color: white; --background: red; margin-bottom: 50px;">Cerrar
                   Sesion</ion-button>
               </div>
             </div>
@@ -110,13 +110,29 @@
       </div>
     </div>
 
-    <div class="viajes">
-      <div class="viaje" style="display: flex; align-items: center;">
-        <ion-icon name="car-outline" style="font-size: 30px; margin-right: 10px;"></ion-icon>
-        <span>Viaje 1</span>
+    <!--Mostrar viajes filtrados por la sede-->
+
+    <!--LISTADO DE VIAJES-->
+    <div class="viajes" style="padding: 10px;">
+      <div class="viaje-card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
+        <div style="display: flex; align-items: center;">
+          <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
+          <div>
+            <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viajeCreado?.hora }}</h6>
+            <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}</h6>
+            <h6 style="margin: 5px 0; font-size: 15px;">Método de pago: {{ viajeCreado?.metodoDePago }}</h6>
+            <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viajeCreado?.pasajeros }}</h6>
+          </div>
+        </div>
+        <div>
+          <ion-button id="toma-viaje" (click)="tomarViaje()" expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;">
+            Tomar Viaje
+          </ion-button>
+        </div>
       </div>
     </div>
   </div>
+
   <!-- Footer -->
   <ion-footer>
     <ion-toolbar style="--background: rgb(231, 231, 231);">

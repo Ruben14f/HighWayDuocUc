@@ -40,9 +40,9 @@ export class InicioConductorPage implements OnInit {
   perfilUsuario() {
     this.isModalOpen2 = true;
   }
-  setOpen(isOpen: boolean) {
-    this.isModalOpen2 = isOpen;
-  }
+ setOpen(isOpen: boolean) {
+  this.isModalOpen2 = isOpen;
+}
   //Sonidito para el error de la ruedita
   reproducirError() {
     const audio = new Audio('assets/music/error.mp3');
@@ -60,10 +60,18 @@ export class InicioConductorPage implements OnInit {
     this.router.navigate(['/create-travel']);
   }
 
+  async irViajeCreado(){
+    this.router.navigate(['/viaje-creado-conductor']);
+  }
 
-  logout(){
-    localStorage.removeItem('usuarioRegistrado');
-    this.router.navigate(['/login']);
+
+  logout() {
+    this.setOpen(false);
+
+    setTimeout(() => {
+      localStorage.removeItem('usuarioRegistrado');
+      this.router.navigate(['/login']);
+    }, 200);
   }
 }
 

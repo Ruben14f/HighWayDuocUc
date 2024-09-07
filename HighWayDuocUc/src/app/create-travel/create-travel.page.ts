@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import { FormGroup, FormBuilder,Validators} from '@angular/forms';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
 import { Sede } from '../register/info-sedes/sede.model';
 
@@ -8,29 +8,26 @@ import { Sede } from '../register/info-sedes/sede.model';
   templateUrl: './create-travel.page.html',
   styleUrls: ['./create-travel.page.scss'],
 })
-export class CreateTravelPage implements OnInit, AfterViewInit {
+export class CreateTravelPage implements OnInit {
 
   crearViajeForm: FormGroup;
-
   navController = inject(NavController);
   usuario: any;
   sedes: Sede[] = [];
 
   constructor(
     private alertController: AlertController,
-    private formBuilder: FormBuilder){
+    private formBuilder: FormBuilder) {
 
-      this.crearViajeForm = this.formBuilder.group({
-        salida: ['', Validators.required],
-        destino:['', Validators.required],
-        hora: ['', Validators.required],
-        pasajeros: ['', Validators.required],
-        precio: ['', Validators.required],
-        metodoPago: ['', Validators.required]
-      });
-
-    }
-
+    this.crearViajeForm = this.formBuilder.group({
+      salida: ['', Validators.required],
+      destino: ['', Validators.required],
+      hora: ['', [Validators.required, this.validarHora.bind(this)]],
+      pasajeros: ['', Validators.required],
+      precio: ['', Validators.required],
+      metodoPago: ['', Validators.required]
+    });
+  }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
@@ -40,28 +37,26 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
     }
 
-     // Establecer valores en el formulario
+    // Mostrar valores del formulario
     this.crearViajeForm.patchValue({
       salida: this.usuario?.sede || '',
       destino: this.usuario?.lugar || ''
     });
   }
 
-  ngAfterViewInit() {
-    const inputHoraSalida = document.getElementById('hora-salida') as HTMLInputElement;
+  // Validador personalizado para la hora
+  validarHora(control: any) {
+    const horaSeleccionada = control.value;
 
-    if (inputHoraSalida) {
-      inputHoraSalida.addEventListener('input', async () => {
-        const horaSeleccionada = inputHoraSalida.value;
-
-        // Verificar si la hora seleccionada está fuera del rango permitido
-        if (horaSeleccionada < '19:00' && horaSeleccionada > '00:00') {
-          await this.errorDeHora();
-          inputHoraSalida.value = ''; // Vacía el campo si la hora está fuera del rango permitido
-        }
-      });
+    // Verificar si la hora seleccionada está fuera del rango permitido (19:00 a 23:59)
+    if (horaSeleccionada && (horaSeleccionada < '19:00' || horaSeleccionada >= '24:00')) {
+      this.errorDeHora();
+      return { horaInvalida: true };
     }
+    return null;
   }
+
+  // Alerta para el erro de hora fuera del rango de horario permitido
   async errorDeHora() {
     const alert = await this.alertController.create({
       header: 'Error',
@@ -72,7 +67,7 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
     await alert.present();
   }
 
-  //crear viaje
+  // Crear viaje
   async paraCrearViaje() {
     if (this.crearViajeForm.valid) {
       const viajeCreado = {
@@ -81,13 +76,22 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
         hora: this.crearViajeForm.value.hora,
         pasajeros: this.crearViajeForm.value.pasajeros,
         precio: this.crearViajeForm.value.precio,
-        metodoDePago: this.crearViajeForm.value['metodo-de-pago']
+        metodoDePago: this.crearViajeForm.value['metodoPago']
       };
 
-      // Save to localStorage
+      if (this.usuario?.tipoVehiculo == 'moto'){
+        if (viajeCreado.pasajeros > 1) {
+          await this.errorMasPasajeros();
+          return;
+        }
+      }
+
+
+      // Guardar en localStorage
       localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
 
-      // Navigate or perform further actions
+
+      // Navegar o realizar acciones adicionales
       console.log('Viaje creado:', viajeCreado);
       await this.alertaDeViajeCreado();
     } else {
@@ -95,7 +99,17 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
     }
   }
 
- // alertas que indican si el viaje se creo o no
+  // Alerta de error al elegir mas pasajeros
+  async errorMasPasajeros() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'No puedes elegir más de 1 pasajeros.',
+      buttons: ['OK']
+    });
+    await alert.present();
+  }
+
+  // Alerta de viaje creado
   async alertaDeViajeCreado() {
     const alert = await this.alertController.create({
       header: '¡Viaje Creado!',
@@ -105,6 +119,7 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
     await alert.present();
   }
 
+  // Alerta de error de formulario
   async errorDeFormulario() {
     const alert = await this.alertController.create({
       header: 'Error',
@@ -114,8 +129,7 @@ export class CreateTravelPage implements OnInit, AfterViewInit {
     await alert.present();
   }
 
-
-
+  // Función para volver a la pantalla anterior
   async volver() {
     this.navController.pop();
   }
