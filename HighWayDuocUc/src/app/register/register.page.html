@@ -9,7 +9,7 @@
 
       <!-- Select de Sede -->
       <ion-item>
-        <ion-label>Sede</ion-label>
+        <ion-label style="font-weight: bold;" >Sede</ion-label>
         <ion-select formControlName="sede" placeholder="Selecciona una sede">
           <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">
             {{ sede.nombre }}
@@ -19,7 +19,7 @@
 
       <!-- Select de Carrera -->
       <ion-item>
-        <ion-label>Carrera</ion-label>
+        <ion-label style="font-weight: bold;">Carrera</ion-label>
         <ion-select formControlName="carrera" placeholder="Selecciona una carrera" [disabled]="!carrerasFiltradas.length">
           <ion-select-option *ngFor="let carrera of carrerasFiltradas" [value]="carrera.id">
             {{ carrera.nombre }}
