@@ -12,8 +12,14 @@
     <form  [formGroup]="crearViajeForm" (ngSubmit)="paraCrearViaje()">
       <div class="input-crear-viaje">
         <label for="sede-de-salida">Sede del viaje</label>
-        <input class="input-field" type="text" formControlName="salida" readonly>
+        <ion-item lines="none">
+          <ion-icon name="business-outline" slot="start" class="text-gray-400"></ion-icon>
+          <ion-select formControlName="salida" placeholder="Seleccione una sede" interface="popover">
+            <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre">{{ sede.nombre }}</ion-select-option>
+          </ion-select>
+        </ion-item>
       </div>
+
       <div class="input-crear-viaje">
         <label for="destino">Destino</label>
         <input class="input-field" type="text" formControlName="destino" readonly>

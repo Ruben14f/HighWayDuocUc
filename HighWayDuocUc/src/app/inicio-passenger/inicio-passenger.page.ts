@@ -11,14 +11,16 @@ import { AlertController, NavController } from '@ionic/angular';
 })
 export class InicioPassengerPage implements OnInit{
   usuario : any;
-  viajeCreado: any;
+  viajeCreado: any = null;
   isModalOpen = false;
   isModalOpen2 = false;
   navController = inject(NavController);
+  viajes: any[] = [];
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
+  filteredViajes: any[] = [];
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
@@ -26,21 +28,24 @@ export class InicioPassengerPage implements OnInit{
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
+
+
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
     }
-
+    const viaje = localStorage.getItem('viajeCreado');
+    if (viaje) {
+      this.viajeCreado = JSON.parse(viaje);
+    }
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;
     });
-
+    this.filtrarPorSede();
 
   }
 
-  filtrarPorSede(event: any) {
-    this.sedeSeleccionada = event.detail.value;
-    // Aquí puedes agregar lógica para filtrar o hacer algo con la sede seleccionada
-
+  filtrarPorSede(event?: any) {
+    this.sedeSeleccionada = event?.detail?.value || null;
 
   }
 

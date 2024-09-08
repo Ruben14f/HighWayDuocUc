@@ -56,6 +56,16 @@
         <h2>{{viajeCreado?.metodoDePago}}</h2>
       </ion-label>
     </ion-item>
+    <ion-button fill="Outline" (click)="solicitudes()">Revisar solicitudes</ion-button>
+    <ion-modal [isOpen]="isModalOpen">
+      <ng-template>
+        <ion-content>
+          <h2>EN MANTENCIÓN</h2>
+          <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
+          <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
     <ion-button fill="Outline" (click)="volver()">Volver</ion-button>
   </div>
 

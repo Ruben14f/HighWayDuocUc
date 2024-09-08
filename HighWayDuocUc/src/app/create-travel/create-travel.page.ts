@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
 import { Sede } from '../register/info-sedes/sede.model';
+import { Router } from '@angular/router';
+import { DataService } from '../register/info-sedes/data.service';
 
 @Component({
   selector: 'app-create-travel',
@@ -17,7 +19,9 @@ export class CreateTravelPage implements OnInit {
 
   constructor(
     private alertController: AlertController,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private dataService: DataService) {
 
     this.crearViajeForm = this.formBuilder.group({
       salida: ['', Validators.required],
@@ -41,6 +45,9 @@ export class CreateTravelPage implements OnInit {
     this.crearViajeForm.patchValue({
       salida: this.usuario?.sede || '',
       destino: this.usuario?.lugar || ''
+    });
+    this.dataService.getSedes().subscribe((data) => {
+      this.sedes = data;
     });
   }
 
@@ -107,6 +114,7 @@ export class CreateTravelPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+
   }
 
   // Alerta de viaje creado
@@ -117,6 +125,7 @@ export class CreateTravelPage implements OnInit {
       buttons: ['OK']
     });
     await alert.present();
+    this.router.navigate(['/viaje-creado-conductor']);
   }
 
   // Alerta de error de formulario

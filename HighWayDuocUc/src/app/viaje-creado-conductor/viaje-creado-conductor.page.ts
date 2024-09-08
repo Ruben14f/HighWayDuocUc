@@ -2,6 +2,7 @@ import { Component, OnInit,inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -9,15 +10,14 @@ import { Sede } from '../register/info-sedes/sede.model';
   styleUrls: ['./viaje-creado-conductor.page.scss'],
 })
 export class ViajeCreadoConductorPage implements OnInit {
+  isModalOpen = false;
 
   usuario : any;
   viajeCreado: any;
 
   navController = inject(NavController);
 
-
-
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -37,8 +37,25 @@ export class ViajeCreadoConductorPage implements OnInit {
       this.sedes = sedes;
     });
   }
+  //Para el tema de olvidar la contraseña
+  solicitudes() {
+    this.isModalOpen = true;
+    this.reproducirError();
+  }
 
-  async volver(){
-    this.navController.pop();
+  closeModal() {
+    this.isModalOpen = false;
+  }
+  volver(){
+    this.router.navigate(['/inicio-conductor']);
+  }
+
+  //Sonidito para el olvido de contra
+  reproducirError() {
+    const audio = new Audio('assets/music/error.mp3');
+    //El validador en caso de
+    audio.play().catch(error => {
+      console.error('Error al reproducir el sonido:', error);
+    });
   }
 }

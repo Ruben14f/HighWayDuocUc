@@ -114,23 +114,31 @@
 
     <!--LISTADO DE VIAJES-->
     <div class="viajes" style="padding: 10px;">
-      <div class="viaje-card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
-        <div style="display: flex; align-items: center;">
-          <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
+      <div *ngIf="viajeCreado; else noViajes">
+        <div class="viaje-card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center;">
+            <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
+            <div>
+              <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viajeCreado?.hora }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Lugar: {{ viajeCreado?.salida }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Método de pago: {{ viajeCreado?.metodoPago }}</h6>
+              <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viajeCreado?.pasajeros }}</h6>
+            </div>
+          </div>
           <div>
-            <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viajeCreado?.hora }}</h6>
-            <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}</h6>
-            <h6 style="margin: 5px 0; font-size: 15px;">Método de pago: {{ viajeCreado?.metodoDePago }}</h6>
-            <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viajeCreado?.pasajeros }}</h6>
+            <ion-button id="toma-viaje" (click)="tomarViaje()" expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;">
+              Tomar Viaje
+            </ion-button>
           </div>
         </div>
-        <div>
-          <ion-button id="toma-viaje" (click)="tomarViaje()" expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;">
-            Tomar Viaje
-          </ion-button>
-        </div>
       </div>
+
+      <ng-template #noViajes>
+        <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
+      </ng-template>
     </div>
+
   </div>
 
   <!-- Footer -->
