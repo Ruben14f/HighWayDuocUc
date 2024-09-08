@@ -57,7 +57,8 @@ const routes: Routes = [
   {
     path: 'create-travel',
     loadChildren: () => import('./create-travel/create-travel.module').then( m => m.CreateTravelPageModule)
-  },  {
+  },
+  {
     path: 'viaje-creado-conductor',
     loadChildren: () => import('./viaje-creado-conductor/viaje-creado-conductor.module').then( m => m.ViajeCreadoConductorPageModule)
   },
@@ -69,7 +70,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { useHash: true, preloadingStrategy: PreloadAllModules })
   ],
   exports: [RouterModule]
 })
