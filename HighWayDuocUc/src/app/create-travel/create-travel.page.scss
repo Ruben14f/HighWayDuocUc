@@ -1,18 +1,18 @@
-ion-content{
-  --overflow: hidden; // evita que se desplaze hacia abajo
+ion-content {
+  --overflow: hidden; /* Evita el desplazamiento hacia abajo */
   display: flex;
   flex-direction: column;
   --background: red;
 }
 
-ion-toolbar #titulo-crear-viaje{
+ion-toolbar #titulo-crear-viaje {
   display: flex;
   justify-content: center;
   color: black;
   padding: 30px;
 }
 
-//DISEÑO DE CONTAINER PARA CREAR EL VIAJE
+/* Diseño del container para crear el viaje */
 .crear-viaje {
   background: white;
   height: 600px;
@@ -42,21 +42,27 @@ ion-toolbar #titulo-crear-viaje{
   padding: 8px;
 }
 
-form ion-button{
-  --color:white;
+.botones {
+  display: flex;
+  justify-content: space-between; /* Espacio entre los botones */
+  margin-top: 10px;
+}
+
+.botones ion-button {
+  flex: 1;
+  margin: 0 5px;
+  --color: white;
   --background: red;
-  margin-top: 100px;
-  display:flex;
+}
+
+.crear-viaje ion-button {
+  --color: white;
+  --background: red;
+  display: flex;
 }
 
 .input-crear-viaje ion-item {
   width: 100%;
-}
-
-.crear-viaje ion-button{
-  --color:white;
-  --background: red;
-  display:flex;
 }
 
 .input-crear-viaje input[type="time"] {
@@ -65,3 +71,32 @@ form ion-button{
 }
 
 
+@media (max-height: 667px) {
+  .crear-viaje {
+    height: 420px;
+  }
+
+  .botones {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .botones ion-button {
+    flex: 1;
+    margin: 0 5px;
+  }
+}
+
+@media (min-height: 668px) {
+  .botones {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .botones ion-button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}

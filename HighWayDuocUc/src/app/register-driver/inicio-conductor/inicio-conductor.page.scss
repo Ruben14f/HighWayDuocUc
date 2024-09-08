@@ -27,10 +27,6 @@ ion-content{
   background-color: white;
 }
 
-.modo-perfil-container{
-  display: flex;
-  justify-content: space-between;
-}
 
 // DISEÑO OPCIONES
 .opciones-inicio{
@@ -48,7 +44,6 @@ ion-content{
 }
 
 // DISEÑO DE VIAJES
-
 .viaje{
   display: flex;
   margin: 10px;
@@ -60,11 +55,6 @@ ion-content{
 }
 
 
-//Card para el perfil
-ion-card {
-  margin-bottom: 200px;
-}
-
 .toolbar-container{
   display: flex;
   align-items: center;
@@ -75,4 +65,31 @@ ion-card {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.avatar-perfil{
+  display:flex;
+  justify-content: center;
+  margin: 10px 0px 70px 0px;
+}
+.avatar-perfil ion-icon{
+  font-size: 200px;
+}
+
+@media (min-height: 667px) {
+  .container-inicio{
+    height: 420px;
+  }
+
+  .avatar-perfil{
+    display:flex;
+    justify-content: center;
+    margin: 10px 0px 10px 0px;
+  }
+  .avatar-perfil ion-icon{
+    font-size: 150px;
+  }
+  .boton-cerrar-sesion ion-button{
+    padding-top: 15px;
+  }
 }

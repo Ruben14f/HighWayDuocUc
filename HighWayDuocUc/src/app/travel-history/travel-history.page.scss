@@ -55,3 +55,10 @@ ion-toolbar #titulo-historial{
 ion-button{
   font-size: 20px;
 }
+
+
+@media (min-height: 667px) {
+  .viajes{
+    height: 420px;
+  }
+}

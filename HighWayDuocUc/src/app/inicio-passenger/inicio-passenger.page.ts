@@ -15,16 +15,15 @@ export class InicioPassengerPage implements OnInit{
   isModalOpen = false;
   isModalOpen2 = false;
   navController = inject(NavController);
-  viajes: any[] = [];
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
-  filteredViajes: any[] = [];
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
@@ -131,6 +130,7 @@ export class InicioPassengerPage implements OnInit{
         this.viajeTomado();
         localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
 
+        // recarga la página para que se actualice el contador de pasajero
         setTimeout(() => {
           window.location.reload()
         }, 1000)
@@ -146,8 +146,6 @@ export class InicioPassengerPage implements OnInit{
       buttons: ['OK']
     })
     await alert.present();
-
-    // Reinicia la página para que se actualice el contador de pasajeros
 
   }
 

@@ -41,21 +41,24 @@ ion-label {
 /* Diseño adaptable para el footer */
 @media (min-height: 845px) {
   ion-footer ion-toolbar {
-    background: black;
     margin-top: 132px;
   }
 }
 
 @media (min-height: 882px) {
   ion-footer ion-toolbar {
-    background: black;
     margin-top: 135px;
   }
 }
 
 @media (min-height: 932px) {
   ion-footer ion-toolbar {
-    background: black;
     margin-top: 170px;
+  }
+}
+
+@media (max-height: 667px) {
+  .container-inicio{
+    height: 420px;
   }
 }

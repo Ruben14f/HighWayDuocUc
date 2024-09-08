@@ -34,6 +34,9 @@ export class InicioConductorPage implements OnInit {
   //Modo Pasajero
   modoPasajeror() {
     this.router.navigate(['/inicio-passenger'])
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
   }
 
   //Para el perfil

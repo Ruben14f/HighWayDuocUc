@@ -1,4 +1,4 @@
-import { Component, inject} from '@angular/core';
+import { Component, inject, OnInit} from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -6,13 +6,16 @@ import { NavController } from '@ionic/angular';
   templateUrl: './travel-history.page.html',
   styleUrls: ['./travel-history.page.scss'],
 })
-export class TravelHistoryPage{
-
+export class TravelHistoryPage implements OnInit{
   navController = inject(NavController);
 
   constructor() { }
 
+  ngOnInit() {
+  }
+
   async volver(){
     this.navController.pop();
   }
+
 }
