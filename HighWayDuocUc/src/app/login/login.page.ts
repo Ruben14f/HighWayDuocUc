@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-login',
@@ -14,7 +17,10 @@ export class LoginPage{
   email: string = ''; // Aquí se almacena el valor que se ingresa en el campo de correo
   passwordType: string = 'password'; // tipo del campo de entrada de la contraseña (Oculta en este caso por los *****)
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private afAuth: AngularFireAuth,
+    private AlertController: AlertController,
+  ) {}
 
   paraRegistros() {
     this.router.navigate(['/register']);
@@ -44,29 +50,28 @@ export class LoginPage{
     });
   }
   // Nuevo método para manejar el inicio de sesión
-  iniciarSesion() {
-    const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
-    if (usuarioRegistrado) {
-      const usuario = JSON.parse(usuarioRegistrado);
-
-      if (usuario.correo === this.email && usuario.contraseña === this.password) {
-        this.router.navigate(['/welcome']); // Redirigir al inicio si las credenciales son correctas
-      } else {
-        this.mostrarAlertaError();
+  async iniciarSesion(){
+    try{
+      await this.afAuth.setPersistence('local');
+      const userCredential = await this.afAuth.signInWithEmailAndPassword(this.email, this.password);
+      if(userCredential.user){
+        const nombreUsuario = userCredential.user.displayName || this.email;
+        localStorage.setItem('usuarioRegistrado', JSON.stringify({nombre: nombreUsuario}))
+        this.router.navigate(['/welcome'])
       }
-    } else {
-      this.mostrarAlertaError();
+    }catch(error){
+      this.mostrarAlertaError('El correo o la contraseña son incorrectos. Por favor, inténtelo de nuevo.');
     }
   }
 
-  async mostrarAlertaError() {
-    const alert = document.createElement('ion-alert');
-    alert.header = 'Error';
-    alert.subHeader = 'Credenciales Incorrectas';
-    alert.message = 'El correo o la contraseña son incorrectos. Por favor, inténtelo de nuevo.';
-    alert.buttons = ['OK'];
+  async mostrarAlertaError(mensaje: string) {
+    const alert = await this.AlertController.create({
+      header: 'Error',
+      subHeader: 'Credenciales Incorrectas',
+      message: mensaje,
+      buttons: ['Ok']
+    })
 
-    document.body.appendChild(alert);
     await alert.present();
   }
 

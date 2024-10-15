@@ -1,7 +1,7 @@
-import { Component, inject, OnInit} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
+import { AuthService } from '../common/services/auth.service';
 
 import { Sede, Carrera } from '../register/info-sedes/sede.model';
 import { DataService } from './info-sedes/data.service';
@@ -17,13 +17,13 @@ export class RegisterPage implements OnInit{
   carreras: Carrera[] = [];
   carrerasFiltradas: Carrera[] = [];
 
-  navController = inject(NavController);
-
-  constructor(private router: Router,
+  constructor(
     private formBuilder: FormBuilder,
     private DataService: DataService,
-    private alertController: AlertController) {
-
+    private alertController: AlertController,
+    private AuthService: AuthService,
+    private NavController: NavController
+  ) {
     this.registerForm = this.formBuilder.group({
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
@@ -34,8 +34,6 @@ export class RegisterPage implements OnInit{
       contraseña: ['', [Validators.required, Validators.minLength(6)]]
     })
    }
-
-
 
    ngOnInit() {
     // Obtener sedes y carreras desde el service (data.service.ts)
@@ -66,16 +64,22 @@ export class RegisterPage implements OnInit{
         sede: sedeSeleccionada ? sedeSeleccionada.nombre : '',
         carrera: carreraSeleccionada ? carreraSeleccionada.nombre : '',
         lugar: this.registerForm.value.lugar,
-        correo: this.registerForm.value.correo,
-        contraseña: this.registerForm.value.contraseña
       };
 
-      console.log('Usuario a registrar:', usuario);  // Esto te permitirá ver qué datos se están guardando
+      try {
+        await this.AuthService.register(this.registerForm.value.correo, this.registerForm.value.contraseña, usuario)
+        this.reproducirCorrecto();
+      }catch(error: any){
+        console.error('Error al registrar usuario en Firestore:', error)
+        const alert = await this.alertController.create({
+          header: 'Error de registro',
+          message: error.message,
+          buttons: ['OK']
+        });
+        await alert.present();
+        this.reproducirError();
+      }
 
-      localStorage.setItem('usuarioRegistrado', JSON.stringify(usuario));
-
-      this.router.navigate(['/point-register']);
-      this.reproducirCorrecto();
     } else {
       const alert = await this.alertController.create({
         header: 'Datos incompletos',
@@ -143,7 +147,7 @@ export class RegisterPage implements OnInit{
 
   //Boton comun para volver
   async volver(){
-    this.navController.pop()
+    this.NavController.pop()
   }
 
 
