@@ -8,3 +8,7 @@ export interface Carrera {
   nombre: string;
   sedeId: number[]; // Relación con la sede
 }
+export interface Usuario {
+  tipoVehiculo: string;
+  matricula: string;
+}

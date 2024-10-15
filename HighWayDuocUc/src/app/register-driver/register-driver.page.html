@@ -16,9 +16,11 @@
       fill="solid"></ion-input>
     <br>
     <div class="foto-vehicle">
-      <label>Foto del Vehiculo (Sin edición para esta entrega debido a la falta de backend)</label>
-      <br>
-      <ion-img id="img-vehicle" src="assets/img/FotoPrueba.jpg"></ion-img>
+      <label>Foto del Vehiculo</label>
+      <input type="file" (change)="onFileSelected($event)">
+    </div>
+    <div *ngIf="uploadProgress > 0">
+      <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
     </div>
   </div>
   <div id="registrarse-btn">

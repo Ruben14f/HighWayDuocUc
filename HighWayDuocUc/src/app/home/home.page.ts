@@ -13,16 +13,16 @@ export class HomePage implements AfterViewInit {
   constructor(private animationCtrl: AnimationController, private router: Router) {}
 
   ngAfterViewInit() {
-    const animation = this.animationCtrl
-      .create()
-      .addElement(this.logo.nativeElement)
-      .duration(2500)
-      .fromTo('transform', 'translateY(0px) scale(1)', 'translateY(180px) scale(1.5)')
-      .fromTo('transform-origin', 'center', 'center');
+    setTimeout(() => {
+      const animation = this.animationCtrl
+        .create()
+        .addElement(this.logo.nativeElement)
+        .duration(2500)
+        .fromTo('transform', 'translateY(0px) scale(1)', 'translateY(180px) scale(1.5)')
+        .fromTo('transform-origin', 'center', 'center');
 
-
-
-    animation.play(); // Inicia la animación automáticamente
+      animation.play();
+    }, 0);  // Esto asegura que la animación empieza justo después de que se carga la vista
   }
   //Rutita para irse al login post click de la imagen
   palLogin() {

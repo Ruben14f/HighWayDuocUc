@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
 import { AlertController, NavController } from '@ionic/angular';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-inicio-passenger',
@@ -16,7 +17,9 @@ export class InicioPassengerPage implements OnInit{
   isModalOpen2 = false;
   navController = inject(NavController);
 
-  constructor(private alertController: AlertController, private router: Router, private dataService: DataService) { }
+  constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
+    private firestore: AngularFirestore
+  ) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
 
