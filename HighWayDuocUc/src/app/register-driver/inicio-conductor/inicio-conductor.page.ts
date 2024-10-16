@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/common/services/auth.service';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -8,6 +10,7 @@ import { Router } from '@angular/router';
 })
 export class InicioConductorPage implements OnInit {
   usuario : any;
+  userId: string = '';
   isModalOpen = false;
 
   isModalOpen2 = false;
@@ -15,12 +18,32 @@ export class InicioConductorPage implements OnInit {
   dataService: any;
 
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+              private auth: AngularFireAuth,
+              private _authService: AuthService
+            ) { }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
     };
+
+  ionViewWillEnter() {
+    // Obtener información del usuario autenticado
+    this.auth.user.subscribe(async user => {
+      if (user) {
+        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        // Obtener datos del usuario desde Firestore
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
+      } else {
+        console.error('No hay usuario autenticado');
+      }
+    });
+  }
 
   //Para el tema de olvidar la contraseña
   mantencion() {
@@ -34,9 +57,6 @@ export class InicioConductorPage implements OnInit {
   //Modo Pasajero
   modoPasajeror() {
     this.router.navigate(['/inicio-passenger'])
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000)
   }
 
   //Para el perfil

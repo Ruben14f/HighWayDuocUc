@@ -58,14 +58,16 @@
                     <ion-item slot="header" color="light">
                       <ion-label>Métodos de pagos</ion-label>
                     </ion-item>
-                    <div class="ion-padding" slot="content">HighWay utiliza como medio de pago efectivo, transferencia o con debito.</div>
+                    <div class="ion-padding" slot="content">HighWay utiliza como medio de pago efectivo, transferencia o
+                      con debito.</div>
                   </ion-accordion>
                   <ion-accordion value="third" toggleIcon="caret-down-circle" toggleIconSlot="start">
                     <ion-item slot="header" color="light">
                       <ion-label>Perdí mi viaje, ¿Qué puedo hacer?</ion-label>
                     </ion-item>
-                    <div class="ion-padding" slot="content">En caso de que el usuario pierda su viaje por el motivo que fuese sin pagar el viaje,
-                       es responsabilidad del usuario llegar a la hora que acuerda con el conductor.
+                    <div class="ion-padding" slot="content">En caso de que el usuario pierda su viaje por el motivo que
+                      fuese sin pagar el viaje,
+                      es responsabilidad del usuario llegar a la hora que acuerda con el conductor.
                       En caso de haber pagado el viaje y el conductor ya se marcho,
                       el usuario puede pedir solicitar un reembolso al conductor o gestionar con soporte técnico.</div>
                   </ion-accordion>
@@ -83,8 +85,7 @@
       </div>
 
       <div class="avatar" style="position: absolute; top: 8px; right: 16px;">
-        <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;"
-          (click)="perfilUsuario()">
+        <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;" (click)="perfilUsuario()">
         </ion-icon>
 
         <!-- Perfil Modal -->
@@ -98,11 +99,23 @@
                 </ion-buttons>
               </ion-toolbar>
             </ion-header>
-            <div>
-              <div class="avatar" style="display:flex; justify-content: center; margin: 10px 0px 70px;">
 
-                <ion-button (click)="imgPerfil()">Cambiar imagen de perfil</ion-button>
+            <div>
+              @if(!imagePreview){
+                <div class="avatar-perfil">
+                  <ion-icon color="medium" name="person-circle-outline"></ion-icon>
+                </div>
+              }
+              <div class="avatar" style="display:flex; flex-direction: column; justify-content: center; margin: 0px 0px 20px;">
+                <div style="display: flex; justify-content: center;">
+                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" width="50%"/>
+                </div>
+                <br>
+                <div style="display: flex; justify-content: center;">
+                  <ion-button fill="Outline" style="--color: white; --background: red;" (click)="imgPerfil()">Cambiar imagen de perfil</ion-button>
+                </div>
               </div>
+
               <ion-item style="border-top: solid 1px #c8c7cc;" lines="full">
                 <ion-icon name="person-outline" slot="start" color="danger"></ion-icon>
                 <ion-label>
@@ -131,19 +144,22 @@
                 <ion-icon name="mail-outline" slot="start" color="danger"></ion-icon>
                 <ion-label>
                   <p>Correo</p>
-                  <h2>{{usuario?.correo | titlecase }}</h2>
+                  <h2>{{usuario?.email | titlecase }}</h2>
                 </ion-label>
               </ion-item>
             </div>
+
             <div class="final" style="display: flex; justify-content: center;">
               <div>
-                <ion-button (click)="logout()" fill="Outline" style="--color: white; --background: red; margin-bottom: 50px;">Cerrar
+                <ion-button (click)="logout()" fill="Outline"
+                  style="--color: white; --background: red; margin-bottom: 50px;">Cerrar
                   Sesion</ion-button>
               </div>
             </div>
           </ng-template>
 
         </ion-modal>
+
         <!--Cambio de img de perfil-->
         <ion-modal [isOpen]="isModalOpen4">
           <ng-template>
@@ -192,19 +208,22 @@
     <!--LISTADO DE VIAJES-->
     <div class="viajes" style="padding: 10px;">
       <div *ngIf="viajeCreado; else noViajes">
-        <div class="viaje-card" style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
+        <div class="viaje-card"
+          style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
           <div style="display: flex; align-items: center;">
             <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
             <div>
               <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viajeCreado?.hora }}</h6>
               <h6 style="margin: 5px 0; font-size: 15px;">Lugar: {{ viajeCreado?.salida }}</h6>
-              <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viajeCreado?.precio | currency:'CLP':'$':'1.0-0' }}
+              </h6>
               <h6 style="margin: 5px 0; font-size: 15px;">Método de pago: {{ viajeCreado?.metodoPago }}</h6>
               <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viajeCreado?.pasajeros }}</h6>
             </div>
           </div>
           <div>
-            <ion-button id="toma-viaje" (click)="tomarViaje()" expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;">
+            <ion-button id="toma-viaje" (click)="tomarViaje()" expand="block"
+              style="--border-radius: 50px; --background: #3880ff; color: white;">
               Tomar Viaje
             </ion-button>
           </div>
@@ -229,4 +248,3 @@
     </ion-toolbar>
   </ion-footer>
 </ion-content>
-

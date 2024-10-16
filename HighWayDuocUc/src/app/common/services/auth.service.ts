@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Firestore, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -34,6 +34,20 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async getUserData(uid: string) {
+    const userDocRef = doc(this.firestore, `usuarios/${uid}`);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      return userDoc.data();
+    } else {
+      throw new Error('Usuario no encontrado');
+    }
+  }
+
+  logout() {
+    return this.afAuth.signOut();
   }
 
   // Otros métodos de autenticación (login, logout, etc.) pueden ir aquí

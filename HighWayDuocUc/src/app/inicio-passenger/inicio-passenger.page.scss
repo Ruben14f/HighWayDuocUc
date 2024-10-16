@@ -38,6 +38,14 @@ ion-label {
   margin-bottom: 10px;
 }
 
+.avatar-perfil{
+  display:flex;
+  justify-content: center;
+}
+.avatar-perfil ion-icon{
+  font-size: 200px;
+}
+
 /* Diseño adaptable para el footer */
 @media (min-height: 845px) {
   ion-footer ion-toolbar {

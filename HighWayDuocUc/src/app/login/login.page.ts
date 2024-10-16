@@ -56,7 +56,7 @@ export class LoginPage{
       const userCredential = await this.afAuth.signInWithEmailAndPassword(this.email, this.password);
       if(userCredential.user){
         const nombreUsuario = userCredential.user.displayName || this.email;
-        localStorage.setItem('usuarioRegistrado', JSON.stringify({nombre: nombreUsuario}))
+        localStorage.setItem('usuarioRegistrado', JSON.stringify({correo: nombreUsuario}))
         this.router.navigate(['/welcome'])
       }
     }catch(error){

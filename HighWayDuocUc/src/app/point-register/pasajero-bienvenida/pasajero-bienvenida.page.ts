@@ -16,7 +16,7 @@ export class PasajeroBienvenidaPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     if (usuarioRegistrado) {
       const usuario = JSON.parse(usuarioRegistrado);
-      this.cnombreUsuario = usuario.nombre;
+      this.cnombreUsuario = usuario.correo;
 
       // Redirige a la pantalla de inicio después de 3 segundos
       setTimeout(() => {

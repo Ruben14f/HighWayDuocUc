@@ -7,14 +7,15 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AuthService } from '../common/services/auth.service';
 
 @Component({
   selector: 'app-inicio-passenger',
   templateUrl: './inicio-passenger.page.html',
   styleUrls: ['./inicio-passenger.page.scss'],
 })
-export class InicioPassengerPage implements OnInit{
-  usuario : any;
+export class InicioPassengerPage implements OnInit {
+  usuario: any;
   viajeCreado: any = null;
   isModalOpen = false; //Configuraciones
   isModalOpen2 = false; //Preguntas frecuentes
@@ -22,18 +23,22 @@ export class InicioPassengerPage implements OnInit{
   isModalOpen4 = false; //Cambio de imagen de perfil
   navController = inject(NavController);
   fotoPerfil: any;
+  imagePreview: string | ArrayBuffer | null = null; // Inicializar en null
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
     private firestore: AngularFirestore,
     private storage: AngularFireStorage,
-    private auth: AngularFireAuth
+    private auth: AngularFireAuth,
+    private _authService: AuthService
   ) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
 
   ngOnInit() {
+
+
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
@@ -52,65 +57,97 @@ export class InicioPassengerPage implements OnInit{
     });
     this.filtrarPorSede();
 
+
+     // Cargar la imagen de perfil directamente desde Firestore
+     this.auth.user.subscribe(async user => {
+      if (user) {
+          this.userId = user.uid; // Guardamos el UID del usuario autenticado
+          try {
+              this.usuario = await this._authService.getUserData(this.userId);
+              if (this.usuario && this.usuario.fotoPerfil) {
+                  this.imagePreview = this.usuario.fotoPerfil; // Carga la imagen directamente de Firestore
+              } else {
+                  this.imagePreview = null;
+              }
+          } catch (error) {
+              console.error('Error al obtener datos del usuario', error);
+          }
+      }
+  });
+
   }
 
   ionViewWillEnter() {
-    // Obtener información del usuario autenticado
-    this.auth.user.subscribe(user => {
+    this.auth.user.subscribe(async user => {
       if (user) {
-        this.usuario = user;
-        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        this.userId = user.uid;
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
+          if (this.usuario && this.usuario.fotoPerfil) {
+            this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
+          } else {
+            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
+          }
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
       } else {
         console.error('No hay usuario autenticado');
       }
     });
   }
+
+
   guardarDatosConductor() {
     if (this.usuario) {
-      if (this.fotoPerfil) {
-        // Guardar la imagen en una ruta personalizada basada en el UID del usuario
-        const filePath = `imagenes_perfil/${this.userId}/fotoPerfil.jpg`; // Ruta donde se guardará la imagen
-        const fileRef = this.storage.ref(filePath);
-        const task = this.storage.upload(filePath, this.fotoPerfil);
+        if (this.fotoPerfil) {
+            const filePath = `imagenes_perfil/${this.userId}/fotoPerfil.jpg`;
+            const fileRef = this.storage.ref(filePath);
+            const task = this.storage.upload(filePath, this.fotoPerfil);
 
-        // Escuchar el progreso de la carga
-        task.percentageChanges().subscribe((progress) => {
-          this.uploadProgress = progress || 0;
-        });
-
-        // Obtener la URL de descarga una vez que la imagen esté subida
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            fileRef.getDownloadURL().subscribe((fotoUrlPerfil) => {
-              // Actualizar los datos del usuario con la URL de la imagen subida
-              this.actualizarPerfil(fotoUrlPerfil);
+            task.percentageChanges().subscribe((progress) => {
+                this.uploadProgress = progress || 0;
             });
-          })
-        ).subscribe();
-      } else {
-        // Si no se sube una imagen, de todos modos actualizar los datos del vehículo
-        this.actualizarPerfil('');
-      }
+            task.snapshotChanges().pipe(
+                finalize(() => {
+                    fileRef.getDownloadURL().subscribe((fotoUrlPerfil) => {
+                        this.actualizarPerfil(fotoUrlPerfil);
+                    });
+                })
+            ).subscribe();
+        } else {
+            this.actualizarPerfil(this.usuario.fotoPerfil || ''); // Mantener la imagen anterior si no se sube una nueva
+        }
     } else {
-      console.error('No se encontró el usuario registrado.');
+        console.error('No se encontró el usuario registrado.');
     }
   }
+
   // Función para actualizar los datos del usuario en Firestore
   actualizarPerfil(fotoUrlPerfil: string) {
-    // Usamos el UID del usuario autenticado para acceder a su documento
     const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
-
     usuarioRef.update({
-      fotoPerfil: fotoUrlPerfil // Guardar la URL de la imagen en Firestore
+        fotoPerfil: fotoUrlPerfil // Guardar la URL de la imagen en Firestore
+    }).then(() => {
+        this.imagePreview = fotoUrlPerfil; // Actualiza la vista inmediatamente
     }).catch((error) => {
-      console.error('Error al actualizar el usuario en Firestore', error);
+        console.error('Error al actualizar el usuario en Firestore', error);
     });
-  }
+}
 
   // Función para manejar la selección de archivo de imagen
-  onFileSelected(event: any) {
-    this.fotoPerfil = event.target.files[0]; // Almacena el archivo seleccionado
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.fotoPerfil = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreview = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
   }
+
 
 
 
@@ -175,17 +212,20 @@ export class InicioPassengerPage implements OnInit{
     this.isModalOpen2 = isOpen;
   }
   //Para las preguntas frecuentes
-  preguntas(){
+  preguntas() {
     this.isModalOpen3 = true;
   }
-  closePreguntas(){
+  closePreguntas() {
     this.isModalOpen3 = false;
   }
+
+
+
   //Para la imagen de perfil
-  imgPerfil(){
+  imgPerfil() {
     this.isModalOpen4 = true;
   }
-  closeImgPerfil(){
+  closeImgPerfil() {
     this.isModalOpen4 = false;
   }
 
@@ -198,15 +238,42 @@ export class InicioPassengerPage implements OnInit{
     });
   }
 
-  logout() {
-    this.setOpen(false);
 
-    setTimeout(() => {
-      localStorage.removeItem('usuarioRegistrado');
-      localStorage.removeItem('viajeCreado');
-      this.router.navigate(['/login']);
-    }, 200);
-  }
+  // logout utilizando el authService
+
+logout() {
+  this.setOpen(false);
+  this._authService.logout().then(() => {
+      // Elimina la imagen de perfil del localStorage al cerrar sesión
+      localStorage.removeItem('perfilImage');
+      this.imagePreview = null; // Resetea la vista de la imagen
+      this.router.navigate(['/login']); // Redirigir al login
+  }).catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   //SE TOMA EL PASAJE POR EL PASAJERO Y LUEGO BAJA LA CANTIDAD DEL ASIENTO DISPONIBLE EN EL CODUCTOR
   tomarViaje() {
@@ -217,14 +284,9 @@ export class InicioPassengerPage implements OnInit{
       viajeCreado.pasajeros = parseInt(viajeCreado.pasajeros) - 1;
       if (viajeCreado.pasajeros < 0) {
         this.eliminarViaje();
-      }else{
+      } else {
         this.viajeTomado();
         localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
-
-        // recarga la página para que se actualice el contador de pasajero
-        setTimeout(() => {
-          window.location.reload()
-        }, 1000)
       }
     }
   }
@@ -232,7 +294,7 @@ export class InicioPassengerPage implements OnInit{
 
   async viajeTomado() {
     const alert = await this.alertController.create({
-      header:'¡Viaje tomado!',
+      header: '¡Viaje tomado!',
       message: 'El viaje ha sido tomado con éxito.',
       buttons: ['OK']
     })
@@ -242,7 +304,7 @@ export class InicioPassengerPage implements OnInit{
 
   async eliminarViaje() {
     const alert = await this.alertController.create({
-      header:'Error',
+      header: 'Error',
       message: 'No se puede tomar viaje ya que no quedan puesto disponible',
       buttons: ['OK']
     })
