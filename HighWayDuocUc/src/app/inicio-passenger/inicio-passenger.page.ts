@@ -4,6 +4,9 @@ import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
 import { AlertController, NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { finalize } from 'rxjs/operators';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-inicio-passenger',
@@ -13,12 +16,19 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 export class InicioPassengerPage implements OnInit{
   usuario : any;
   viajeCreado: any = null;
-  isModalOpen = false;
-  isModalOpen2 = false;
+  isModalOpen = false; //Configuraciones
+  isModalOpen2 = false; //Preguntas frecuentes
+  isModalOpen3 = false; //Perfil
+  isModalOpen4 = false; //Cambio de imagen de perfil
   navController = inject(NavController);
+  fotoPerfil: any;
+  uploadProgress: number = 0;
+  userId: string = '';  // UID del usuario autenticado
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private storage: AngularFireStorage,
+    private auth: AngularFireAuth
   ) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -29,8 +39,6 @@ export class InicioPassengerPage implements OnInit{
 
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
-
-
 
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
@@ -46,6 +54,66 @@ export class InicioPassengerPage implements OnInit{
 
   }
 
+  ionViewWillEnter() {
+    // Obtener información del usuario autenticado
+    this.auth.user.subscribe(user => {
+      if (user) {
+        this.usuario = user;
+        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+      } else {
+        console.error('No hay usuario autenticado');
+      }
+    });
+  }
+  guardarDatosConductor() {
+    if (this.usuario) {
+      if (this.fotoPerfil) {
+        // Guardar la imagen en una ruta personalizada basada en el UID del usuario
+        const filePath = `imagenes_perfil/${this.userId}/fotoPerfil.jpg`; // Ruta donde se guardará la imagen
+        const fileRef = this.storage.ref(filePath);
+        const task = this.storage.upload(filePath, this.fotoPerfil);
+
+        // Escuchar el progreso de la carga
+        task.percentageChanges().subscribe((progress) => {
+          this.uploadProgress = progress || 0;
+        });
+
+        // Obtener la URL de descarga una vez que la imagen esté subida
+        task.snapshotChanges().pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe((fotoUrlPerfil) => {
+              // Actualizar los datos del usuario con la URL de la imagen subida
+              this.actualizarPerfil(fotoUrlPerfil);
+            });
+          })
+        ).subscribe();
+      } else {
+        // Si no se sube una imagen, de todos modos actualizar los datos del vehículo
+        this.actualizarPerfil('');
+      }
+    } else {
+      console.error('No se encontró el usuario registrado.');
+    }
+  }
+  // Función para actualizar los datos del usuario en Firestore
+  actualizarPerfil(fotoUrlPerfil: string) {
+    // Usamos el UID del usuario autenticado para acceder a su documento
+    const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
+
+    usuarioRef.update({
+      fotoPerfil: fotoUrlPerfil // Guardar la URL de la imagen en Firestore
+    }).catch((error) => {
+      console.error('Error al actualizar el usuario en Firestore', error);
+    });
+  }
+
+  // Función para manejar la selección de archivo de imagen
+  onFileSelected(event: any) {
+    this.fotoPerfil = event.target.files[0]; // Almacena el archivo seleccionado
+  }
+
+
+
   filtrarPorSede(event?: any) {
     this.sedeSeleccionada = event?.detail?.value || null;
 
@@ -54,6 +122,13 @@ export class InicioPassengerPage implements OnInit{
   irHistorialViajes() {
     this.router.navigate(['/travel-history']);
   }
+
+
+
+
+
+
+
   //Modo conductor
   async modoConductor() {
     if (this.usuario) {
@@ -86,7 +161,6 @@ export class InicioPassengerPage implements OnInit{
   //Para el tema de olvidar la contraseña
   mantencion() {
     this.isModalOpen = true;
-    this.reproducirError();
   }
 
   closeModal() {
@@ -99,6 +173,20 @@ export class InicioPassengerPage implements OnInit{
   }
   setOpen(isOpen: boolean) {
     this.isModalOpen2 = isOpen;
+  }
+  //Para las preguntas frecuentes
+  preguntas(){
+    this.isModalOpen3 = true;
+  }
+  closePreguntas(){
+    this.isModalOpen3 = false;
+  }
+  //Para la imagen de perfil
+  imgPerfil(){
+    this.isModalOpen4 = true;
+  }
+  closeImgPerfil(){
+    this.isModalOpen4 = false;
   }
 
   //Sonidito para el error de la ruedita

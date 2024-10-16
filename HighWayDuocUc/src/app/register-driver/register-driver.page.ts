@@ -48,7 +48,6 @@ export class RegisterDriverPage {
         const fileRef = this.storage.ref(filePath);
         const task = this.storage.upload(filePath, this.fotoVehiculo);
 
-        // Escuchar el progreso de la carga
         task.percentageChanges().subscribe((progress) => {
           this.uploadProgress = progress || 0;
         });

@@ -9,16 +9,74 @@
       <ion-modal [isOpen]="isModalOpen">
         <ng-template>
           <ion-content>
-            <h2>EN MANTENCIÓN</h2>
-            <p>Para esta entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
-            <p>Después se agregarán:</p>
-            <p>Modo para los usuarios (Oscuro o claro)</p>
-            <p>Sonidos en general</p>
-            <p>Ayuda</p>
-            <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Configuraciones</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-list>
+                  <ion-item>
+                    <ion-thumbnail slot="start">
+                      <ion-icon name="color-wand-outline"></ion-icon>
+                    </ion-thumbnail>
+                    <ion-label>Modo
+                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle>
+                    </ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-thumbnail slot="start">
+                      <ion-icon name="help-outline"></ion-icon>
+                    </ion-thumbnail>
+                    <ion-button (click)="preguntas()">Ayuda</ion-button>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+            <ion-button expand="full" (click)="closeModal()">Cerrar</ion-button>
           </ion-content>
         </ng-template>
       </ion-modal>
+      <!--Preguntas frecuentes-->
+      <ion-modal [isOpen]="isModalOpen3">
+        <ng-template>
+          <ion-content>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Preguntas frecuentes</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-accordion-group>
+                  <ion-accordion value="first" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>¿Qué es HighWay?</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">Duoc UC necesitaba un sistema que apoyara a sus estudiantes
+                      para no priorizar sus clases online y que los alumnos no tuviesen miedo a la vuelta de sus casas.
+                    </div>
+                  </ion-accordion>
+                  <ion-accordion value="second" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>Métodos de pagos</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">HighWay utiliza como medio de pago efectivo, transferencia o con debito.</div>
+                  </ion-accordion>
+                  <ion-accordion value="third" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>Perdí mi viaje, ¿Qué puedo hacer?</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">En caso de que el usuario pierda su viaje por el motivo que fuese sin pagar el viaje,
+                       es responsabilidad del usuario llegar a la hora que acuerda con el conductor.
+                      En caso de haber pagado el viaje y el conductor ya se marcho,
+                      el usuario puede pedir solicitar un reembolso al conductor o gestionar con soporte técnico.</div>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-card-content>
+            </ion-card>
+            <ion-button expand="full" (click)="closePreguntas()">Cerrar</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
 
       <div class="user-info" style="position: absolute; top: 25px; right: 50px; display: flex; margin-right: 20px;">
         <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase }}</ion-label>
@@ -42,7 +100,8 @@
             </ion-header>
             <div>
               <div class="avatar" style="display:flex; justify-content: center; margin: 10px 0px 70px;">
-                <ion-icon color="medium" name="person-circle-outline" style="font-size: 200px;"></ion-icon>
+
+                <ion-button (click)="imgPerfil()">Cambiar imagen de perfil</ion-button>
               </div>
               <ion-item style="border-top: solid 1px #c8c7cc;" lines="full">
                 <ion-icon name="person-outline" slot="start" color="danger"></ion-icon>
@@ -60,8 +119,6 @@
 
                 </ion-label>
               </ion-item>
-
-
               <ion-item lines="full">
                 <ion-icon name="home-outline" slot="start" color="danger"></ion-icon>
                 <ion-label>
@@ -86,6 +143,26 @@
             </div>
           </ng-template>
 
+        </ion-modal>
+        <!--Cambio de img de perfil-->
+        <ion-modal [isOpen]="isModalOpen4">
+          <ng-template>
+            <ion-content>
+              <ion-card>
+                <ion-card-header>
+                  <ion-card-title>Cambio de imagen de perfil</ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-item>
+                    <ion-label>Subir Imagen de Perfil</ion-label>
+                    <input type="file" (change)="onFileSelected($event)">
+                  </ion-item>
+                  <ion-button (click)="guardarDatosConductor()" (click)="closeImgPerfil()">Subir Imagen</ion-button>
+                </ion-card-content>
+              </ion-card>
+              <ion-button (click)="closeImgPerfil()">Cancelar</ion-button>
+            </ion-content>
+          </ng-template>
         </ion-modal>
       </div>
     </ion-toolbar>
