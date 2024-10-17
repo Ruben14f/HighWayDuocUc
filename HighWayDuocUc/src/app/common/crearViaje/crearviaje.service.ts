@@ -22,7 +22,7 @@ export class CrearviajeService {
       });
   }
 
-  // Obtener todos los viajes (opcional si lo necesitas)
+  // Obtener todos los viajes
   obtenerViajes() {
     return this.firestore.collection('viajes').valueChanges()
       .pipe(

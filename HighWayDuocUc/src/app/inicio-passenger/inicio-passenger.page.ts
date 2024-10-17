@@ -1,3 +1,4 @@
+import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../register/info-sedes/data.service';
@@ -17,7 +18,8 @@ import { AuthService } from '../common/services/auth.service';
 })
 export class InicioPassengerPage implements OnInit {
   usuario: any;
-  viajesCreado: any = null;
+  viajes: any[] = [];
+  viajeCreado: any = null;
   isModalOpen = false; //Configuraciones
   isModalOpen2 = false; //Preguntas frecuentes
   isModalOpen3 = false; //Perfil
@@ -30,14 +32,12 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-  constructor(
-    private alertController: AlertController,
-    private router: Router,
-    private dataService: DataService,
+  constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
     private firestore: AngularFirestore,
     private storage: AngularFireStorage,
     private auth: AngularFireAuth,
     private _authService: AuthService,
+    private crearViajeService: CrearviajeService
   ) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -46,13 +46,17 @@ export class InicioPassengerPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
+    this.obtenerViajes();
+
+    const viajeCreado = localStorage.getItem('viajeCreado');
+    this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
     }
     const viaje = localStorage.getItem('viajeCreado');
     if (viaje) {
-      this.viajesCreado = JSON.parse(viaje);
+      this.viajeCreado = JSON.parse(viaje);
     }
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;
@@ -77,6 +81,13 @@ export class InicioPassengerPage implements OnInit {
     });
 
 
+  }
+
+  obtenerViajes() {
+    this.crearViajeService.obtenerViajes().subscribe(viajes => {
+      this.viajes = viajes; // Almacena los viajes obtenidos en la variable
+      console.log(this.viajes);
+    });
   }
 
   ionViewWillEnter() {
@@ -245,18 +256,15 @@ export class InicioPassengerPage implements OnInit {
 
 
   //SE TOMA EL PASAJE POR EL PASAJERO Y LUEGO BAJA LA CANTIDAD DEL ASIENTO DISPONIBLE EN EL CODUCTOR
-  tomarViaje() {
-    const viajeGuardado = localStorage.getItem('viajeCreado');
-    let viajeCreado = viajeGuardado ? JSON.parse(viajeGuardado) : null;
-
-    if (viajeCreado) {
-      viajeCreado.pasajeros = parseInt(viajeCreado.pasajeros) - 1;
-      if (viajeCreado.pasajeros < 0) {
-        this.eliminarViaje();
-      } else {
-        this.viajeTomado();
-        localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
-      }
+  tomarViaje(viaje: any) {
+    // Lógica para tomar el viaje
+    let pasajerosDisponibles = parseInt(viaje.pasajeros);
+    if (pasajerosDisponibles > 0) {
+      viaje.pasajeros = pasajerosDisponibles - 1;
+      localStorage.setItem('viajeCreado', JSON.stringify(viaje));
+      this.viajeTomado();
+    } else {
+      this.eliminarViaje();
     }
   }
 
@@ -279,7 +287,7 @@ export class InicioPassengerPage implements OnInit {
     await alert.present();
   }
 
-    // logout utilizando el authService
+  // logout utilizando el authService
   logout() {
     this.setOpen(false);
     this._authService.logout().then(() => {

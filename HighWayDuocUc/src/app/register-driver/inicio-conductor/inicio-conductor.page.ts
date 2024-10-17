@@ -3,7 +3,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
+import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
 
 @Component({
@@ -24,16 +25,20 @@ export class InicioConductorPage implements OnInit {
   uploadProgress: number = 0;
 
 
+
   constructor(private router: Router,
     private auth: AngularFireAuth,
     private _authService: AuthService,
     private storage: AngularFireStorage,
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+
   ) { }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+
+
 
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
