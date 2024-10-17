@@ -36,13 +36,6 @@
 @import "@ionic/angular/css/palettes/dark.class.css";
 /*@import "@ionic/angular/css/palettes/dark.system.css";*/
 
-:root {
-  --ion-background-color: linear-gradient(90deg, #ff1c1c 0%, #1962cf 100%);
-  --ion-text-color: #000000;
-  --ion-toolbar-background: rgb(231, 231, 231);
-  --ion-item-background: #ffffff;
-  --ion-card-background: #ffffff;
-}
 
 /* Dark Mode Overrides */
 .ion-palette-dark {
@@ -61,16 +54,5 @@ ion-content {
 /* Apply text color globally */
 * {
   color: var(--ion-text-color);
-}
-
-/* Additional style overrides for dark mode */
-.ion-palette-dark {
-  ion-card, ion-item, ion-content::part(background) {
-    --background: var(--ion-item-background);
-  }
-
-  ion-toolbar {
-    --background: var(--ion-toolbar-background);
-  }
 }
 
