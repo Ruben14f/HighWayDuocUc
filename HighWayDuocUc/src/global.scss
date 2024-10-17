@@ -37,22 +37,3 @@
 /*@import "@ionic/angular/css/palettes/dark.system.css";*/
 
 
-/* Dark Mode Overrides */
-.ion-palette-dark {
-  --ion-background-color: #121212;
-  --ion-text-color: #ffffff;
-  --ion-toolbar-background: #1e1e1e;
-  --ion-item-background: #2a2a2a;
-  --ion-card-background: #2a2a2a;
-}
-
-/* Apply background to ion-content */
-ion-content {
-  --background: var(--ion-background-color);
-}
-
-/* Apply text color globally */
-* {
-  color: var(--ion-text-color);
-}
-

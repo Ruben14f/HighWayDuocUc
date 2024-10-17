@@ -26,7 +26,7 @@ export class InicioPassengerPage implements OnInit {
   imagePreview: string | ArrayBuffer | null = null; // Inicializar en null
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
-  isDarkMode: boolean = false;
+
 
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
@@ -74,7 +74,6 @@ export class InicioPassengerPage implements OnInit {
       }
     });
 
-    this. initDarkMode();
 
   }
 
@@ -289,26 +288,6 @@ export class InicioPassengerPage implements OnInit {
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error);
     });
-  }
-
-  initDarkMode() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    this.isDarkMode = prefersDark.matches;
-    this.toggleDarkPalette(this.isDarkMode);
-
-    prefersDark.addEventListener('change', (mediaQuery) => {
-      this.isDarkMode = mediaQuery.matches;
-      this.toggleDarkPalette(this.isDarkMode);
-    });
-  }
-
-  toggleChange(ev: any) {
-    this.isDarkMode = ev.detail.checked;
-    this.toggleDarkPalette(this.isDarkMode);
-  }
-
-  toggleDarkPalette(shouldAdd: boolean) {
-    document.body.classList.toggle('ion-palette-dark', shouldAdd);
   }
 
 }
