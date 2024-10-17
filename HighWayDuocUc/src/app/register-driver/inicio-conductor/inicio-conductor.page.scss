@@ -1,7 +1,9 @@
-ion-content{
-  --overflow: hidden; // evita que se desplaze hacia abajo
+ion-content {
+  --overflow: hidden; /* Evita que se desplace hacia abajo */
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100vh; /* Ocupa el 100% de la ventana */
 }
 
 
@@ -76,20 +78,3 @@ ion-content{
   font-size: 200px;
 }
 
-@media (min-height: 667px) {
-  .container-inicio{
-    height: 420px;
-  }
-
-  .avatar-perfil{
-    display:flex;
-    justify-content: center;
-    margin: 10px 0px 10px 0px;
-  }
-  .avatar-perfil ion-icon{
-    font-size: 150px;
-  }
-  .boton-cerrar-sesion ion-button{
-    padding-top: 15px;
-  }
-}

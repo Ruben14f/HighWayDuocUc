@@ -1,31 +1,95 @@
-<ion-content [fullscreen]="true">
+<ion-content style="--background: red;" [fullscreen]="true">
   <ion-header>
     <ion-toolbar style="--background: rgb(231, 231, 231); position: relative;">
       <ion-button color="medium" (click)="mantencion()">
         <ion-icon name="settings-outline"></ion-icon>
-
-        <!-- Mantencion Modal -->
-        <ion-modal [isOpen]="isModalOpen">
-          <ng-template>
-            <ion-content>
-              <h2>EN MANTENCIÓN</h2>
-              <p>Para está entrega, aún no estará el funcionamiento de este punto, gracias :D</p>
-              <p>Después se agregaran:</p>
-              <p>Modo para los usuarios (Oscuro o claro)</p>
-              <p>Sonidos en general</p>
-              <p>Ayuda</p>
-              <ion-button expand="full" (click)="closeModal()">Confirmar</ion-button>
-            </ion-content>
-          </ng-template>
-        </ion-modal>
       </ion-button>
+
+      <!-- Mantencion Modal -->
+      <ion-modal [isOpen]="isModalOpen">
+        <ng-template>
+          <ion-content>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Configuraciones</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-list>
+                  <ion-item>
+                    <ion-thumbnail slot="start">
+                      <ion-icon name="color-wand-outline"></ion-icon>
+                    </ion-thumbnail>
+                    <ion-label>Modo
+                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle>
+                    </ion-label>
+                  </ion-item>
+                  <ion-item>
+                    <ion-thumbnail slot="start">
+                      <ion-icon name="help-outline"></ion-icon>
+                    </ion-thumbnail>
+                    <ion-button (click)="preguntas()">Ayuda</ion-button>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+            <ion-button expand="full" (click)="closeModal()">Cerrar</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+      <!--Preguntas frecuentes-->
+      <ion-modal [isOpen]="isModalOpen3">
+        <ng-template>
+          <ion-content>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Preguntas frecuentes</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-accordion-group>
+                  <ion-accordion value="first" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>¿Qué es HighWay?</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">Duoc UC necesitaba un sistema que apoyara a sus estudiantes
+                      para no priorizar sus clases online y que los alumnos no tuviesen miedo a la vuelta de sus casas.
+                    </div>
+                  </ion-accordion>
+                  <ion-accordion value="second" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>Métodos de pagos</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">HighWay utiliza como medio de pago efectivo, transferencia o
+                      con debito.</div>
+                  </ion-accordion>
+                  <ion-accordion value="third" toggleIcon="caret-down-circle" toggleIconSlot="start">
+                    <ion-item slot="header" color="light">
+                      <ion-label>Perdí mi viaje, ¿Qué puedo hacer?</ion-label>
+                    </ion-item>
+                    <div class="ion-padding" slot="content">En caso de que el usuario pierda su viaje por el motivo que
+                      fuese sin pagar el viaje,
+                      es responsabilidad del usuario llegar a la hora que acuerda con el conductor.
+                      En caso de haber pagado el viaje y el conductor ya se marcho,
+                      el usuario puede pedir solicitar un reembolso al conductor o gestionar con soporte técnico.</div>
+                  </ion-accordion>
+                </ion-accordion-group>
+              </ion-card-content>
+            </ion-card>
+            <ion-button expand="full" (click)="closePreguntas()">Cerrar</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
+
+
       <div class="user-info" style="position: absolute; top: 25px; right: 50px; display: flex; margin-right: 20px;">
         <ion-label>{{ usuario?.nombre | titlecase }} {{ usuario?.apellido | titlecase }}</ion-label>
       </div>
       <div class="avatar-inicial" style="position: absolute; top: 8px; right: 16px;">
-        <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;"
-          (click)="perfilUsuario()">
+        <ion-icon color="medium" name="person-circle-outline" style="font-size: 50px;" (click)="perfilUsuario()">
         </ion-icon>
+
+
+        <!-- Perfil Modal -->
         <ion-modal [isOpen]="isModalOpen2">
           <ng-template>
             <ion-header>
@@ -36,10 +100,27 @@
                 </ion-buttons>
               </ion-toolbar>
             </ion-header>
+
+
             <div>
-              <div class="avatar-perfil">
-                <ion-icon color="medium" name="person-circle-outline"></ion-icon>
+              @if(!imagePreview){
+                <div class="avatar-perfil">
+                  <ion-icon color="medium" name="person-circle-outline"></ion-icon>
+                </div>
+              }
+              <div class="avatar" style="display:flex; flex-direction: column; justify-content: center; margin: 0px 0px 20px;">
+                <div style="display: flex; justify-content: center;">
+                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" width="50%"/>
+                </div>
+                <br>
+                <div style="display: flex; justify-content: center;">
+                  <ion-button fill="Outline" style="--color: white; --background: red;" (click)="imgPerfil()">Cambiar imagen de perfil</ion-button>
+                </div>
               </div>
+
+
+
+
               <ion-item style="border-top: solid 1px #c8c7cc;" lines="full">
                 <ion-icon name="person-outline" slot="start" color="danger"></ion-icon>
                 <ion-label>
@@ -91,43 +172,68 @@
             </div>
             <div class="final" style="display: flex; justify-content: center; margin-bottom: 50px;">
               <div class="boton-cerrar-sesion">
-                <ion-button (click)="logout()" fill="Outline"
-                  style="--color: white; --background: red;">Cerrar
+                <ion-button (click)="logout()" fill="Outline" style="--color: white; --background: red;">Cerrar
                   Sesion</ion-button>
               </div>
             </div>
           </ng-template>
         </ion-modal>
       </div>
+
+      <!--Cambio de img de perfil-->
+      <ion-modal [isOpen]="isModalOpen4">
+        <ng-template>
+          <ion-content>
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title>Cambio de imagen de perfil</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-item>
+                  <ion-label>Subir Imagen de Perfil</ion-label>
+                  <input type="file" (change)="onFileSelected($event)">
+                </ion-item>
+                <ion-button (click)="guardarDatosConductor()" (click)="closeImgPerfil()">Subir Imagen</ion-button>
+              </ion-card-content>
+            </ion-card>
+            <ion-button (click)="closeImgPerfil()">Cancelar</ion-button>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+
     </ion-toolbar>
   </ion-header>
 
   <br>
   <br>
-<!-- Main Content -->
+  <!-- Main Content -->
   <div class="container-inicio" style="margin-bottom: 80px;">
     <div class="opciones-inicio">
       <div class="opciones">
 
-        <ion-button (click)="crearViaje()" style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Crear viaje</ion-button>
+        <ion-button (click)="crearViaje()" style="--border-radius: 50px;"><ion-icon name="car-outline"
+            style="margin-right: 10px;"></ion-icon> Crear viaje</ion-button>
       </div>
       <div class="opciones">
-        <ion-button (click)="irViajeCreado()" style="--border-radius: 50px;"  ><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Mostrar el
+        <ion-button (click)="irViajeCreado()" style="--border-radius: 50px;"><ion-icon name="car-outline"
+            style="margin-right: 10px;"></ion-icon> Mostrar el
           viaje creado</ion-button>
       </div>
       <div class="opciones">
-        <ion-button style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Historial de viajes
+        <ion-button style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon>
+          Historial de viajes
           realizados</ion-button>
       </div>
     </div>
   </div>
 
-<!-- Footer -->
+  <!-- Footer -->
   <ion-footer>
     <ion-toolbar style="--background: rgb(231, 231, 231)">
       <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-        <ion-button (click)="modoPasajeror()" fill="Outline"
+        <ion-button (click)="modoPasajero()" fill="Outline"
           style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
       </div>
     </ion-toolbar>
   </ion-footer>
+</ion-content>
