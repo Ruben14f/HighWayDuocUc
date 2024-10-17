@@ -4,6 +4,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../common/services/auth.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
 
 
 @Component({
@@ -23,7 +24,8 @@ export class CreateTravelPage implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private _authService: AuthService,
-    private auth: AngularFireAuth,) {
+    private auth: AngularFireAuth,
+    private crearViajeService: CrearviajeService) {
 
     // Inicializa el formulario con validaciones
     this.crearViajeForm = this.formBuilder.group({
@@ -96,7 +98,6 @@ export class CreateTravelPage implements OnInit {
     await alert.present();
   }
 
-  // Crear viaje
   async paraCrearViaje() {
     if (this.crearViajeForm.valid) {
       const viajeCreado = {
@@ -105,28 +106,30 @@ export class CreateTravelPage implements OnInit {
         hora: this.crearViajeForm.value.hora,
         pasajeros: this.crearViajeForm.value.pasajeros,
         precio: this.crearViajeForm.value.precio,
-        metodoDePago: this.crearViajeForm.value['metodoPago']
+        metodoDePago: this.crearViajeForm.value['metodoPago'],
+        userId: this.userId // Incluye el ID del usuario que crea el viaje
       };
 
-      if (this.usuario?.tipoVehiculo == 'moto'){
+      if (this.usuario?.tipoVehiculo == 'moto') {
         if (viajeCreado.pasajeros > 1) {
           await this.errorMasPasajeros();
           return;
         }
       }
 
+      try {
+        // Guardar el viaje en Firestore
+        await this.crearViajeService.crearViaje(viajeCreado);
 
-      // Guardar en localStorage
-      localStorage.setItem('viajeCreado', JSON.stringify(viajeCreado));
-
-
-      // Navegar o realizar acciones adicionales
-      console.log('Viaje creado:', viajeCreado);
-      await this.alertaDeViajeCreado();
+      } catch (error) {
+        console.error('Error al crear el viaje:', error);
+        await this.errorDeFormulario(); // Puedes mostrar una alerta de error aquí si lo prefieres
+      }
     } else {
       await this.errorDeFormulario();
     }
   }
+
 
   // Alerta de error al elegir más pasajeros
   async errorMasPasajeros() {
