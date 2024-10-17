@@ -9,6 +9,7 @@ import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
 
+
 @Component({
   selector: 'app-inicio-passenger',
   templateUrl: './inicio-passenger.page.html',
@@ -16,7 +17,7 @@ import { AuthService } from '../common/services/auth.service';
 })
 export class InicioPassengerPage implements OnInit {
   usuario: any;
-  viajeCreado: any = null;
+  viajesCreado: any = null;
   isModalOpen = false; //Configuraciones
   isModalOpen2 = false; //Preguntas frecuentes
   isModalOpen3 = false; //Perfil
@@ -29,11 +30,14 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-  constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
+  constructor(
+    private alertController: AlertController,
+    private router: Router,
+    private dataService: DataService,
     private firestore: AngularFirestore,
     private storage: AngularFireStorage,
     private auth: AngularFireAuth,
-    private _authService: AuthService
+    private _authService: AuthService,
   ) { }
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -42,15 +46,13 @@ export class InicioPassengerPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
-    const viajeCreado = localStorage.getItem('viajeCreado');
-    this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
     }
     const viaje = localStorage.getItem('viajeCreado');
     if (viaje) {
-      this.viajeCreado = JSON.parse(viaje);
+      this.viajesCreado = JSON.parse(viaje);
     }
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;

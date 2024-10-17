@@ -1,9 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
-import { Sede } from '../register/info-sedes/sede.model';
 import { Router } from '@angular/router';
-import { DataService } from '../register/info-sedes/data.service';
+import { AuthService } from '../common/services/auth.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+
 
 @Component({
   selector: 'app-create-travel',
@@ -15,14 +16,16 @@ export class CreateTravelPage implements OnInit {
   crearViajeForm: FormGroup;
   navController = inject(NavController);
   usuario: any;
-  sedes: Sede[] = [];
+  userId: string = '';
 
   constructor(
     private alertController: AlertController,
     private formBuilder: FormBuilder,
     private router: Router,
-    private dataService: DataService) {
+    private _authService: AuthService,
+    private auth: AngularFireAuth,) {
 
+    // Inicializa el formulario con validaciones
     this.crearViajeForm = this.formBuilder.group({
       salida: ['', Validators.required],
       destino: ['', Validators.required],
@@ -36,25 +39,44 @@ export class CreateTravelPage implements OnInit {
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+  }
 
-    if (this.usuario?.sede) {
-      this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
-    }
+  ionViewWillEnter() {
+    // Obtener información del usuario autenticado
+    this.auth.user.subscribe(async user => {
+      if (user) {
+        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        // Obtener datos del usuario desde Firestore
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
 
-    // Mostrar valores del formulario
-    this.crearViajeForm.patchValue({
-      salida: this.usuario?.sede || '',
-      destino: this.usuario?.lugar || ''
+          const sedeSinPalabra = this.usuario.sede ? this.usuario.sede.replace(/^Sede\s*/, '') : "";
+          const destinoMayus = this.usuario.lugar;
+          const primeraLetraMayus = this.capitalizeFirstLetter(destinoMayus);
+
+          this.crearViajeForm.patchValue({
+            salida: sedeSinPalabra,
+            destino: primeraLetraMayus || '',
+          });
+
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
+      } else {
+        console.error('No hay usuario autenticado');
+      }
     });
-    this.dataService.getSedes().subscribe((data) => {
-      this.sedes = data;
-    });
+  }
+
+  // Función para capitalizar la primera letra
+  capitalizeFirstLetter(text: string): string {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 
   // Validador personalizado para la hora
   validarHora(control: any) {
     const horaSeleccionada = control.value;
-
     // Verificar si la hora seleccionada está fuera del rango permitido (19:00 a 23:59)
     if (horaSeleccionada && (horaSeleccionada < '19:00' || horaSeleccionada >= '24:00')) {
       this.errorDeHora();
@@ -63,7 +85,7 @@ export class CreateTravelPage implements OnInit {
     return null;
   }
 
-  // Alerta para el erro de hora fuera del rango de horario permitido
+  // Alerta para el error de hora fuera del rango de horario permitido
   async errorDeHora() {
     const alert = await this.alertController.create({
       header: 'Error',
@@ -106,15 +128,14 @@ export class CreateTravelPage implements OnInit {
     }
   }
 
-  // Alerta de error al elegir mas pasajeros
+  // Alerta de error al elegir más pasajeros
   async errorMasPasajeros() {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: 'No puedes elegir más de 1 pasajeros.',
+      message: 'No puedes elegir más de 1 pasajero.',
       buttons: ['OK']
     });
     await alert.present();
-
   }
 
   // Alerta de viaje creado

@@ -3,6 +3,8 @@ import { NavController } from '@ionic/angular';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AuthService } from '../common/services/auth.service';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -13,11 +15,15 @@ export class ViajeCreadoConductorPage implements OnInit {
   isModalOpen = false;
 
   usuario : any;
+  userId: string = '';
   viajeCreado: any;
+
 
   navController = inject(NavController);
 
-  constructor(private dataService: DataService, private router: Router) { }
+  constructor(private router: Router,
+              private _authService: AuthService,
+              private auth: AngularFireAuth) { }
 
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -29,14 +35,34 @@ export class ViajeCreadoConductorPage implements OnInit {
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
 
-    if (this.usuario?.sede) {
-      this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
-    }
+  }
 
-    this.dataService.getSedes().subscribe((sedes) => {
-      this.sedes = sedes;
+
+  ionViewWillEnter() {
+    // Obtener información del usuario autenticado
+    this.auth.user.subscribe(async user => {
+      if (user) {
+        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        // Obtener datos del usuario desde Firestore
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
+
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
+      } else {
+        console.error('No hay usuario autenticado');
+      }
     });
   }
+
+  // Función para capitalizar la primera letra
+  capitalizeFirstLetter(text: string): string {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  }
+
+
   //Para el tema de olvidar la contraseña
   solicitudes() {
     this.isModalOpen = true;
