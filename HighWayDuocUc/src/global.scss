@@ -33,15 +33,44 @@
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+@import "@ionic/angular/css/palettes/dark.class.css";
+/*@import "@ionic/angular/css/palettes/dark.system.css";*/
 
-ion-content {
-  --background: linear-gradient(90deg, #ff1c1c 0%, #1962cf 100%); // 90deg es el angulo de izquierda a derecha para el degradado
-  // linear-gradient es una funcion de css que sirve para realizar degradado
+:root {
+  --ion-background-color: linear-gradient(90deg, #ff1c1c 0%, #1962cf 100%);
+  --ion-text-color: #000000;
+  --ion-toolbar-background: rgb(231, 231, 231);
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
 }
 
-
-ion-content {
-  background-color: var(--ion-background-color);
+/* Dark Mode Overrides */
+.ion-palette-dark {
+  --ion-background-color: #121212;
+  --ion-text-color: #ffffff;
+  --ion-toolbar-background: #1e1e1e;
+  --ion-item-background: #2a2a2a;
+  --ion-card-background: #2a2a2a;
 }
+
+/* Apply background to ion-content */
+ion-content {
+  --background: var(--ion-background-color);
+}
+
+/* Apply text color globally */
+* {
+  color: var(--ion-text-color);
+}
+
+/* Additional style overrides for dark mode */
+.ion-palette-dark {
+  ion-card, ion-item, ion-content::part(background) {
+    --background: var(--ion-item-background);
+  }
+
+  ion-toolbar {
+    --background: var(--ion-toolbar-background);
+  }
+}
+

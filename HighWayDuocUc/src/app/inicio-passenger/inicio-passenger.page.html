@@ -16,26 +16,31 @@
               <ion-card-content>
                 <ion-list>
                   <ion-item>
-                    <ion-thumbnail slot="start">
-                      <ion-icon name="color-wand-outline"></ion-icon>
+                    <ion-thumbnail slot="start" style="display: flex; align-items: center;">
+                      <ion-icon name="color-wand-outline" style="font-size: 30px;"></ion-icon>
                     </ion-thumbnail>
+
                     <ion-label>Modo
-                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle>
+                      <ion-toggle [(ngModel)]="isDarkMode" (ionChange)="toggleChange($event)"></ion-toggle>
                     </ion-label>
+
                   </ion-item>
                   <ion-item>
-                    <ion-thumbnail slot="start">
-                      <ion-icon name="help-outline"></ion-icon>
+                    <ion-thumbnail slot="start" style="display: flex; align-items: center;">
+                      <ion-icon name="help-outline" style="font-size: 30px;"></ion-icon>
                     </ion-thumbnail>
                     <ion-button (click)="preguntas()">Ayuda</ion-button>
                   </ion-item>
                 </ion-list>
               </ion-card-content>
+              <div style="display: flex; justify-content: center;">
+                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;" (click)="closeModal()">Cerrar</ion-button>
+              </div>
             </ion-card>
-            <ion-button expand="full" (click)="closeModal()">Cerrar</ion-button>
           </ion-content>
         </ng-template>
       </ion-modal>
+
       <!--Preguntas frecuentes-->
       <ion-modal [isOpen]="isModalOpen3">
         <ng-template>
@@ -73,8 +78,10 @@
                   </ion-accordion>
                 </ion-accordion-group>
               </ion-card-content>
+              <div style="display: flex; justify-content: center;">
+                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;" (click)="closePreguntas()">Cerrar</ion-button>
+              </div>
             </ion-card>
-            <ion-button expand="full" (click)="closePreguntas()">Cerrar</ion-button>
           </ion-content>
         </ng-template>
       </ion-modal>

@@ -26,6 +26,8 @@ export class InicioPassengerPage implements OnInit {
   imagePreview: string | ArrayBuffer | null = null; // Inicializar en null
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
+  isDarkMode: boolean = false;
+
 
   constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
     private firestore: AngularFirestore,
@@ -37,8 +39,6 @@ export class InicioPassengerPage implements OnInit {
   sedeSeleccionada: number | null = null;
 
   ngOnInit() {
-
-
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
@@ -57,7 +57,6 @@ export class InicioPassengerPage implements OnInit {
     });
     this.filtrarPorSede();
 
-
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
       if (user) {
@@ -74,6 +73,8 @@ export class InicioPassengerPage implements OnInit {
         }
       }
     });
+
+    this. initDarkMode();
 
   }
 
@@ -219,8 +220,6 @@ export class InicioPassengerPage implements OnInit {
     this.isModalOpen3 = false;
   }
 
-
-
   //Para la imagen de perfil
   imgPerfil() {
     this.isModalOpen4 = true;
@@ -237,37 +236,6 @@ export class InicioPassengerPage implements OnInit {
       console.error('Error al reproducir el sonido:', error);
     });
   }
-
-
-  // logout utilizando el authService
-
-  logout() {
-    this.setOpen(false);
-    this._authService.logout().then(() => {
-      // Elimina la imagen de perfil del localStorage al cerrar sesión
-      localStorage.removeItem('perfilImage');
-      this.imagePreview = null; // Resetea la vista de la imagen
-      this.router.navigate(['/login']); // Redirigir al login
-    }).catch((error) => {
-      console.error('Error al cerrar sesión:', error);
-    });
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -291,7 +259,6 @@ export class InicioPassengerPage implements OnInit {
     }
   }
 
-
   async viajeTomado() {
     const alert = await this.alertController.create({
       header: '¡Viaje tomado!',
@@ -311,5 +278,37 @@ export class InicioPassengerPage implements OnInit {
     await alert.present();
   }
 
+    // logout utilizando el authService
+  logout() {
+    this.setOpen(false);
+    this._authService.logout().then(() => {
+      // Elimina la imagen de perfil del localStorage al cerrar sesión
+      localStorage.removeItem('perfilImage');
+      this.imagePreview = null; // Resetea la vista de la imagen
+      this.router.navigate(['/login']); // Redirigir al login
+    }).catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+    });
+  }
+
+  initDarkMode() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    this.isDarkMode = prefersDark.matches;
+    this.toggleDarkPalette(this.isDarkMode);
+
+    prefersDark.addEventListener('change', (mediaQuery) => {
+      this.isDarkMode = mediaQuery.matches;
+      this.toggleDarkPalette(this.isDarkMode);
+    });
+  }
+
+  toggleChange(ev: any) {
+    this.isDarkMode = ev.detail.checked;
+    this.toggleDarkPalette(this.isDarkMode);
+  }
+
+  toggleDarkPalette(shouldAdd: boolean) {
+    document.body.classList.toggle('ion-palette-dark', shouldAdd);
+  }
 
 }

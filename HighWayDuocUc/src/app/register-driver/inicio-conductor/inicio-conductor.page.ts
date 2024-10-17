@@ -184,13 +184,16 @@ export class InicioConductorPage implements OnInit {
 
   logout() {
     this.setOpen(false);
-
-    setTimeout(() => {
-      localStorage.removeItem('usuarioRegistrado');
-      localStorage.removeItem('viajeCreado');
-      this.router.navigate(['/login']);
-    }, 200);
+    this._authService.logout().then(() => {
+      // Elimina la imagen de perfil del localStorage al cerrar sesión
+      localStorage.removeItem('perfilImage');
+      this.imagePreview = null; // Resetea la vista de la imagen
+      this.router.navigate(['/login']); // Redirigir al login
+    }).catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+    });
   }
+
 }
 
 
