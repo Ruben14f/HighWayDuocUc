@@ -16,6 +16,7 @@ export class LoginPage{
   password: string = ''; // Aqui se almacena el valor que se ingreso en el campo para contraseña
   email: string = ''; // Aquí se almacena el valor que se ingresa en el campo de correo
   passwordType: string = 'password'; // tipo del campo de entrada de la contraseña (Oculta en este caso por los *****)
+  emailReset: string = '';
 
   constructor(private router: Router,
     private afAuth: AngularFireAuth,
@@ -75,6 +76,31 @@ export class LoginPage{
     await alert.present();
   }
 
+  // Método para enviar correo de recuperación de contraseña
+  async recuperarContra() {
+    if (!this.emailReset) {
+      this.mostrarAlertaError('Por favor, ingrese un correo válido.');
+      return;
+    }
 
+    try {
+      await this.afAuth.sendPasswordResetEmail(this.emailReset);
+      this.mostrarAlerta('Correo enviado', 'Se ha enviado un correo para restablecer tu contraseña.');
+      this.closeModal();
+    } catch (error) {
+      this.mostrarAlertaError('No se pudo enviar el correo. Verifica si el correo ingresado es correcto.');
+    }
+  }
 
+  async mostrarAlerta(header: string, mensaje: string) {
+    const alert = await this.AlertController.create({
+      header: header,
+      message: mensaje,
+      buttons: ['Ok']
+    });
+    await alert.present();
+  }
 }
+
+
+
