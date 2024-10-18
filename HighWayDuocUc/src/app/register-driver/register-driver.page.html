@@ -2,29 +2,31 @@
   <ion-header collapse="condense">
     <ion-title id="titulo-perfil-conductor" size="large" style="color: white;">Perfil Conductor</ion-title>
   </ion-header>
-  <div id="container-registro-driver">
-    <label id="select-vehicle">Tipo de Vehiculo</label>
-    <ion-segment [(ngModel)]="tipoVehiculo">
-      <ion-segment-button value="auto">
-        <ion-label>Auto</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="moto">
-        <ion-label>Moto</ion-label>
-      </ion-segment-button>
-    </ion-segment>
-    <ion-input class="datos-registro-driver" [(ngModel)]="matricula" type="text" label="Matricula Vehiculo" label-placement="floating"
-      fill="solid"></ion-input>
-    <br>
-    <div class="foto-vehicle">
-      <label>Foto del Vehiculo</label>
-      <input type="file" (change)="onFileSelected($event)">
+  <form [formGroup]="driverForm" (ngSubmit)="guardarDatosConductor()">
+    <div id="container-registro-driver">
+      <label id="select-vehicle">Tipo de Vehiculo</label>
+      <ion-segment formControlName="tipoVehiculo">
+        <ion-segment-button value="auto">
+          <ion-label>Auto</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="moto">
+          <ion-label>Moto</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      <ion-input class="datos-registro-driver" formControlName="matricula" type="text" label="Matricula Vehiculo" label-placement="floating"
+        fill="solid"></ion-input>
+      <br>
+      <div class="foto-vehicle">
+        <label>Foto del Vehiculo (OPCIONAL)</label>
+        <input type="file" (change)="onFileSelected($event)">
+      </div>
+      <div *ngIf="uploadProgress > 0">
+        <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
+      </div>
     </div>
-    <div *ngIf="uploadProgress > 0">
-      <ion-progress-bar [value]="uploadProgress / 100"></ion-progress-bar>
+    <div id="registrarse-btn">
+      <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
+      <ion-button type="submit" fill="Outline">Registrarse</ion-button>
     </div>
-  </div>
-  <div id="registrarse-btn">
-    <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
-    <ion-button fill="Outline" (click)="guardarDatosConductor()">Registrarse</ion-button>
-  </div>
+  </form>
 </ion-content>

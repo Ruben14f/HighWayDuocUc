@@ -199,7 +199,7 @@
         <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
         <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede"
           (ionChange)="filtrarPorSede($event)">
-          <ion-select-option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</ion-select-option>
+          <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre">{{ sede.nombre }}</ion-select-option>
         </ion-select>
       </div>
       <div class="opciones">

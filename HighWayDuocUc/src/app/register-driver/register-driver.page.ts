@@ -1,17 +1,19 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register-driver',
   templateUrl: './register-driver.page.html',
   styleUrls: ['./register-driver.page.scss'],
 })
-export class RegisterDriverPage {
+export class RegisterDriverPage implements OnInit{
+  driverForm: FormGroup;
   usuario: any;  // Información del usuario autenticado
   tipoVehiculo: string = '';
   matricula: string = '';
@@ -22,11 +24,19 @@ export class RegisterDriverPage {
   navController = inject(NavController);
 
   constructor(
+    private formBuilder: FormBuilder,
     private router: Router,
+    private alertController: AlertController,
     private firestore: AngularFirestore,
     private storage: AngularFireStorage,
     private auth: AngularFireAuth // Agregamos Firebase Auth para obtener el UID del usuario autenticado
-  ) { }
+  ) {
+    this.driverForm = this.formBuilder.group({
+      tipoVehiculo: ['', Validators.required],
+      matricula: ['', Validators.required],
+    })
+   }
+  ngOnInit() {}
 
   ionViewWillEnter() {
     // Obtener información del usuario autenticado
@@ -40,47 +50,52 @@ export class RegisterDriverPage {
     });
   }
 
-  guardarDatosConductor() {
-    if (this.usuario) {
-      if (this.fotoVehiculo) {
-        // Guardar la imagen en una ruta personalizada basada en el UID del usuario
-        const filePath = `vehiculos/${this.userId}/fotoVehiculo.jpg`; // Ruta donde se guardará la imagen
-        const fileRef = this.storage.ref(filePath);
-        const task = this.storage.upload(filePath, this.fotoVehiculo);
+  async guardarDatosConductor() {
+    if (this.driverForm.valid) {  // Cambiado a 'valid' para verificar el formulario
+      if (this.usuario) {
+        if (this.fotoVehiculo) {
+          const filePath = `vehiculos/${this.userId}/fotoVehiculo.jpg`;
+          const fileRef = this.storage.ref(filePath);
+          const task = this.storage.upload(filePath, this.fotoVehiculo);
 
-        task.percentageChanges().subscribe((progress) => {
-          this.uploadProgress = progress || 0;
-        });
+          task.percentageChanges().subscribe((progress) => {
+            this.uploadProgress = progress || 0;
+          });
 
-        // Obtener la URL de descarga una vez que la imagen esté subida
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            fileRef.getDownloadURL().subscribe((fotoUrl) => {
-              // Actualizar los datos del usuario con la URL de la imagen subida
-              this.updateUserWithVehicleData(fotoUrl);
-            });
-          })
-        ).subscribe();
+          task.snapshotChanges().pipe(
+            finalize(() => {
+              fileRef.getDownloadURL().subscribe((fotoUrl) => {
+                this.updateUserWithVehicleData(fotoUrl);
+              });
+            })
+          ).subscribe();
+        } else {
+          this.updateUserWithVehicleData('');
+        }
       } else {
-        // Si no se sube una imagen, de todos modos actualizar los datos del vehículo
-        this.updateUserWithVehicleData('');
+        console.error('No se encontró el usuario registrado.');
       }
     } else {
-      console.error('No se encontró el usuario registrado.');
+      // Mostrar alerta si los datos no están completos
+      const alert = await this.alertController.create({
+        header: 'Datos incompletos',
+        message: 'Por favor, completa los campos obligatorios: Tipo de Vehículo y Matrícula.',
+        buttons: ['OK']
+      });
+      await alert.present();
     }
   }
 
   // Función para actualizar los datos del usuario en Firestore
   updateUserWithVehicleData(fotoUrl: string) {
-    // Usamos el UID del usuario autenticado para acceder a su documento
     const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
 
     usuarioRef.update({
-      tipoVehiculo: this.tipoVehiculo,
-      matricula: this.matricula,
-      fotoVehiculo: fotoUrl // Guardar la URL de la imagen en Firestore
+      tipoVehiculo: this.driverForm.get('tipoVehiculo')?.value, // Usar los valores del form
+      matricula: this.driverForm.get('matricula')?.value, // Usar los valores del form
+      fotoVehiculo: fotoUrl
     }).then(() => {
-      this.router.navigate(['/welcome2']); // Navega a otra página tras el registro
+      this.router.navigate(['/welcome2']);
     }).catch((error) => {
       console.error('Error al actualizar el usuario en Firestore', error);
     });

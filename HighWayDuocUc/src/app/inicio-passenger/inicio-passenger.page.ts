@@ -176,9 +176,6 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-
-
-
   //Modo conductor
   async modoConductor() {
     if (this.usuario) {
@@ -248,12 +245,6 @@ export class InicioPassengerPage implements OnInit {
       console.error('Error al reproducir el sonido:', error);
     });
   }
-
-
-
-
-
-
 
   //SE TOMA EL PASAJE POR EL PASAJERO Y LUEGO BAJA LA CANTIDAD DEL ASIENTO DISPONIBLE EN EL CODUCTOR
   tomarViaje(viaje: any) {
