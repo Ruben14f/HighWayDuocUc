@@ -19,11 +19,10 @@ export class ViajeCreadoConductorPage implements OnInit {
   viajeCreado: any;
 
 
-  navController = inject(NavController);
-
   constructor(private router: Router,
               private _authService: AuthService,
-              private auth: AngularFireAuth) { }
+              private auth: AngularFireAuth,
+              private NavController: NavController) { }
 
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -72,8 +71,8 @@ export class ViajeCreadoConductorPage implements OnInit {
   closeModal() {
     this.isModalOpen = false;
   }
-  volver(){
-    this.router.navigate(['/inicio-conductor']);
+  async volver(){
+    this.NavController.pop()
   }
 
   //Sonidito para el olvido de contra
