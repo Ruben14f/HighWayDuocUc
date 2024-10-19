@@ -31,6 +31,8 @@ export class InicioPassengerPage implements OnInit {
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
   viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
+  mostrarEstadoViaje: boolean = false; // Controla la visibilidad del botón de estado de viaje
+
 
 
 
@@ -313,6 +315,7 @@ export class InicioPassengerPage implements OnInit {
           console.log('Viaje actualizado en Firestore');
           this.viajeSeleccionado = viajeActualizado; // Almacena el viaje seleccionado actualizado
           this.usuario.viajeActivo = true; // Establece que el usuario ahora tiene un viaje activo
+          this.mostrarEstadoViaje = true; // mostrar el boton de estado de viaje
           localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
           this.viajeTomado(); // Llama a la función para mostrar la alerta de viaje tomado
         })
@@ -359,6 +362,7 @@ export class InicioPassengerPage implements OnInit {
                   this.closeModalEstadoViaje();
                   this.viajeSeleccionado = null; // Reinicia el viaje seleccionado
                   this.usuario.viajeActivo = false; // Establece que el usuario ya no tiene un viaje activo
+                  this.mostrarEstadoViaje = false;
                   localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
                 })
                 .catch(error => {

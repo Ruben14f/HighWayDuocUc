@@ -242,7 +242,7 @@
         <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
       </ng-template>
     </div>
-    <ion-button style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">
+    <ion-button *ngIf="mostrarEstadoViaje" style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">
       Estado de viaje
     </ion-button>
   </div>
