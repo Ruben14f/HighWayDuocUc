@@ -94,6 +94,8 @@ export class InicioPassengerPage implements OnInit {
   obtenerViajes() {
     this.crearViajeService.obtenerViajes().subscribe(viajes => {
       this.viajes = viajes;
+      // Guardar viajes en localStorage
+      this.actualizarViajesEnLocalStorage();
     });
   }
 
@@ -104,23 +106,23 @@ export class InicioPassengerPage implements OnInit {
   }
 
   filtrarPorSede(event: any) {
-  let sede = event.detail.value;
-  console.log('Sede seleccionada originalmente:', sede);
+    let sede = event.detail.value;
+    console.log('Sede seleccionada originalmente:', sede);
 
-  if (sede) {
-    sede = sede.replace(/^Sede\s*/i, '').trim();
-    console.log('Sede normalizada para búsqueda:', sede);
+    if (sede) {
+      sede = sede.replace(/^Sede\s*/i, '').trim();
+      console.log('Sede normalizada para búsqueda:', sede);
 
-    this.crearViajeService.obtenerViajesPorSede(sede).subscribe(viajes => {
-      console.log('Viajes obtenidos:', viajes);
-      this.viajes = viajes;
-    }, error => {
-      console.error('Error al obtener viajes:', error);
-    });
-  } else {
-    this.obtenerViajes();
+      this.crearViajeService.obtenerViajesPorSede(sede).subscribe(viajes => {
+        console.log('Viajes obtenidos:', viajes);
+        this.viajes = viajes;
+      }, error => {
+        console.error('Error al obtener viajes:', error);
+      });
+    } else {
+      this.obtenerViajes();
+    }
   }
-}
 
   ionViewWillEnter() {
     this.auth.user.subscribe(async user => {
@@ -263,10 +265,10 @@ export class InicioPassengerPage implements OnInit {
   closeImgPerfil() {
     this.isModalOpen4 = false;
   }
-  ModalEstadoViaje(){
+  ModalEstadoViaje() {
     this.isModalOpen5 = true;
   }
-  closeModalEstadoViaje(){
+  closeModalEstadoViaje() {
     this.isModalOpen5 = false;
   }
 
@@ -279,17 +281,57 @@ export class InicioPassengerPage implements OnInit {
     });
   }
 
-  //SE TOMA EL PASAJE POR EL PASAJERO Y LUEGO BAJA LA CANTIDAD DEL ASIENTO DISPONIBLE EN EL CODUCTOR
   tomarViaje(viaje: any) {
-    // Lógica para tomar el viaje
+    if (!viaje.id) {
+      console.error('El viaje no tiene un ID válido.');
+      return;
+    }
+
     let pasajerosDisponibles = parseInt(viaje.pasajeros);
     if (pasajerosDisponibles > 0) {
-      viaje.pasajeros = pasajerosDisponibles - 1;
-      localStorage.setItem('viajeCreado', JSON.stringify(viaje));
-      this.viajeTomado();
+      pasajerosDisponibles--;
+
+      const viajeActualizado = { ...viaje, pasajeros: pasajerosDisponibles };
+
+      console.log('ID del viaje a actualizar:', viaje.id); // Esto debe mostrar un ID válido
+      console.log('Datos del viaje actualizado:', viajeActualizado);
+
+      this.crearViajeService.actualizarViaje(viaje.id, { pasajeros: pasajerosDisponibles })
+        .then(() => {
+          console.log('Viaje actualizado en Firestore');
+          // Actualiza la lista de viajes o cualquier otra lógica que necesites aquí
+        })
+        .catch(error => {
+          console.error('Error al actualizar el viaje en Firestore:', error);
+        });
+
     } else {
       this.eliminarViaje();
     }
+  }
+
+
+
+
+
+  // Función para actualizar los viajes en el localStorage
+  private actualizarViajesEnLocalStorage() {
+    localStorage.setItem('viajes', JSON.stringify(this.viajes));
+
+  }
+
+
+
+  actualizarViajeEnFirestore(viajeId: string, viajeActualizado: any) {
+    const viajeRef = this.firestore.collection('viajes').doc(viajeId);
+
+    viajeRef.update({
+      pasajeros: viajeActualizado.pasajeros // Actualiza la cantidad de pasajeros
+    }).then(() => {
+      console.log('Viaje actualizado en Firestore');
+    }).catch((error) => {
+      console.error('Error al actualizar el viaje en Firestore:', error);
+    });
   }
 
   async viajeTomado() {
