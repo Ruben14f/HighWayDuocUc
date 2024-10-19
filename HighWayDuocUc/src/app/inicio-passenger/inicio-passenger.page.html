@@ -21,7 +21,7 @@
                     </ion-thumbnail>
 
                     <ion-label>Modo
-                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle>                    </ion-label>
+                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle> </ion-label>
 
                   </ion-item>
                   <ion-item>
@@ -33,7 +33,8 @@
                 </ion-list>
               </ion-card-content>
               <div style="display: flex; justify-content: center;">
-                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;" (click)="closeModal()">Cerrar</ion-button>
+                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;"
+                  (click)="closeModal()">Cerrar</ion-button>
               </div>
             </ion-card>
           </ion-content>
@@ -78,7 +79,8 @@
                 </ion-accordion-group>
               </ion-card-content>
               <div style="display: flex; justify-content: center;">
-                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;" (click)="closePreguntas()">Cerrar</ion-button>
+                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;"
+                  (click)="closePreguntas()">Cerrar</ion-button>
               </div>
             </ion-card>
           </ion-content>
@@ -108,17 +110,19 @@
 
             <div>
               @if(!imagePreview){
-                <div class="avatar-perfil">
-                  <ion-icon color="medium" name="person-circle-outline"></ion-icon>
-                </div>
+              <div class="avatar-perfil">
+                <ion-icon color="medium" name="person-circle-outline"></ion-icon>
+              </div>
               }
-              <div class="avatar" style="display:flex; flex-direction: column; justify-content: center; margin: 0px 0px 20px;">
+              <div class="avatar"
+                style="display:flex; flex-direction: column; justify-content: center; margin: 0px 0px 20px;">
                 <div style="display: flex; justify-content: center;">
-                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" width="50%"/>
+                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" width="50%" />
                 </div>
                 <br>
                 <div style="display: flex; justify-content: center;">
-                  <ion-button fill="Outline" style="--color: white; --background: red;" (click)="imgPerfil()">Cambiar imagen de perfil</ion-button>
+                  <ion-button fill="Outline" style="--color: white; --background: red;" (click)="imgPerfil()">Cambiar
+                    imagen de perfil</ion-button>
                 </div>
               </div>
 
@@ -199,6 +203,7 @@
         <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
         <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede"
           (ionChange)="filtrarPorSede($event)">
+          <ion-select-option [value]="null">Todas las sedes</ion-select-option>
           <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre">{{ sede.nombre }}</ion-select-option>
         </ion-select>
       </div>
@@ -209,38 +214,84 @@
       </div>
     </div>
 
-    <!--Mostrar viajes filtrados por la sede-->
-
-   <!-- LISTADO DE VIAJES -->
-<div class="viajes" style="padding: 10px;">
-  <ng-container *ngIf="viajes.length > 0; else noViajes">
-    <div *ngFor="let viaje of viajes" class="viaje-card"
-      style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
-      <div style="display: flex; align-items: center;">
-        <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
-        <div>
-          <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viaje.hora }}</h6>
-          <h6 style="margin: 5px 0; font-size: 15px;">Sede: {{ viaje.salida }}</h6>
-          <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viaje.precio | currency:'CLP':'$':'1.0-0' }}</h6>
-          <h6 style="margin: 5px 0; font-size: 15px;">Método: {{ viaje.metodoDePago }}</h6>
-          <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viaje.pasajeros }}</h6>
+    <!-- LISTADO DE VIAJES -->
+    <div class="viajes" style="padding: 10px;">
+      <ng-container *ngIf="viajes.length > 0; else noViajes">
+        <div *ngFor="let viaje of viajes" class="viaje-card"
+          style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
+          <div style="display: flex; align-items: center;">
+            <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
+            <div>
+              <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viaje.hora }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Sede: {{ viaje.salida }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viaje.precio | currency:'CLP':'$':'1.0-0' }}</h6>
+              <h6 style="margin: 5px 0; font-size: 15px;">Método: {{ viaje.metodoDePago }}</h6>
+              <h6 style="margin: 0; font-size: 15px;">Pasajeros: {{ viaje.pasajeros }}</h6>
+            </div>
+          </div>
+          <div>
+            <ion-button id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
+              style="--border-radius: 50px; --background: #3880ff; color: white;">
+              Tomar Viaje
+            </ion-button>
+          </div>
         </div>
-      </div>
-      <div>
-        <ion-button id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
-          style="--border-radius: 50px; --background: #3880ff; color: white;">
-          Tomar Viaje
-        </ion-button>
-      </div>
+      </ng-container>
+
+      <ng-template #noViajes>
+        <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
+      </ng-template>
     </div>
-  </ng-container>
-
-  <ng-template #noViajes>
-    <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
-  </ng-template>
-</div>
-
+    <ion-button style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">Estado de
+      viaje</ion-button>
   </div>
+
+  <ion-modal [isOpen]="isModalOpen5">
+    <ng-template>
+      <ion-content style="--background: red;">
+          <ion-card class="modal-card">
+            <ion-card-header>
+              <ion-card-title>Estado de viaje</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <ion-list>
+                <ion-item lines="full">
+                  <ion-label><strong>Fecha:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Hora inicio viaje:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Hora termino viaje:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Valor pagado:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Metodo de pago:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Estado del viaje:</strong></ion-label>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-label><strong>Nombre chofer:</strong></ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card-content>
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+              <ion-button fill="outline" style="--color: white; --background: #1a65eb;" (click)="closeModalEstadoViaje()">
+                Cerrar
+              </ion-button>
+            </div>
+          </ion-card>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+
+
+
+
 
   <!-- Footer -->
   <ion-footer>

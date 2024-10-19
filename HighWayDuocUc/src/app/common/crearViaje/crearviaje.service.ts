@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { catchError } from 'rxjs/operators'; // Para manejar errores
-import { of } from 'rxjs'; // Para manejar errores
+import { catchError,map } from 'rxjs/operators'; // Para manejar errores
+import { of,Observable } from 'rxjs'; // Para manejar errores
 
 @Injectable({
   providedIn: 'root'
@@ -32,4 +32,29 @@ export class CrearviajeService {
         })
       );
   }
+
+  obtenerViajesPorSede(sede: string): Observable<any[]> {
+
+    const sedeNormalizada = sede.replace(/^Sede\s*/i, '').trim();
+    console.log('Buscando viajes para sede normalizada:', sedeNormalizada);
+
+    return this.firestore.collection('viajes', ref => ref.where('salida', '==', sedeNormalizada))
+      .snapshotChanges().pipe(
+        map(actions => {
+          const viajes = actions.map(a => {
+            const data = a.payload.doc.data() as any;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+          console.log('Viajes encontrados:', viajes);
+          return viajes;
+        }),
+        catchError((error) => {
+          console.error('Error al obtener viajes por sede:', error);
+          return of([]);
+        })
+      );
+  }
+
+
 }

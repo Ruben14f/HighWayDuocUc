@@ -24,6 +24,7 @@ export class InicioPassengerPage implements OnInit {
   isModalOpen2 = false; //Preguntas frecuentes
   isModalOpen3 = false; //Perfil
   isModalOpen4 = false; //Cambio de imagen de perfil
+  isModalOpen5 = false; //Estado de viaje
   navController = inject(NavController);
   fotoPerfil: any;
   imagePreview: string | ArrayBuffer | null = null; // Inicializar en null
@@ -32,13 +33,17 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-  constructor(private alertController: AlertController, private router: Router, private dataService: DataService,
+  constructor(
+    private alertController: AlertController,
+    private router: Router,
+    private dataService: DataService,
     private firestore: AngularFirestore,
     private storage: AngularFireStorage,
     private auth: AngularFireAuth,
     private _authService: AuthService,
     private crearViajeService: CrearviajeService
   ) { }
+
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
 
@@ -47,6 +52,8 @@ export class InicioPassengerPage implements OnInit {
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
     this.obtenerViajes();
+    this.obtenerSedes();
+
 
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
@@ -61,7 +68,7 @@ export class InicioPassengerPage implements OnInit {
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;
     });
-    this.filtrarPorSede();
+
 
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
@@ -83,12 +90,37 @@ export class InicioPassengerPage implements OnInit {
 
   }
 
+
   obtenerViajes() {
     this.crearViajeService.obtenerViajes().subscribe(viajes => {
-      this.viajes = viajes; // Almacena los viajes obtenidos en la variable
-      console.log(this.viajes);
+      this.viajes = viajes;
     });
   }
+
+  obtenerSedes() {
+    this.dataService.getSedes().subscribe(sedes => {
+      this.sedes = sedes;
+    });
+  }
+
+  filtrarPorSede(event: any) {
+  let sede = event.detail.value;
+  console.log('Sede seleccionada originalmente:', sede);
+
+  if (sede) {
+    sede = sede.replace(/^Sede\s*/i, '').trim();
+    console.log('Sede normalizada para búsqueda:', sede);
+
+    this.crearViajeService.obtenerViajesPorSede(sede).subscribe(viajes => {
+      console.log('Viajes obtenidos:', viajes);
+      this.viajes = viajes;
+    }, error => {
+      console.error('Error al obtener viajes:', error);
+    });
+  } else {
+    this.obtenerViajes();
+  }
+}
 
   ionViewWillEnter() {
     this.auth.user.subscribe(async user => {
@@ -164,11 +196,6 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-  filtrarPorSede(event?: any) {
-    this.sedeSeleccionada = event?.detail?.value || null;
-
-  }
-
   irHistorialViajes() {
     this.router.navigate(['/travel-history']);
   }
@@ -235,6 +262,12 @@ export class InicioPassengerPage implements OnInit {
   }
   closeImgPerfil() {
     this.isModalOpen4 = false;
+  }
+  ModalEstadoViaje(){
+    this.isModalOpen5 = true;
+  }
+  closeModalEstadoViaje(){
+    this.isModalOpen5 = false;
   }
 
   //Sonidito para el error de la ruedita
