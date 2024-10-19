@@ -230,7 +230,7 @@
             </div>
           </div>
           <div>
-            <ion-button id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
+            <ion-button *ngIf="yaTieneViaje"  id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
               style="--border-radius: 50px; --background: #3880ff; color: white;">
               Tomar Viaje
             </ion-button>
