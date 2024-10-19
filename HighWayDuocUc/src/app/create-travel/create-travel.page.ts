@@ -121,6 +121,21 @@ export class CreateTravelPage implements OnInit {
         // Guardar el viaje en Firestore
         await this.crearViajeService.crearViaje(viajeCreado);
 
+        // Mostrar la alerta de confirmación
+        const alert = await this.alertController.create({
+          header: 'Viaje creado',
+          message: 'El viaje se ha creado exitosamente.',
+          buttons: [{
+            text: 'OK',
+            handler: () => {
+              // Volver hacia atrás con un pop
+              this.navController.pop();
+            }
+          }]
+        });
+
+        await alert.present();
+
       } catch (error) {
         console.error('Error al crear el viaje:', error);
         await this.errorDeFormulario(); // Puedes mostrar una alerta de error aquí si lo prefieres

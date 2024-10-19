@@ -1,10 +1,11 @@
 import { Component, OnInit,inject } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, AlertController } from '@ionic/angular';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -22,7 +23,10 @@ export class ViajeCreadoConductorPage implements OnInit {
   constructor(private router: Router,
               private _authService: AuthService,
               private auth: AngularFireAuth,
-              private NavController: NavController) { }
+              private afs: AngularFirestore,
+              private NavController: NavController,
+              private alertController: AlertController
+            ) { }
 
   sedes: Sede[] = [];
   sedeSeleccionada: number | null = null;
@@ -42,18 +46,78 @@ export class ViajeCreadoConductorPage implements OnInit {
     this.auth.user.subscribe(async user => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
-        // Obtener datos del usuario desde Firestore
         try {
-          this.usuario = await this._authService.getUserData(this.userId);
+          // Obtener el viaje del usuario
+          const viajeSnapshot = await this.afs.collection('viajes', ref => ref.where('userId', '==', this.userId)).get().toPromise();
 
+          if (viajeSnapshot && !viajeSnapshot.empty) {
+            const viajeDoc = viajeSnapshot.docs[0]; // Asume que solo hay un viaje por usuario
+            const viajeData = viajeDoc.data(); // Datos del viaje
+
+            // Cargar los datos del viaje en la variable para mostrarlos en la página
+            this.viajeCreado = viajeData;
+
+            console.log('Datos del viaje cargados correctamente.');
+          } else {
+            console.log('No se encontró un viaje para el usuario.');
+          }
         } catch (error) {
-          console.error('Error al obtener datos del usuario', error);
+          console.error('Error al cargar el viaje', error);
         }
       } else {
         console.error('No hay usuario autenticado');
       }
     });
   }
+  async finalizarCarrera() {
+    try {
+      // Obtener el viaje del usuario desde Firestore
+      const viajeSnapshot = await this.afs
+        .collection('viajes', (ref) => ref.where('userId', '==', this.userId))
+        .get()
+        .toPromise();
+
+      if (viajeSnapshot && !viajeSnapshot.empty) {
+        const viajeDoc = viajeSnapshot.docs[0]; // Asume que solo hay un viaje por usuario
+        const viajeData = viajeDoc.data(); // Datos del viaje
+
+        // Mover el documento a viajeHistorial
+        await this.afs.collection('viajeHistorial').add(viajeData);
+
+        // Eliminar el documento de la colección original
+        await this.afs.collection('viajes').doc(viajeDoc.id).delete();
+
+        // Limpia los datos del viaje en localStorage
+        localStorage.removeItem('viajeCreado');
+
+        // Mostrar alerta de éxito
+        await this.finaliza3();
+      } else {
+        console.log('No se encontró ningún viaje para este usuario.');
+      }
+    } catch (error) {
+      console.error('Error al finalizar la carrera y mover los datos:', error);
+    }
+  }
+
+  // Método para mostrar alerta
+  async finaliza3() {
+    const alert = await this.alertController.create({
+      header: 'Éxito',
+      message: 'El viaje se ha finalizado y movido al historial.',
+      buttons: [
+        {
+          text: 'Aceptar',
+          handler: () => {
+            this.NavController.pop(); // Redirigir a la página anterior
+          },
+        },
+      ],
+    });
+
+    await alert.present(); // Muestra la alerta
+  }
+
 
   // Función para capitalizar la primera letra
   capitalizeFirstLetter(text: string): string {

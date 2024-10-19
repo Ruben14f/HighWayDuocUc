@@ -13,7 +13,7 @@
       <ion-icon name="business-outline" slot="start" color="danger"></ion-icon>
       <ion-label>
         <p>Sede</p>
-        <h2>{{usuario?.sede | titlecase}}</h2>
+        <h2>{{viajeCreado?.sede | titlecase}}</h2>
       </ion-label>
     </ion-item>
 
@@ -21,7 +21,7 @@
       <ion-icon name="location-outline" slot="start" color="danger"></ion-icon>
       <ion-label>
         <p>Destino</p>
-        <h2>{{usuario?.lugar | titlecase}}</h2>
+        <h2>{{viajeCreado?.lugar | titlecase}}</h2>
       </ion-label>
     </ion-item>
 
@@ -59,7 +59,7 @@
 
     <div class="botones">
       <ion-button fill="Outline" (click)="solicitudes()">Revisar solicitudes</ion-button>
-      <ion-button fill="Outline" >Finalizar carrera</ion-button>
+      <ion-button fill="Outline" (click)="finalizarCarrera()">Finalizar carrera</ion-button>
       <ion-button fill="Outline" (click)="volver()">Volver</ion-button>
     </div>
 
