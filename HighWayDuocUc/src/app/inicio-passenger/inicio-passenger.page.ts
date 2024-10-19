@@ -30,6 +30,8 @@ export class InicioPassengerPage implements OnInit {
   imagePreview: string | ArrayBuffer | null = null; // Inicializar en null
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
+  viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
+
 
 
 
@@ -287,27 +289,88 @@ export class InicioPassengerPage implements OnInit {
       return;
     }
 
+    // Verificar si el usuario ya tiene un viaje activo
+    if (this.usuario.viajeActivo) {
+      this.alertController.create({
+        header: 'Error',
+        message: 'Ya tienes un viaje activo. No puedes tomar otro viaje.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return; // No permitir tomar otro viaje
+    }
+
     let pasajerosDisponibles = parseInt(viaje.pasajeros);
     if (pasajerosDisponibles > 0) {
       pasajerosDisponibles--;
 
       const viajeActualizado = { ...viaje, pasajeros: pasajerosDisponibles };
 
-      console.log('ID del viaje a actualizar:', viaje.id); // Esto debe mostrar un ID válido
+      console.log('ID del viaje a actualizar:', viaje.id);
       console.log('Datos del viaje actualizado:', viajeActualizado);
 
       this.crearViajeService.actualizarViaje(viaje.id, { pasajeros: pasajerosDisponibles })
         .then(() => {
           console.log('Viaje actualizado en Firestore');
-          // Actualiza la lista de viajes o cualquier otra lógica que necesites aquí
+          this.viajeSeleccionado = viajeActualizado; // Almacena el viaje seleccionado actualizado
+          this.usuario.viajeActivo = true; // Establece que el usuario ahora tiene un viaje activo
+          localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+          this.viajeTomado(); // Llama a la función para mostrar la alerta de viaje tomado
         })
         .catch(error => {
           console.error('Error al actualizar el viaje en Firestore:', error);
         });
-
     } else {
-      this.eliminarViaje();
+      this.eliminarViaje(); // Si no hay pasajeros disponibles, muestra la alerta correspondiente
     }
+  }
+
+
+  async cancelarViaje() {
+    const confirmAlert = await this.alertController.create({
+      header: 'Confirmación',
+      message: '¿Deseas cancelar el viaje?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Cancelación de viaje cancelada');
+          }
+        },
+        {
+          text: 'Sí',
+          handler: async () => {
+            if (this.viajeSeleccionado) {
+              let pasajerosDisponibles = parseInt(this.viajeSeleccionado.pasajeros) + 1; // Libera un pasajero
+
+              // Actualiza la información del viaje en Firestore
+              this.crearViajeService.actualizarViaje(this.viajeSeleccionado.id, { pasajeros: pasajerosDisponibles })
+                .then(async () => {
+                  console.log('Viaje cancelado y actualizado en Firestore');
+
+                  // Muestra la alerta de éxito
+                  const successAlert = await this.alertController.create({
+                    header: 'Éxito',
+                    message: 'Viaje cancelado',
+                    buttons: ['OK'],
+                  });
+                  await successAlert.present();
+                  this.closeModalEstadoViaje();
+                  this.viajeSeleccionado = null; // Reinicia el viaje seleccionado
+                  this.usuario.viajeActivo = false; // Establece que el usuario ya no tiene un viaje activo
+                  localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+                })
+                .catch(error => {
+                  console.error('Error al cancelar el viaje en Firestore:', error);
+                });
+            }
+          }
+        }
+      ]
+    });
+
+    await confirmAlert.present(); // Muestra la alerta de confirmación
   }
 
 
@@ -348,6 +411,15 @@ export class InicioPassengerPage implements OnInit {
     const alert = await this.alertController.create({
       header: 'Error',
       message: 'No se puede tomar viaje ya que no quedan puesto disponible',
+      buttons: ['OK']
+    })
+    await alert.present();
+  }
+
+  async viajeCancelado() {
+    const alert = await this.alertController.create({
+      header: 'Exito',
+      message: 'Viaje cancelado',
       buttons: ['OK']
     })
     await alert.present();

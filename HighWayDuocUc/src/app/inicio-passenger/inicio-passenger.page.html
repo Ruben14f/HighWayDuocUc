@@ -242,8 +242,9 @@
         <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
       </ng-template>
     </div>
-    <ion-button style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">Estado de
-      viaje</ion-button>
+    <ion-button style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">
+      Estado de viaje
+    </ion-button>
   </div>
 
   <ion-modal [isOpen]="isModalOpen5">
@@ -282,7 +283,7 @@
               <ion-button fill="outline" style="--color: white; --background: #1a65eb;" (click)="closeModalEstadoViaje()">
                 Cerrar
               </ion-button>
-              <ion-button style="--color: white; --background: orange;">
+              <ion-button (click)="cancelarViaje()" style="--color: white; --background: orange;">
                 Cancelar viaje
               </ion-button>
             </div>
