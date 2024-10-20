@@ -7,7 +7,7 @@ import { of, Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CrearviajeService {
-  constructor(private firestore: AngularFirestore) {}
+  constructor(private firestore: AngularFirestore) { }
 
   // Guardar viaje en Firestore
   crearViaje(viaje: any) {
@@ -62,6 +62,61 @@ export class CrearviajeService {
       .catch((error) => {
         console.error('Error al actualizar el viaje en Firestore:', error);
       });
-
   }
+
+  // Método para crear una solicitud de viaje
+
+  crearSolicitud(viajeId: string, pasajeroId: string, destino: string, comentarios?: string) {
+    const solicitud = {
+      viajeId: viajeId,
+      pasajeroId: pasajeroId,
+      estado: 'pendiente',
+      fechaSolicitud: new Date().toISOString(),
+      destino: destino,
+      comentarios: comentarios || ''
+    };
+
+    return this.firestore.collection('solicitudes').add(solicitud)
+      .then(() => {
+        console.log('Solicitud de viaje creada exitosamente');
+      })
+      .catch((error) => {
+        console.error('Error al crear la solicitud de viaje:', error);
+        throw error;
+      });
+  }
+
+  obtenerSolicitudesPorConductor(conductorId: string): Observable<any[]> {
+    return this.firestore.collection('solicitudes', ref => ref.where('conductorId', '==', conductorId))
+      .snapshotChanges().pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as any;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        })),
+        catchError((error) => {
+          console.error('Error al obtener solicitudes:', error);
+          return of([]);
+        })
+      );
+  }
+
+
+
+  aceptarSolicitud(solicitudId: string) {
+    return this.firestore.collection('solicitudes').doc(solicitudId).update({
+        estado: 'aceptada' // Cambia el estado a 'aceptada'
+    });
+}
+
+rechazarSolicitud(solicitudId: string) {
+    return this.firestore.collection('solicitudes').doc(solicitudId).update({
+        estado: 'rechazada' // Cambia el estado a 'rechazada'
+    });
+}
+
+
+
+
+
 }

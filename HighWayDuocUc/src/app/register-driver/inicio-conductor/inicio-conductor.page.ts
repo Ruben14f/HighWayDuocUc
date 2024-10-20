@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { finalize, Observable } from 'rxjs';
 import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
@@ -23,6 +24,8 @@ export class InicioConductorPage implements OnInit {
   dataService: any;
   fotoPerfil: any;
   uploadProgress: number = 0;
+  solicitudes: any[] = []; // Almacenar solicitudes
+
 
 
 
@@ -31,6 +34,8 @@ export class InicioConductorPage implements OnInit {
     private _authService: AuthService,
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
+    private crearViajeService: CrearviajeService,
+    private alertController: AlertController
 
   ) { }
 
@@ -38,7 +43,7 @@ export class InicioConductorPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
-
+    this.cargarSolicitudes();
 
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
@@ -56,7 +61,7 @@ export class InicioConductorPage implements OnInit {
         }
       }
     });
-  };
+  }
 
   ionViewWillEnter() {
     // Obtener información del usuario autenticado
@@ -100,6 +105,64 @@ export class InicioConductorPage implements OnInit {
     }
   }
 
+
+  cargarSolicitudes() {
+    this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
+      this.solicitudes = solicitudes;
+      console.log('Solicitudes cargadas:', this.solicitudes); // Debugging line
+    }, error => {
+      console.error('Error al cargar solicitudes:', error);
+    });
+  }
+
+  aceptarSolicitud(solicitudId: string) {
+    this.crearViajeService.aceptarSolicitud(solicitudId).then(() => {
+      // Lógica adicional para manejar la aceptación
+      console.log('Solicitud aceptada:', solicitudId);
+
+      // Notificar al pasajero (puedes enviar un mensaje, actualizar el estado en la UI, etc.)
+      this.alertController.create({
+        header: 'Solicitud Aceptada',
+        message: 'La solicitud de viaje ha sido aceptada. El pasajero será notificado.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+
+      // Aquí puedes actualizar el estado del viaje o realizar otras acciones necesarias
+    }).catch(error => {
+      console.error('Error al aceptar la solicitud:', error);
+      this.alertController.create({
+        header: 'Error',
+        message: 'Ocurrió un error al aceptar la solicitud. Inténtalo de nuevo más tarde.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+    });
+  }
+
+  // Método para rechazar una solicitud
+  rechazarSolicitud(solicitudId: string) {
+    this.crearViajeService.rechazarSolicitud(solicitudId).then(() => {
+      // Lógica adicional para manejar el rechazo
+      console.log('Solicitud rechazada:', solicitudId);
+
+      // Notificar al pasajero (puedes enviar un mensaje, actualizar el estado en la UI, etc.)
+      this.alertController.create({
+        header: 'Solicitud Rechazada',
+        message: 'La solicitud de viaje ha sido rechazada. El pasajero será notificado.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+
+      // Aquí puedes actualizar el estado del viaje o realizar otras acciones necesarias
+    }).catch(error => {
+      console.error('Error al rechazar la solicitud:', error);
+      this.alertController.create({
+        header: 'Error',
+        message: 'Ocurrió un error al rechazar la solicitud. Inténtalo de nuevo más tarde.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+    });
+  }
+
+
   // Función para actualizar los datos del usuario en Firestore
   actualizarPerfil(fotoUrlPerfil: string) {
     const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
@@ -111,6 +174,7 @@ export class InicioConductorPage implements OnInit {
       console.error('Error al actualizar el usuario en Firestore', error);
     });
   }
+
 
 
 

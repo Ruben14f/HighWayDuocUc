@@ -286,6 +286,7 @@ export class InicioPassengerPage implements OnInit {
     });
   }
 
+
   tomarViaje(viaje: any) {
     if (!viaje.id) {
         console.error('El viaje no tiene un ID válido.');
@@ -296,40 +297,36 @@ export class InicioPassengerPage implements OnInit {
     if (this.usuario.viajeActivo) {
         this.alertController.create({
             header: 'Error',
-            message: 'Ya tienes un viaje activo. No puedes tomar otro viaje.',
+            message: 'Ya tienes un viaje activo. No puedes solicitar otro viaje.',
             buttons: ['OK']
         }).then(alert => alert.present());
         return; // No permitir tomar otro viaje
     }
 
-    let pasajerosDisponibles = parseInt(viaje.pasajeros);
-    if (pasajerosDisponibles > 0) {
-        pasajerosDisponibles--;
+    // Aquí asumimos que tienes los campos de origen y destino en el objeto 'viaje'.
+    const origen = viaje.origen || 'Origen no especificado';
+    const destino = viaje.destino || 'Destino no especificado';
 
-        const viajeActualizado = { ...viaje, pasajeros: pasajerosDisponibles };
-
-        console.log('ID del viaje a actualizar:', viaje.id);
-        console.log('Datos del viaje actualizado:', viajeActualizado);
-
-        this.crearViajeService.actualizarViaje(viaje.id, { pasajeros: pasajerosDisponibles })
-            .then(() => {
-                console.log('Viaje actualizado en Firestore');
-                this.viajeSeleccionado = viajeActualizado; // Almacena el viaje seleccionado actualizado
-                this.usuario.viajeActivo = true; // Establece que el usuario ahora tiene un viaje activo
-                this.mostrarEstadoViaje = true; // mostrar el boton de estado de viaje
-                this.yaTieneViaje = false;
-                // Guardar el estado de viaje activo en localStorage
-                this.usuario.viajeActivo = true; // Asegúrate de que esto se guarda
-                localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
-                this.viajeTomado(); // Llama a la función para mostrar la alerta de viaje tomado
-            })
-            .catch(error => {
-                console.error('Error al actualizar el viaje en Firestore:', error);
-            });
-    } else {
-        this.eliminarViaje(); // Si no hay pasajeros disponibles, muestra la alerta correspondiente
-    }
-}
+    // Crear la solicitud
+    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, origen, destino)
+        .then(() => {
+            this.alertController.create({
+                header: 'Solicitud Enviada',
+                message: 'Tu solicitud de viaje ha sido enviada al conductor.',
+                buttons: ['OK']
+            }).then(alert => alert.present());
+            this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
+            localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+        })
+        .catch(error => {
+            console.error('Error al enviar la solicitud de viaje:', error);
+            this.alertController.create({
+                header: 'Error',
+                message: 'Ocurrió un error al enviar tu solicitud de viaje. Inténtalo de nuevo más tarde.',
+                buttons: ['OK']
+            }).then(alert => alert.present());
+        });
+  }
 
 
 
