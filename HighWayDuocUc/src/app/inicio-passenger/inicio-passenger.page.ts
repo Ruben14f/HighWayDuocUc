@@ -9,6 +9,8 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
+import { getDoc } from '@firebase/firestore';
+
 
 
 @Component({
@@ -58,6 +60,9 @@ export class InicioPassengerPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
+
+
+
     this.obtenerViajes();
     this.obtenerSedes();
 
@@ -98,6 +103,32 @@ export class InicioPassengerPage implements OnInit {
   }
 
 
+
+
+
+  ionViewWillEnter() {
+    this.auth.user.subscribe(async user => {
+      if (user) {
+        this.userId = user.uid;
+
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
+          if (this.usuario && this.usuario.fotoPerfil) {
+            this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
+          } else {
+            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
+          }
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
+      } else {
+        console.error('No hay usuario autenticado');
+      }
+    });
+  }
+
+
+
   obtenerViajes() {
     this.crearViajeService.obtenerViajes().subscribe(viajes => {
       this.viajes = viajes;
@@ -129,27 +160,6 @@ export class InicioPassengerPage implements OnInit {
     } else {
       this.obtenerViajes();
     }
-  }
-
-  ionViewWillEnter() {
-    this.auth.user.subscribe(async user => {
-      if (user) {
-        this.userId = user.uid;
-
-        try {
-          this.usuario = await this._authService.getUserData(this.userId);
-          if (this.usuario && this.usuario.fotoPerfil) {
-            this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
-          } else {
-            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
-          }
-        } catch (error) {
-          console.error('Error al obtener datos del usuario', error);
-        }
-      } else {
-        console.error('No hay usuario autenticado');
-      }
-    });
   }
 
 
@@ -292,18 +302,18 @@ export class InicioPassengerPage implements OnInit {
 
   tomarViaje(viaje: any) {
     if (!viaje.id) {
-        console.error('El viaje no tiene un ID válido.');
-        return;
+      console.error('El viaje no tiene un ID válido.');
+      return;
     }
 
     // Verificar si el usuario ya tiene un viaje activo
     if (this.usuario.viajeActivo) {
-        this.alertController.create({
-            header: 'Error',
-            message: 'Ya tienes un viaje activo. No puedes solicitar otro viaje.',
-            buttons: ['OK']
-        }).then(alert => alert.present());
-        return; // No permitir tomar otro viaje
+      this.alertController.create({
+        header: 'Error',
+        message: 'Ya tienes un viaje activo. No puedes solicitar otro viaje.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return; // No permitir tomar otro viaje
     }
 
     // Aquí asumimos que tienes los campos de origen y destino en el objeto 'viaje'.
@@ -315,24 +325,24 @@ export class InicioPassengerPage implements OnInit {
 
     // Crear la solicitud
     this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino)
-        .then(() => {
-            this.alertController.create({
-                header: 'Solicitud Enviada',
-                message: 'Tu solicitud de viaje ha sido enviada al conductor. Espera una respuesta de el',
-                buttons: ['OK']
-            }).then(alert => alert.present());
-            this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
-            localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
-        })
-        .catch(error => {
-            console.error('Error al enviar la solicitud de viaje:', error);
-            this.alertController.create({
-                header: 'Error',
-                message: 'Ocurrió un error al enviar tu solicitud de viaje. Inténtalo de nuevo más tarde.',
-                buttons: ['OK']
-            }).then(alert => alert.present());
-        });
-}
+      .then(() => {
+        this.alertController.create({
+          header: 'Solicitud Enviada',
+          message: 'Tu solicitud de viaje ha sido enviada al conductor. Espera una respuesta de el',
+          buttons: ['OK']
+        }).then(alert => alert.present());
+        this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
+        localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+      })
+      .catch(error => {
+        console.error('Error al enviar la solicitud de viaje:', error);
+        this.alertController.create({
+          header: 'Error',
+          message: 'Ocurrió un error al enviar tu solicitud de viaje. Inténtalo de nuevo más tarde.',
+          buttons: ['OK']
+        }).then(alert => alert.present());
+      });
+  }
 
 
 

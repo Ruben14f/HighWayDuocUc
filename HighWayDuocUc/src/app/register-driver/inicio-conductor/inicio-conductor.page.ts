@@ -101,6 +101,30 @@ export class InicioConductorPage implements OnInit {
   }
 
 
+  aceptarSolicitud(solicitudId: string) {
+    this.crearViajeService.aceptarSolicitud(solicitudId).then(() => {
+      this.alertController.create({
+        header: 'Solicitud Aceptada',
+        message: 'Has aceptado la solicitud de viaje.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+    }).catch(error => {
+      console.error('Error al aceptar la solicitud:', error);
+    });
+  }
+
+  rechazarSolicitud(solicitudId: string) {
+    this.crearViajeService.rechazarSolicitud(solicitudId).then(() => {
+      this.alertController.create({
+        header: 'Solicitud Rechazada',
+        message: 'Has rechazado la solicitud de viaje.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+    }).catch(error => {
+      console.error('Error al rechazar la solicitud:', error);
+    });
+  }
+
   guardarDatosConductor() {
     if (this.usuario) {
       if (this.fotoPerfil) {
