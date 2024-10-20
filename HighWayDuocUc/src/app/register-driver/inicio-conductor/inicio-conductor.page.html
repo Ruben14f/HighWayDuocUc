@@ -234,31 +234,30 @@
           realizados</ion-button>
       </div>
     </div>
-    <div *ngFor="let solicitud of solicitudes" class="viaje-card"
+    <div class="viaje-card"
       style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin: 0px 10px 10px 10px;">
       <div style="display: flex; align-items: center;">
         <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
-        <div>
-          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 10px;">
+        <div >
+          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
             <h4>Solicitudes</h4>
           </div>
-          <h6 style="margin: 0; font-weight: bold; font-size: 16px; margin-bottom: 10px;">
-            Nombre: {{ solicitud.pasajeroId }} <!-- Cambia esto por el nombre real del pasajero si está disponible -->
-          </h6>
+          <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Nombre: </h6>
           <div style="display: flex; margin-top: 10px;">
-            <ion-button expand="block"
-              style="--border-radius: 50px; --background: #3880ff; color: white;"
-              (click)="aceptarSolicitud(solicitud.id)">Aceptar
+            <ion-button id="toma-viaje" expand="block"
+              style="--border-radius: 50px; --background: #3880ff; color: white;">
+              Aceptar
             </ion-button>
-            <ion-button expand="block"
-              style="--border-radius: 50px; --background: #ff3b30; color: white;"
-              (click)="rechazarSolicitud(solicitud.id)">Cancelar
+            <ion-button id="toma-viaje" expand="block"
+              style="--border-radius: 50px; --background: #3880ff; color: white;">
+              Cancelar
             </ion-button>
           </div>
+
         </div>
       </div>
       <div>
-        <!-- Puedes añadir más información aquí si es necesario -->
+
       </div>
     </div>
 
