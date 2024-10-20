@@ -65,11 +65,11 @@ export class CrearviajeService {
   }
 
   // Método para crear una solicitud de viaje
-
-  crearSolicitud(viajeId: string, pasajeroId: string, destino: string, comentarios?: string) {
+  crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino: string, comentarios?: string) {
     const solicitud = {
       viajeId: viajeId,
       pasajeroId: pasajeroId,
+      conductorId: conductorId, // Usa el conductorId pasado como parámetro
       estado: 'pendiente',
       fechaSolicitud: new Date().toISOString(),
       destino: destino,
@@ -86,36 +86,34 @@ export class CrearviajeService {
       });
   }
 
-  obtenerSolicitudesPorConductor(conductorId: string): Observable<any[]> {
-    return this.firestore.collection('solicitudes', ref => ref.where('conductorId', '==', conductorId))
-      .snapshotChanges().pipe(
+
+
+  // Obtener solicitudes pendientes para un conductor específico
+  obtenerSolicitudesPorConductor(conductorId: string) {
+    return this.firestore.collection('solicitudes', ref => ref.where('conductorId', '==', conductorId).where('estado', '==', 'pendiente'))
+      .snapshotChanges()
+      .pipe(
         map(actions => actions.map(a => {
           const data = a.payload.doc.data() as any;
           const id = a.payload.doc.id;
           return { id, ...data };
-        })),
-        catchError((error) => {
-          console.error('Error al obtener solicitudes:', error);
-          return of([]);
-        })
+        }))
       );
   }
 
-
-
+  // Aceptar solicitud de un pasajero
   aceptarSolicitud(solicitudId: string) {
     return this.firestore.collection('solicitudes').doc(solicitudId).update({
-        estado: 'aceptada' // Cambia el estado a 'aceptada'
+      estado: 'aceptada'
     });
-}
+  }
 
-rechazarSolicitud(solicitudId: string) {
+  // Rechazar solicitud de un pasajero
+  rechazarSolicitud(solicitudId: string) {
     return this.firestore.collection('solicitudes').doc(solicitudId).update({
-        estado: 'rechazada' // Cambia el estado a 'rechazada'
+      estado: 'rechazada'
     });
-}
-
-
+  }
 
 
 

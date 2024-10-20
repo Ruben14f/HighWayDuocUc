@@ -4,7 +4,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { finalize, Observable } from 'rxjs';
+import { finalize } from 'rxjs';
 import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
 
@@ -43,12 +43,11 @@ export class InicioConductorPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
-    this.cargarSolicitudes();
-
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        this.obtenerSolicitudesPorConductor(user.uid); // Llama al método para obtener solicitudes
         try {
           this.usuario = await this._authService.getUserData(this.userId);
           if (this.usuario && this.usuario.fotoPerfil) {
@@ -61,6 +60,17 @@ export class InicioConductorPage implements OnInit {
         }
       }
     });
+
+    this._authService.getUser().subscribe(user => {
+      if (user) {
+        this.userId = user.uid;
+        // Obtener solicitudes para el conductor
+        this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe(solicitudes => {
+          this.solicitudes = solicitudes;
+        });
+      }
+    });
+
   }
 
   ionViewWillEnter() {
@@ -68,6 +78,8 @@ export class InicioConductorPage implements OnInit {
     this.auth.user.subscribe(async user => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
+
+
         // Obtener datos del usuario desde Firestore
         try {
           this.usuario = await this._authService.getUserData(this.userId);
@@ -79,6 +91,15 @@ export class InicioConductorPage implements OnInit {
       }
     });
   }
+
+
+
+  obtenerSolicitudesPorConductor(conductorId: string) {
+    this.crearViajeService.obtenerSolicitudesPorConductor(conductorId).subscribe(solicitudes => {
+      this.solicitudes = solicitudes;
+    });
+  }
+
 
   guardarDatosConductor() {
     if (this.usuario) {
@@ -106,61 +127,7 @@ export class InicioConductorPage implements OnInit {
   }
 
 
-  cargarSolicitudes() {
-    this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
-      this.solicitudes = solicitudes;
-      console.log('Solicitudes cargadas:', this.solicitudes); // Debugging line
-    }, error => {
-      console.error('Error al cargar solicitudes:', error);
-    });
-  }
 
-  aceptarSolicitud(solicitudId: string) {
-    this.crearViajeService.aceptarSolicitud(solicitudId).then(() => {
-      // Lógica adicional para manejar la aceptación
-      console.log('Solicitud aceptada:', solicitudId);
-
-      // Notificar al pasajero (puedes enviar un mensaje, actualizar el estado en la UI, etc.)
-      this.alertController.create({
-        header: 'Solicitud Aceptada',
-        message: 'La solicitud de viaje ha sido aceptada. El pasajero será notificado.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-
-      // Aquí puedes actualizar el estado del viaje o realizar otras acciones necesarias
-    }).catch(error => {
-      console.error('Error al aceptar la solicitud:', error);
-      this.alertController.create({
-        header: 'Error',
-        message: 'Ocurrió un error al aceptar la solicitud. Inténtalo de nuevo más tarde.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-    });
-  }
-
-  // Método para rechazar una solicitud
-  rechazarSolicitud(solicitudId: string) {
-    this.crearViajeService.rechazarSolicitud(solicitudId).then(() => {
-      // Lógica adicional para manejar el rechazo
-      console.log('Solicitud rechazada:', solicitudId);
-
-      // Notificar al pasajero (puedes enviar un mensaje, actualizar el estado en la UI, etc.)
-      this.alertController.create({
-        header: 'Solicitud Rechazada',
-        message: 'La solicitud de viaje ha sido rechazada. El pasajero será notificado.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-
-      // Aquí puedes actualizar el estado del viaje o realizar otras acciones necesarias
-    }).catch(error => {
-      console.error('Error al rechazar la solicitud:', error);
-      this.alertController.create({
-        header: 'Error',
-        message: 'Ocurrió un error al rechazar la solicitud. Inténtalo de nuevo más tarde.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-    });
-  }
 
 
   // Función para actualizar los datos del usuario en Firestore

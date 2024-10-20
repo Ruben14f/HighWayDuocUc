@@ -33,6 +33,8 @@ export class InicioPassengerPage implements OnInit {
   viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
   mostrarEstadoViaje: boolean = false; // Controla la visibilidad del botón de estado de viaje
   yaTieneViaje: boolean = true;
+  notificaciones: any[] = [];
+
 
 
 
@@ -133,6 +135,7 @@ export class InicioPassengerPage implements OnInit {
     this.auth.user.subscribe(async user => {
       if (user) {
         this.userId = user.uid;
+
         try {
           this.usuario = await this._authService.getUserData(this.userId);
           if (this.usuario && this.usuario.fotoPerfil) {
@@ -307,12 +310,15 @@ export class InicioPassengerPage implements OnInit {
     const origen = viaje.origen || 'Origen no especificado';
     const destino = viaje.destino || 'Destino no especificado';
 
+    // Asegúrate de que tienes el userId del conductor accesible
+    const conductorId = viaje.userId; // Esto debería ser el ID del conductor en el objeto viaje
+
     // Crear la solicitud
-    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, origen, destino)
+    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino)
         .then(() => {
             this.alertController.create({
                 header: 'Solicitud Enviada',
-                message: 'Tu solicitud de viaje ha sido enviada al conductor.',
+                message: 'Tu solicitud de viaje ha sido enviada al conductor. Espera una respuesta de el',
                 buttons: ['OK']
             }).then(alert => alert.present());
             this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
@@ -326,7 +332,8 @@ export class InicioPassengerPage implements OnInit {
                 buttons: ['OK']
             }).then(alert => alert.present());
         });
-  }
+}
+
 
 
 

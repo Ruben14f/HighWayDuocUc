@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,11 @@ export class AuthService {
     private firestore: Firestore,
     private router: Router
   ) {}
+
+  // Método para obtener el usuario actual
+  getUser(): Observable<any> {
+    return this.afAuth.authState; // Devuelve un Observable con el estado de autenticación
+  }
 
   // Registro con email y contraseña
   async register(email: string, password: string, additionalData: any) {

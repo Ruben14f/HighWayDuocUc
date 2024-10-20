@@ -220,54 +220,62 @@
   <div class="container-inicio" style="margin-bottom: 80px;">
     <div class="opciones-inicio">
       <div class="opciones">
-        <ion-button (click)="crearViaje()" style="--border-radius: 50px;"><ion-icon name="car-outline"
-            style="margin-right: 10px;"></ion-icon> Crear viaje</ion-button>
+        <ion-button (click)="crearViaje()" style="--border-radius: 50px;">
+          <ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Crear viaje
+        </ion-button>
       </div>
       <div class="opciones">
-        <ion-button (click)="irViajeCreado()" style="--border-radius: 50px;"><ion-icon name="car-outline"
-            style="margin-right: 10px;"></ion-icon> Mostrar el
-          viaje creado</ion-button>
+        <ion-button (click)="irViajeCreado()" style="--border-radius: 50px;">
+          <ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Mostrar el viaje creado
+        </ion-button>
       </div>
       <div class="opciones">
-        <ion-button style="--border-radius: 50px;"><ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon>
-          Historial de viajes
-          realizados</ion-button>
+        <ion-button style="--border-radius: 50px;">
+          <ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Historial de viajes realizados
+        </ion-button>
       </div>
     </div>
-    <div class="viaje-card"
-      style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin: 0px 10px 10px 10px;">
-      <div style="display: flex; align-items: center;">
-        <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
-        <div >
-          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <h4>Solicitudes</h4>
-          </div>
-          <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Nombre: </h6>
-          <div style="display: flex; margin-top: 10px;">
-            <ion-button id="toma-viaje" expand="block"
-              style="--border-radius: 50px; --background: #3880ff; color: white;">
-              Aceptar
-            </ion-button>
-            <ion-button id="toma-viaje" expand="block"
-              style="--border-radius: 50px; --background: #3880ff; color: white;">
-              Cancelar
-            </ion-button>
-          </div>
 
+    <div *ngIf="solicitudes.length > 0; else noSolicitudes">
+      <div *ngFor="let solicitud of solicitudes" class="viaje-card"
+        style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin: 0px 10px 10px 10px;">
+        <div style="display: flex; align-items: center;">
+          <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
+          <div>
+            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <h4>Solicitud de Viaje</h4>
+            </div>
+            <div style="display: flex;">
+              <h6 style="margin: 0 15px 0px 0px; font-weight: bold; font-size: 16px;">Nombre:</h6>
+              {{ usuario.nombre | titlecase}} {{ usuario.apellido | titlecase}}
+            </div>
+            <div style="display: flex; margin-top: 10px;">
+              <ion-button expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;"
+                >
+                Aceptar
+              </ion-button>
+              <ion-button expand="block" style="--border-radius: 50px; --background: #ff3b30; color: white;"
+                >
+                Cancelar
+              </ion-button>
+            </div>
+          </div>
         </div>
       </div>
-      <div>
-      </div>
     </div>
+
+    <ng-template #noSolicitudes>
+      <div>No hay solicitudes pendientes.</div>
+    </ng-template>
   </div>
 
-  <!-- Footer -->
-  <ion-footer>
-    <ion-toolbar style="--background: rgb(231, 231, 231)">
-      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-        <ion-button (click)="modoPasajero()" fill="Outline"
-          style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
-      </div>
-    </ion-toolbar>
-  </ion-footer>
+    <!-- Footer -->
+    <ion-footer>
+      <ion-toolbar style="--background: rgb(231, 231, 231)">
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+          <ion-button (click)="modoPasajero()" fill="Outline"
+            style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
+        </div>
+      </ion-toolbar>
+    </ion-footer>
 </ion-content>
