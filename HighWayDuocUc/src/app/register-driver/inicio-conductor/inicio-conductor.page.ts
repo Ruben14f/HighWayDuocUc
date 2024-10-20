@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { finalize, Observable } from 'rxjs';
 import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
+import { SolicitudViajeService } from 'src/app/common/solicitudes/solicituviajes.service';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -23,6 +24,9 @@ export class InicioConductorPage implements OnInit {
   dataService: any;
   fotoPerfil: any;
   uploadProgress: number = 0;
+  solicitudes: any[] = [];
+
+
 
 
 
@@ -31,12 +35,15 @@ export class InicioConductorPage implements OnInit {
     private _authService: AuthService,
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
+    private solicitudViajeService: SolicitudViajeService
 
   ) { }
 
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+
+    this.obtenerSolicitudes();
 
 
 
@@ -72,6 +79,28 @@ export class InicioConductorPage implements OnInit {
       } else {
         console.error('No hay usuario autenticado');
       }
+    });
+  }
+
+  obtenerSolicitudes() {
+    this.solicitudViajeService.obtenerSolicitudes().subscribe(solicitudes => {
+      this.solicitudes = solicitudes;
+    });
+  }
+
+  aceptarSolicitud(solicitudId: string) {
+    this.solicitudViajeService.actualizarEstadoSolicitud(solicitudId, 'aceptada').then(() => {
+      console.log('Solicitud aceptada');
+    }).catch(error => {
+      console.error('Error al aceptar la solicitud:', error);
+    });
+  }
+
+  rechazarSolicitud(solicitudId: string) {
+    this.solicitudViajeService.actualizarEstadoSolicitud(solicitudId, 'rechazada').then(() => {
+      console.log('Solicitud rechazada');
+    }).catch(error => {
+      console.error('Error al rechazar la solicitud:', error);
     });
   }
 
