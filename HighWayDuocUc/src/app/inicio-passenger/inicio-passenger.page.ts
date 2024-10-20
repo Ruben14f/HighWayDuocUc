@@ -138,7 +138,7 @@ export class InicioPassengerPage implements OnInit {
           if (this.usuario && this.usuario.fotoPerfil) {
             this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
           } else {
-            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
+            this.imagePreview = 'assets/img/avatar.png'; // Imagen predeterminada si no hay imagen
           }
         } catch (error) {
           console.error('Error al obtener datos del usuario', error);
