@@ -26,17 +26,14 @@ export class InicioConductorPage implements OnInit {
   uploadProgress: number = 0;
   solicitudes: any[] = []; // Almacenar solicitudes
 
-
-
-
-  constructor(private router: Router,
+  constructor(
+    private router: Router,
     private auth: AngularFireAuth,
     private _authService: AuthService,
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
     private crearViajeService: CrearviajeService,
     private alertController: AlertController
-
   ) { }
 
   ngOnInit() {
@@ -44,7 +41,7 @@ export class InicioConductorPage implements OnInit {
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
 
     // Cargar la imagen de perfil directamente desde Firestore
-    this.auth.user.subscribe(async user => {
+    this.auth.user.subscribe(async (user) => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
         this.obtenerSolicitudesPorConductor(user.uid); // Llama al método para obtener solicitudes
@@ -61,24 +58,22 @@ export class InicioConductorPage implements OnInit {
       }
     });
 
-    this._authService.getUser().subscribe(user => {
+    this._authService.getUser().subscribe((user) => {
       if (user) {
         this.userId = user.uid;
         // Obtener solicitudes para el conductor
-        this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe(solicitudes => {
+        this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
           this.solicitudes = solicitudes;
         });
       }
     });
-
   }
 
   ionViewWillEnter() {
     // Obtener información del usuario autenticado
-    this.auth.user.subscribe(async user => {
+    this.auth.user.subscribe(async (user) => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
-
 
         // Obtener datos del usuario desde Firestore
         try {
@@ -92,35 +87,35 @@ export class InicioConductorPage implements OnInit {
     });
   }
 
-
-
   obtenerSolicitudesPorConductor(conductorId: string) {
-    this.crearViajeService.obtenerSolicitudesPorConductor(conductorId).subscribe(solicitudes => {
+    this.crearViajeService.obtenerSolicitudesPorConductor(conductorId).subscribe((solicitudes) => {
       this.solicitudes = solicitudes;
     });
   }
 
-
-  aceptarSolicitud(solicitudId: string) {
-    this.crearViajeService.aceptarSolicitud(solicitudId).then(() => {
+  // Aceptar solicitud de viaje
+  aceptarSolicitud(solicitudId: string, viajeId: string) {
+    this.crearViajeService.aceptarSolicitud(solicitudId, viajeId).then(() => {
       this.alertController.create({
         header: 'Solicitud Aceptada',
         message: 'Has aceptado la solicitud de viaje.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-    }).catch(error => {
+        buttons: ['OK'],
+      }).then((alert) => alert.present());
+    }).catch((error) => {
       console.error('Error al aceptar la solicitud:', error);
     });
   }
 
+
+  // Rechazar solicitud de viaje
   rechazarSolicitud(solicitudId: string) {
     this.crearViajeService.rechazarSolicitud(solicitudId).then(() => {
       this.alertController.create({
         header: 'Solicitud Rechazada',
         message: 'Has rechazado la solicitud de viaje.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-    }).catch(error => {
+        buttons: ['OK'],
+      }).then((alert) => alert.present());
+    }).catch((error) => {
       console.error('Error al rechazar la solicitud:', error);
     });
   }
@@ -135,13 +130,15 @@ export class InicioConductorPage implements OnInit {
         task.percentageChanges().subscribe((progress) => {
           this.uploadProgress = progress || 0;
         });
-        task.snapshotChanges().pipe(
-          finalize(() => {
-            fileRef.getDownloadURL().subscribe((fotoUrlPerfil) => {
-              this.actualizarPerfil(fotoUrlPerfil);
-            });
-          })
-        ).subscribe();
+        task.snapshotChanges()
+          .pipe(
+            finalize(() => {
+              fileRef.getDownloadURL().subscribe((fotoUrlPerfil) => {
+                this.actualizarPerfil(fotoUrlPerfil);
+              });
+            })
+          )
+          .subscribe();
       } else {
         this.actualizarPerfil(this.usuario.fotoPerfil || ''); // Mantener la imagen anterior si no se sube una nueva
       }
@@ -150,15 +147,10 @@ export class InicioConductorPage implements OnInit {
     }
   }
 
-
-
-
-
-  // Función para actualizar los datos del usuario en Firestore
   actualizarPerfil(fotoUrlPerfil: string) {
     const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
     usuarioRef.update({
-      fotoPerfil: fotoUrlPerfil // Guardar la URL de la imagen en Firestore
+      fotoPerfil: fotoUrlPerfil, // Guardar la URL de la imagen en Firestore
     }).then(() => {
       this.imagePreview = fotoUrlPerfil; // Actualiza la vista inmediatamente
     }).catch((error) => {
@@ -166,10 +158,6 @@ export class InicioConductorPage implements OnInit {
     });
   }
 
-
-
-
-  //Para el tema de olvidar la contraseña
   mantencion() {
     this.isModalOpen = true;
     this.reproducirError();
@@ -178,40 +166,38 @@ export class InicioConductorPage implements OnInit {
   closeModal() {
     this.isModalOpen = false;
   }
-  //Modo Pasajero
-  modoPasajero() {
-    this.router.navigate(['/inicio-passenger'])
-  }
 
+  modoPasajero() {
+    this.router.navigate(['/inicio-passenger']);
+  }
 
   imgPerfil() {
     this.isModalOpen4 = true;
   }
+
   closeImgPerfil() {
     this.isModalOpen4 = false;
   }
 
-  //Para el perfil
   perfilUsuario() {
     this.isModalOpen2 = true;
   }
+
   setOpen(isOpen: boolean) {
     this.isModalOpen2 = isOpen;
   }
 
-
-
   preguntas() {
     this.isModalOpen3 = true;
   }
+
   closePreguntas() {
     this.isModalOpen3 = false;
   }
-  //Sonidito para el error de la ruedita
+
   reproducirError() {
     const audio = new Audio('assets/music/error.mp3');
-    //El validador en caso de
-    audio.play().catch(error => {
+    audio.play().catch((error) => {
       console.error('Error al reproducir el sonido:', error);
     });
   }
@@ -228,8 +214,6 @@ export class InicioConductorPage implements OnInit {
     this.router.navigate(['/viaje-creado-conductor']);
   }
 
-
-  // Función para manejar la selección de archivo de imagen
   onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -245,17 +229,11 @@ export class InicioConductorPage implements OnInit {
   logout() {
     this.setOpen(false);
     this._authService.logout().then(() => {
-      // Elimina la imagen de perfil del localStorage al cerrar sesión
       localStorage.removeItem('perfilImage');
-      this.imagePreview = null; // Resetea la vista de la imagen
+      this.imagePreview = null;
       this.router.navigate(['/login']); // Redirigir al login
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error);
     });
   }
-
 }
-
-
-
-

@@ -86,8 +86,6 @@ export class CrearviajeService {
       });
   }
 
-
-
   // Obtener solicitudes pendientes para un conductor específico
   obtenerSolicitudesPorConductor(conductorId: string) {
     return this.firestore.collection('solicitudes', ref => ref.where('conductorId', '==', conductorId).where('estado', '==', 'pendiente'))
@@ -100,13 +98,58 @@ export class CrearviajeService {
         }))
       );
   }
+  // Aceptar solicitud de un pasajero y actualizar asientos
+  aceptarSolicitud(solicitudId: string, viajeId: string) {
+    const viajeRef = this.firestore.collection('viajes').doc(viajeId).ref;
+    const solicitudRef = this.firestore.collection('solicitudes').doc(solicitudId).ref;
 
-  // Aceptar solicitud de un pasajero
-  aceptarSolicitud(solicitudId: string) {
-    return this.firestore.collection('solicitudes').doc(solicitudId).update({
-      estado: 'aceptada'
+    return this.firestore.firestore.runTransaction(async (transaction) => {
+      const viajeDoc = await transaction.get(viajeRef);
+
+      if (!viajeDoc.exists) {
+        throw new Error('El viaje no existe');
+      }
+
+      // Asegurarse de que el tipo de datos devuelto incluye pasajeros
+      const viajeData = viajeDoc.data() as { pasajeros: number } | undefined;
+
+      if (viajeData?.pasajeros !== undefined && viajeData.pasajeros > 0) {
+        const nuevosPasajeros = viajeData.pasajeros - 1;
+
+        // Actualizamos el número de pasajeros en el viaje
+        transaction.update(viajeRef, { pasajeros: nuevosPasajeros });
+
+        // Actualizamos el estado de la solicitud
+        transaction.update(solicitudRef, { estado: 'aceptada' });
+
+        console.log('Solicitud aceptada y asientos actualizados');
+      } else {
+        throw new Error('No hay asientos disponibles o el campo "pasajeros" no es válido');
+      }
     });
   }
+
+  notificarConductorCancelacion(conductorId: string, pasajeroId: string, pasajeroNombre: string) {
+    // Crear el objeto de notificación (o actualizar una colección de notificaciones en Firestore)
+    const notificacion = {
+      conductorId: conductorId,
+      mensaje: `El pasajero ${pasajeroNombre} ha cancelado su viaje.`,
+      pasajeroId: pasajeroId,
+      fecha: new Date().toISOString(),
+      estado: 'pendiente'
+    };
+
+    // Guardar la notificación en una colección de notificaciones
+    return this.firestore.collection('notificaciones').add(notificacion)
+      .then(() => {
+        console.log('Notificación enviada al conductor.');
+      })
+      .catch((error) => {
+        console.error('Error al enviar la notificación al conductor:', error);
+        throw error;
+      });
+  }
+
 
   // Rechazar solicitud de un pasajero
   rechazarSolicitud(solicitudId: string) {
@@ -115,6 +158,10 @@ export class CrearviajeService {
     });
   }
 
-
-
+// Obtener solicitudes pendientes y sus cambios para el pasajero
+  obtenerSolicitudesPorPasajero(pasajeroId: string) {
+    return this.firestore.collection('solicitudes', ref =>
+      ref.where('pasajeroId', '==', pasajeroId)
+    ).snapshotChanges();
+  }
 }

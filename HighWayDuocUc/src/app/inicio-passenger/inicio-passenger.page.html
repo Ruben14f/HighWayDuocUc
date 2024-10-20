@@ -230,7 +230,7 @@
             </div>
           </div>
           <div>
-            <ion-button *ngIf="yaTieneViaje"  id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
+            <ion-button *ngIf="yaTieneViaje" id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
               style="--border-radius: 50px; --background: #3880ff; color: white;">
               Tomar Viaje
             </ion-button>
@@ -242,7 +242,10 @@
         <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
       </ng-template>
     </div>
-    <ion-button *ngIf="mostrarEstadoViaje" style="--border-radius: 50px; margin: 175px 100px 0px 100px ;" (click)="ModalEstadoViaje()">
+
+    <!-- Botón de Estado de Viaje (solo visible si mostrarEstadoViaje es true) -->
+    <ion-button  *ngIf="mostrarEstadoViaje" style="--border-radius: 50px; margin: 175px 100px 0px 100px ;"
+      (click)="ModalEstadoViaje()">
       Estado de viaje
     </ion-button>
   </div>
@@ -250,44 +253,44 @@
   <ion-modal [isOpen]="isModalOpen5">
     <ng-template>
       <ion-content style="--background: red;">
-          <ion-card class="modal-card">
-            <ion-card-header>
-              <ion-card-title>Estado de viaje</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              <ion-list>
-                <ion-item lines="full">
-                  <ion-label><strong>Fecha:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Hora inicio viaje:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Hora termino viaje:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Valor pagado:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Metodo de pago:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Estado del viaje:</strong></ion-label>
-                </ion-item>
-                <ion-item lines="full">
-                  <ion-label><strong>Nombre chofer:</strong></ion-label>
-                </ion-item>
-              </ion-list>
-            </ion-card-content>
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-              <ion-button fill="outline" style="--color: white; --background: #1a65eb;" (click)="closeModalEstadoViaje()">
-                Cerrar
-              </ion-button>
-              <ion-button (click)="cancelarViaje()" style="--color: white; --background: orange;">
-                Cancelar viaje
-              </ion-button>
-            </div>
-          </ion-card>
+        <ion-card class="modal-card">
+          <ion-card-header>
+            <ion-card-title>Estado de viaje</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              <ion-item lines="full">
+                <ion-label><strong>Fecha:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Hora inicio viaje:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Hora termino viaje:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Valor pagado:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Metodo de pago:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Estado del viaje:</strong></ion-label>
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label><strong>Nombre chofer:</strong></ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+          <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+            <ion-button fill="outline" style="--color: white; --background: #1a65eb;" (click)="closeModalEstadoViaje()">
+              Cerrar
+            </ion-button>
+            <ion-button (click)="cancelarViaje()" style="--color: white; --background: orange;">
+              Cancelar viaje
+            </ion-button>
+          </div>
+        </ion-card>
       </ion-content>
     </ng-template>
   </ion-modal>

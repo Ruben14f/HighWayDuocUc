@@ -9,8 +9,6 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
-import { getDoc } from '@firebase/firestore';
-
 
 
 @Component({
@@ -35,8 +33,6 @@ export class InicioPassengerPage implements OnInit {
   viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
   mostrarEstadoViaje: boolean = false; // Controla la visibilidad del botón de estado de viaje
   yaTieneViaje: boolean = true;
-  notificaciones: any[] = [];
-
 
 
 
@@ -59,9 +55,6 @@ export class InicioPassengerPage implements OnInit {
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
-
-
-
 
     this.obtenerViajes();
     this.obtenerSedes();
@@ -103,32 +96,6 @@ export class InicioPassengerPage implements OnInit {
   }
 
 
-
-
-
-  ionViewWillEnter() {
-    this.auth.user.subscribe(async user => {
-      if (user) {
-        this.userId = user.uid;
-
-        try {
-          this.usuario = await this._authService.getUserData(this.userId);
-          if (this.usuario && this.usuario.fotoPerfil) {
-            this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
-          } else {
-            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
-          }
-        } catch (error) {
-          console.error('Error al obtener datos del usuario', error);
-        }
-      } else {
-        console.error('No hay usuario autenticado');
-      }
-    });
-  }
-
-
-
   obtenerViajes() {
     this.crearViajeService.obtenerViajes().subscribe(viajes => {
       this.viajes = viajes;
@@ -160,6 +127,26 @@ export class InicioPassengerPage implements OnInit {
     } else {
       this.obtenerViajes();
     }
+  }
+
+  ionViewWillEnter() {
+    this.auth.user.subscribe(async user => {
+      if (user) {
+        this.userId = user.uid;
+        try {
+          this.usuario = await this._authService.getUserData(this.userId);
+          if (this.usuario && this.usuario.fotoPerfil) {
+            this.imagePreview = this.usuario.fotoPerfil; // Cargar la imagen de perfil del usuario
+          } else {
+            this.imagePreview = 'ruta/a/imagen/predeterminada.jpg'; // Imagen predeterminada si no hay imagen
+          }
+        } catch (error) {
+          console.error('Error al obtener datos del usuario', error);
+        }
+      } else {
+        console.error('No hay usuario autenticado');
+      }
+    });
   }
 
 
@@ -306,6 +293,16 @@ export class InicioPassengerPage implements OnInit {
       return;
     }
 
+    // Verificar si el viaje tiene pasajeros disponibles
+    if (viaje.pasajeros === 0) {
+      this.alertController.create({
+        header: 'Viaje no disponible',
+        message: 'No quedan asientos disponibles para este viaje.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return; // Salir si no hay pasajeros disponibles
+    }
+
     // Verificar si el usuario ya tiene un viaje activo
     if (this.usuario.viajeActivo) {
       this.alertController.create({
@@ -316,19 +313,15 @@ export class InicioPassengerPage implements OnInit {
       return; // No permitir tomar otro viaje
     }
 
-    // Aquí asumimos que tienes los campos de origen y destino en el objeto 'viaje'.
     const origen = viaje.origen || 'Origen no especificado';
     const destino = viaje.destino || 'Destino no especificado';
 
-    // Asegúrate de que tienes el userId del conductor accesible
-    const conductorId = viaje.userId; // Esto debería ser el ID del conductor en el objeto viaje
-
     // Crear la solicitud
-    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino)
+    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, origen, destino)
       .then(() => {
         this.alertController.create({
           header: 'Solicitud Enviada',
-          message: 'Tu solicitud de viaje ha sido enviada al conductor. Espera una respuesta de el',
+          message: 'Tu solicitud de viaje ha sido enviada al conductor.',
           buttons: ['OK']
         }).then(alert => alert.present());
         this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo

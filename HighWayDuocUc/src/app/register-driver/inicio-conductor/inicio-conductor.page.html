@@ -251,7 +251,7 @@
             </div>
             <div style="display: flex; margin-top: 10px;">
               <ion-button expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;"
-                (click)="aceptarSolicitud(solicitud.id)">
+                (click)="aceptarSolicitud(solicitud.id, solicitud.viajeId)">
                 Aceptar
               </ion-button>
               <ion-button expand="block" style="--border-radius: 50px; --background: #ff3b30; color: white;"
@@ -268,13 +268,13 @@
     </ng-template>
   </div>
 
-    <!-- Footer -->
-    <ion-footer>
-      <ion-toolbar style="--background: rgb(231, 231, 231)">
-        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-          <ion-button (click)="modoPasajero()" fill="Outline"
-            style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
-        </div>
-      </ion-toolbar>
-    </ion-footer>
+  <!-- Footer -->
+  <ion-footer>
+    <ion-toolbar style="--background: rgb(231, 231, 231)">
+      <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <ion-button (click)="modoPasajero()" fill="Outline"
+          style="--background: rgb(199, 197, 197); --color: black;">Cambiar a Modo Pasajero</ion-button>
+      </div>
+    </ion-toolbar>
+  </ion-footer>
 </ion-content>

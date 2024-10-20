@@ -42,6 +42,9 @@ export class AuthService {
     }
   }
 
+
+
+
   async getUserData(uid: string) {
     const userDocRef = doc(this.firestore, `usuarios/${uid}`);
     const userDoc = await getDoc(userDocRef);
