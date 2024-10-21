@@ -44,7 +44,7 @@ export class InicioConductorPage implements OnInit {
     this.auth.user.subscribe(async (user) => {
       if (user) {
         this.userId = user.uid; // Guardamos el UID del usuario autenticado
-        this.obtenerSolicitudesPorConductor(user.uid); // Llama al método para obtener solicitudes
+        this.obtenerSolicitudes()
         try {
           this.usuario = await this._authService.getUserData(this.userId);
           if (this.usuario && this.usuario.fotoPerfil) {
@@ -58,13 +58,10 @@ export class InicioConductorPage implements OnInit {
       }
     });
 
-    this._authService.getUser().subscribe((user) => {
+    this.auth.user.subscribe(async (user) => {
       if (user) {
-        this.userId = user.uid;
-        // Obtener solicitudes para el conductor
-        this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
-          this.solicitudes = solicitudes;
-        });
+        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        this.obtenerSolicitudes(); // Llamamos a obtener las solicitudes para el conductor
       }
     });
   }
@@ -87,12 +84,20 @@ export class InicioConductorPage implements OnInit {
     });
   }
 
-  obtenerSolicitudesPorConductor(conductorId: string) {
-    this.crearViajeService.obtenerSolicitudesPorConductor(conductorId).subscribe((solicitudes) => {
-      this.solicitudes = solicitudes;
+  obtenerSolicitudes() {
+    if (!this.userId) {
+      console.error('No hay conductor autenticado');
+      return;
+    }
+
+    // Llama al método obtenerSolicitudesPorConductor del servicio
+    this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
+      console.log('Solicitudes obtenidas:', solicitudes);  // Depuración
+      this.solicitudes = solicitudes; // Asigna las solicitudes obtenidas a la variable
+    }, error => {
+      console.error('Error al obtener solicitudes:', error);
     });
   }
-
   // Aceptar solicitud de viaje
   aceptarSolicitud(solicitudId: string, viajeId: string) {
     this.crearViajeService.aceptarSolicitud(solicitudId, viajeId).then(() => {

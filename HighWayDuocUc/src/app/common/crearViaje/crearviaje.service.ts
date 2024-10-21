@@ -69,7 +69,7 @@ export class CrearviajeService {
     const solicitud = {
       viajeId: viajeId,
       pasajeroId: pasajeroId,
-      conductorId: conductorId, // Usa el conductorId pasado como parámetro
+      conductorId: conductorId,  // Asegúrate de que se pasa el ID correcto del conductor
       estado: 'pendiente',
       fechaSolicitud: new Date().toISOString(),
       destino: destino,
@@ -86,16 +86,27 @@ export class CrearviajeService {
       });
   }
 
+
   // Obtener solicitudes pendientes para un conductor específico
   obtenerSolicitudesPorConductor(conductorId: string) {
-    return this.firestore.collection('solicitudes', ref => ref.where('conductorId', '==', conductorId).where('estado', '==', 'pendiente'))
+    console.log('Conductor ID para la consulta:', conductorId); // Verifica el conductorId
+
+    return this.firestore.collection('solicitudes', ref =>
+      ref.where('conductorId', '==', conductorId).where('estado', '==', 'pendiente'))
       .snapshotChanges()
       .pipe(
-        map(actions => actions.map(a => {
-          const data = a.payload.doc.data() as any;
-          const id = a.payload.doc.id;
-          return { id, ...data };
-        }))
+        map(actions => {
+          console.log('Solicitudes Firestore:', actions); // Verifica qué estás obteniendo
+          return actions.map(a => {
+            const data = a.payload.doc.data() as any;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        }),
+        catchError((error) => {
+          console.error('Error al obtener solicitudes:', error);
+          return of([]); // Retorna un array vacío en caso de error
+        })
       );
   }
   // Aceptar solicitud de un pasajero y actualizar asientos
