@@ -64,27 +64,28 @@ export class CrearviajeService {
       });
   }
 
-  // Método para crear una solicitud de viaje
-  crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino: string, comentarios?: string) {
-    const solicitud = {
-      viajeId: viajeId,
-      pasajeroId: pasajeroId,
-      conductorId: conductorId,  // Asegúrate de que se pasa el ID correcto del conductor
-      estado: 'pendiente',
-      fechaSolicitud: new Date().toISOString(),
-      destino: destino,
-      comentarios: comentarios || ''
-    };
+// Método para crear una solicitud de viaje
+crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino: string, comentarios?: string): Promise<any> {
+  const solicitud = {
+    viajeId: viajeId,
+    pasajeroId: pasajeroId,
+    conductorId: conductorId,
+    estado: 'pendiente',
+    fechaSolicitud: new Date().toISOString(),
+    destino: destino,
+    comentarios: comentarios || ''
+  };
 
-    return this.firestore.collection('solicitudes').add(solicitud)
-      .then(() => {
-        console.log('Solicitud de viaje creada exitosamente');
-      })
-      .catch((error) => {
-        console.error('Error al crear la solicitud de viaje:', error);
-        throw error;
-      });
-  }
+  return this.firestore.collection('solicitudes').add(solicitud)
+    .then((docRef) => {
+      console.log('Solicitud de viaje creada exitosamente con ID:', docRef.id);
+      return { id: docRef.id, ...solicitud }; // Retorna el ID del documento junto con los datos
+    })
+    .catch((error) => {
+      console.error('Error al crear la solicitud de viaje:', error);
+      throw error;
+    });
+}
 
 
   // Obtener solicitudes pendientes para un conductor específico
@@ -140,27 +141,17 @@ export class CrearviajeService {
     });
   }
 
-  notificarConductorCancelacion(conductorId: string, pasajeroId: string, pasajeroNombre: string) {
-    // Crear el objeto de notificación (o actualizar una colección de notificaciones en Firestore)
-    const notificacion = {
-      conductorId: conductorId,
-      mensaje: `El pasajero ${pasajeroNombre} ha cancelado su viaje.`,
-      pasajeroId: pasajeroId,
-      fecha: new Date().toISOString(),
-      estado: 'pendiente'
-    };
-
-    // Guardar la notificación en una colección de notificaciones
-    return this.firestore.collection('notificaciones').add(notificacion)
-      .then(() => {
-        console.log('Notificación enviada al conductor.');
-      })
-      .catch((error) => {
-        console.error('Error al enviar la notificación al conductor:', error);
-        throw error;
-      });
-  }
-
+  // Escuchar los cambios de estado de una solicitud específica
+// Escuchar los cambios de estado de una solicitud específica
+observarCambiosDeSolicitud(solicitudId: string) {
+  return this.firestore.collection('solicitudes').doc(solicitudId).snapshotChanges().pipe(
+    map(a => {
+      const data = a.payload.data() as any;
+      const id = a.payload.id;
+      return { id, ...data };
+    })
+  );
+}
 
   // Rechazar solicitud de un pasajero
   rechazarSolicitud(solicitudId: string) {

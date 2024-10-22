@@ -3,12 +3,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class InicioPassengerPage implements OnInit {
   viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
   mostrarEstadoViaje: boolean = false; // Controla la visibilidad del botón de estado de viaje
   yaTieneViaje: boolean = true;
+  solicitudSubscription: Subscription | null = null;
 
 
 
@@ -46,7 +48,8 @@ export class InicioPassengerPage implements OnInit {
     private storage: AngularFireStorage,
     private auth: AngularFireAuth,
     private _authService: AuthService,
-    private crearViajeService: CrearviajeService
+    private crearViajeService: CrearviajeService,
+    private toastController: ToastController,
   ) { }
 
   sedes: Sede[] = [];
@@ -149,6 +152,17 @@ export class InicioPassengerPage implements OnInit {
     });
   }
 
+
+  // Método para mostrar un Toast
+  async mostrarToast(mensaje: string, color: string = 'dark') {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 3000, // Duración en milisegundos
+      position: 'middle',
+      color: color,
+    });
+    toast.present();
+  }
 
   guardarDatosConductor() {
     if (this.usuario) {
@@ -313,7 +327,6 @@ export class InicioPassengerPage implements OnInit {
       return; // No permitir tomar otro viaje
     }
 
-    const origen = viaje.origen || 'Origen no especificado';
     const destino = viaje.destino || 'Destino no especificado';
 
     // Obtener el conductorId (userId) del viaje antes de crear la solicitud
@@ -321,12 +334,16 @@ export class InicioPassengerPage implements OnInit {
 
     // Crear la solicitud
     this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino)
-      .then(() => {
+      .then((solicitudCreada) => {
         this.alertController.create({
           header: 'Solicitud Enviada',
           message: 'Tu solicitud de viaje ha sido enviada al conductor.',
           buttons: ['OK']
         }).then(alert => alert.present());
+
+        // Aquí llamamos al método para observar los cambios de estado de la solicitud
+        this.observarEstadoSolicitud(solicitudCreada.id); // Observar cambios en la solicitud
+
         this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
         localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
       })
@@ -340,6 +357,29 @@ export class InicioPassengerPage implements OnInit {
       });
   }
 
+  // Método para observar los cambios de estado de la solicitud
+observarEstadoSolicitud(solicitudId: string) {
+  this.solicitudSubscription = this.crearViajeService.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
+    if (solicitud.estado === 'aceptada') {
+      this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
+      this.mostrarEstadoViaje = true;
+      this.viajeSeleccionado = solicitud.viajeId;
+
+    } else if (solicitud.estado === 'rechazada') {
+      this.mostrarToast('Tu solicitud de viaje ha sido rechazada por el conductor. Intenta con otro.', 'danger');
+      this.mostrarEstadoViaje = false;
+      this.usuario.viajeActivo = false;
+
+      localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario));
+    } else if (solicitud.estado === 'cancelada') {
+      this.mostrarToast('El conductor ha cancelado el viaje. Puedes tomar otro.', 'danger');
+
+      this.mostrarEstadoViaje = false;
+      this.usuario.viajeActivo = false;
+      localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario));
+    }
+  });
+}
 
 
 
