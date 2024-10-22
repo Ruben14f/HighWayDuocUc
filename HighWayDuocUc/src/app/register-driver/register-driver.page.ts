@@ -12,7 +12,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   templateUrl: './register-driver.page.html',
   styleUrls: ['./register-driver.page.scss'],
 })
-export class RegisterDriverPage implements OnInit{
+export class RegisterDriverPage{
   driverForm: FormGroup;
   usuario: any;  // Información del usuario autenticado
   tipoVehiculo: string = '';
@@ -35,8 +35,9 @@ export class RegisterDriverPage implements OnInit{
       tipoVehiculo: ['', Validators.required],
       matricula: ['', Validators.required],
     })
-   }
-  ngOnInit() {}
+  }
+
+
 
   ionViewWillEnter() {
     // Obtener información del usuario autenticado
@@ -87,18 +88,30 @@ export class RegisterDriverPage implements OnInit{
   }
 
   // Función para actualizar los datos del usuario en Firestore
-  updateUserWithVehicleData(fotoUrl: string) {
+  async updateUserWithVehicleData(fotoUrl: string) {
     const usuarioRef = this.firestore.collection('usuarios').doc(this.userId);
 
-    usuarioRef.update({
-      tipoVehiculo: this.driverForm.get('tipoVehiculo')?.value, // Usar los valores del form
-      matricula: this.driverForm.get('matricula')?.value, // Usar los valores del form
-      fotoVehiculo: fotoUrl
-    }).then(() => {
-      this.router.navigate(['/welcome2']);
-    }).catch((error) => {
-      console.error('Error al actualizar el usuario en Firestore', error);
-    });
+    try {
+      // Obtener el documento actual del usuario
+      const userDocSnapshot = await usuarioRef.get().toPromise();
+
+      // Verificar si el documento de usuario existe antes de actualizar
+      if (userDocSnapshot?.exists) {
+        await usuarioRef.update({
+          tipoVehiculo: this.driverForm.get('tipoVehiculo')?.value, // Usar los valores del form
+          matricula: this.driverForm.get('matricula')?.value, // Usar los valores del form
+          fotoVehiculo: fotoUrl,
+          tipoDeUsuario: 'conductor'  // Establecer como conductor
+        });
+
+        // Redirigir al conductor a la página de bienvenida
+        this.router.navigate(['/welcome2']);
+      } else {
+        console.error('Documento de usuario no encontrado.');
+      }
+    } catch (error) {
+      console.error('Error al obtener o actualizar el documento del usuario:', error);
+    }
   }
 
   // Función para manejar la selección de archivo de imagen
