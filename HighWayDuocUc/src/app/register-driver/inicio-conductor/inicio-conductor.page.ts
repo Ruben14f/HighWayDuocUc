@@ -43,7 +43,7 @@ export class InicioConductorPage implements OnInit {
     // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async (user) => {
       if (user) {
-        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        this.userId = user.uid;
         this.obtenerSolicitudes()
         try {
           this.usuario = await this._authService.getUserData(this.userId);
@@ -217,6 +217,9 @@ export class InicioConductorPage implements OnInit {
 
   async irViajeCreado() {
     this.router.navigate(['/viaje-creado-conductor']);
+  }
+  async historialPasajero() {
+    this.router.navigate(['/travel-history-conductor'])
   }
 
   onFileSelected(event: Event) {

@@ -332,8 +332,9 @@ export class InicioPassengerPage implements OnInit {
     // Obtener el conductorId (userId) del viaje antes de crear la solicitud
     const conductorId = viaje.userId; // Aquí obtenemos el userId del conductor desde el documento del viaje
 
+
     // Crear la solicitud
-    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino)
+    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino, this.usuario.nombre, this.usuario.apellido )
       .then((solicitudCreada) => {
         this.alertController.create({
           header: 'Solicitud Enviada',

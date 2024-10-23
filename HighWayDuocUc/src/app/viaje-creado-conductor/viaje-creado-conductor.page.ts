@@ -93,7 +93,7 @@ export class ViajeCreadoConductorPage implements OnInit {
         // Mostrar alerta de éxito
         await this.finaliza3();
       } else {
-        console.log('No se encontró ningún viaje para este usuario.');
+        await this.errorFinaliza3();
       }
     } catch (error) {
       console.error('Error al finalizar la carrera y mover los datos:', error);
@@ -117,6 +117,23 @@ export class ViajeCreadoConductorPage implements OnInit {
 
     await alert.present(); // Muestra la alerta
   }
+  // Método para mostrar alerta
+  async errorFinaliza3() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Usted no tiene creado ningún viaje. Puede crear un viaje en el apartado "Crear Viaje" en el inicio',
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            this.NavController.pop(); // Redirigir a la página anterior
+          },
+        },
+      ],
+    });
+
+    await alert.present(); // Muestra la alerta
+  }
 
 
   // Función para capitalizar la primera letra
@@ -125,12 +142,6 @@ export class ViajeCreadoConductorPage implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 
-
-  //Para el tema de olvidar la contraseña
-  solicitudes() {
-    this.isModalOpen = true;
-    this.reproducirError();
-  }
 
   closeModal() {
     this.isModalOpen = false;

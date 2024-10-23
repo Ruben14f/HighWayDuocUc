@@ -149,8 +149,8 @@ export class CreateTravelPage implements OnInit {
   // Alerta de error al elegir más pasajeros
   async errorMasPasajeros() {
     const alert = await this.alertController.create({
-      header: 'Error',
-      message: 'No puedes elegir más de 1 pasajero.',
+      header: 'Error (USO DE VEHICULO: MOTO)',
+      message: 'No puede llevar a más de 1 persona en su moto.',
       buttons: ['OK']
     });
     await alert.present();

@@ -12,4 +12,3 @@ export interface Usuario {
   tipoVehiculo: string;
   matricula: string;
 }
-

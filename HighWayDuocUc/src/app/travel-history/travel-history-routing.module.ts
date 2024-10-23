@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: TravelHistoryPage
+  },  {
+    path: 'travel-history-conductor',
+    loadChildren: () => import('./travel-history-conductor/travel-history-conductor.module').then( m => m.TravelHistoryConductorPageModule)
   }
+
 ];
 
 @NgModule({

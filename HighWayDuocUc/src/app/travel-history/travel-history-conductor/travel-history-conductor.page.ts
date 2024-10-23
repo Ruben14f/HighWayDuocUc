@@ -4,14 +4,13 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AuthService } from 'src/app/common/services/auth.service';
-import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
 
 @Component({
-  selector: 'app-travel-history',
-  templateUrl: './travel-history.page.html',
-  styleUrls: ['./travel-history.page.scss'],
+  selector: 'app-travel-history-conductor',
+  templateUrl: './travel-history-conductor.page.html',
+  styleUrls: ['./travel-history-conductor.page.scss'],
 })
-export class TravelHistoryPage implements OnInit {
+export class TravelHistoryConductorPage implements OnInit {
   usuario: any;
   userId: string = '';
   viajeHistorial: any[] = [];
@@ -23,7 +22,6 @@ export class TravelHistoryPage implements OnInit {
     private _authService: AuthService,
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
-    private crearViajeService: CrearviajeService,
   ) { }
 
   ngOnInit() {
@@ -47,8 +45,9 @@ export class TravelHistoryPage implements OnInit {
     });
   }
 
+
   obtenerViajeHistorial() {
-    this.crearViajeService.obtenerViajeHistorial().subscribe(viajes => {
+    this.CrearviajeService.obtenerViajeHistorial().subscribe((viajes: any[]) => {
       this.viajeHistorial = viajes;
     });
   }

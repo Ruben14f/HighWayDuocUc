@@ -65,13 +65,15 @@ export class CrearviajeService {
   }
 
 // Método para crear una solicitud de viaje
-crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino: string, comentarios?: string): Promise<any> {
+crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino: string, nombre: string, apellido: string, comentarios?: string): Promise<any> {
   const solicitud = {
     viajeId: viajeId,
     pasajeroId: pasajeroId,
     conductorId: conductorId,
     estado: 'pendiente',
     fechaSolicitud: new Date().toISOString(),
+    nombre: nombre,
+    apellido: apellido,
     destino: destino,
     comentarios: comentarios || ''
   };
@@ -116,30 +118,51 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
     const solicitudRef = this.firestore.collection('solicitudes').doc(solicitudId).ref;
 
     return this.firestore.firestore.runTransaction(async (transaction) => {
+      // Obtener el documento del viaje
       const viajeDoc = await transaction.get(viajeRef);
 
       if (!viajeDoc.exists) {
         throw new Error('El viaje no existe');
       }
 
-      // Asegurarse de que el tipo de datos devuelto incluye pasajeros
-      const viajeData = viajeDoc.data() as { pasajeros: number } | undefined;
+      // Verificar que el viaje tiene el campo 'pasajeros'
+      const viajeData = viajeDoc.data() as { pasajeros: number, pasajerosAceptados?: any[] } | undefined;
 
       if (viajeData?.pasajeros !== undefined && viajeData.pasajeros > 0) {
         const nuevosPasajeros = viajeData.pasajeros - 1;
 
-        // Actualizamos el número de pasajeros en el viaje
-        transaction.update(viajeRef, { pasajeros: nuevosPasajeros });
+        // Obtener los datos de la solicitud
+        const solicitudDoc = await transaction.get(solicitudRef);
+        if (!solicitudDoc.exists) {
+          throw new Error('La solicitud no existe');
+        }
 
-        // Actualizamos el estado de la solicitud
+        const solicitudData = solicitudDoc.data() as { nombre: string, apellido: string, pasajeroId: string } | undefined;
+        if (!solicitudData) {
+          throw new Error('Datos de solicitud inválidos');
+        }
+
+        // Actualizar el estado de la solicitud a 'aceptada'
         transaction.update(solicitudRef, { estado: 'aceptada' });
 
-        console.log('Solicitud aceptada y asientos actualizados');
+        // Preparar los datos de la solicitud que se van a mover a la colección 'viajes'
+        const pasajeroAceptado = {
+          nombre: solicitudData.nombre,
+          apellido: solicitudData.apellido,
+          pasajeroId: solicitudData.pasajeroId,
+        };
+
+        // Actualizar la cantidad de pasajeros y agregar el pasajero aceptado al viaje
+        const nuevosPasajerosAceptados = viajeData.pasajerosAceptados ? [...viajeData.pasajerosAceptados, pasajeroAceptado] : [pasajeroAceptado];
+        transaction.update(viajeRef, { pasajeros: nuevosPasajeros, pasajerosAceptados: nuevosPasajerosAceptados });
+
+        console.log('Solicitud aceptada, asientos actualizados y datos movidos al viaje');
       } else {
         throw new Error('No hay asientos disponibles o el campo "pasajeros" no es válido');
       }
     });
   }
+
 
   // Escuchar los cambios de estado de una solicitud específica
 // Escuchar los cambios de estado de una solicitud específica
@@ -165,5 +188,22 @@ observarCambiosDeSolicitud(solicitudId: string) {
     return this.firestore.collection('solicitudes', ref =>
       ref.where('pasajeroId', '==', pasajeroId)
     ).snapshotChanges();
+  }
+  // Obtener todos los viajes por id del historial
+  obtenerViajeHistorial() {
+    return this.firestore.collection('viajeHistorial').snapshotChanges().pipe(
+      map(actions => actions.map(a => {
+        const data = a.payload.doc.data() as any; // Obtiene los datos del documento
+        const id = a.payload.doc.id; // Obtiene el ID del documento
+        return { id, ...data }; // Retorna un objeto que incluye el ID
+      })),
+      catchError((error) => {
+        console.error('Error al obtener viajeHistorial:', error);
+        return of([]); // Retorna un array vacío en caso de error
+      })
+    );
+  }
+  obtenerUsuarioPorId(userId: string): Observable<any> {
+    return this.firestore.collection('usuarios').doc(userId).valueChanges();
   }
 }

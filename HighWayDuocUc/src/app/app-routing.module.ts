@@ -43,6 +43,10 @@ const routes: Routes = [
     loadChildren: () => import('./travel-history/travel-history.module').then( m => m.TravelHistoryPageModule)
   },
   {
+    path: 'travel-history-conductor',
+    loadChildren: () => import('./travel-history/travel-history-conductor/travel-history-conductor.module').then( m => m.TravelHistoryConductorPageModule)
+  },
+  {
     path: 'welcome',
     loadChildren: () => import('./point-register/pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule)
   },

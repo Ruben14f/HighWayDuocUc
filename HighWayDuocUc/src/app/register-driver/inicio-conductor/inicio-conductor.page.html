@@ -118,7 +118,7 @@
               <div class="avatar"
                 style="display:flex; flex-direction: column; justify-content: center; margin: 0px 0px 20px;">
                 <div style="display: flex; justify-content: center;">
-                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" width="50%" />
+                  <img *ngIf="imagePreview" [src]="imagePreview" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 300px; object-fit: cover; border-radius: 50%; width: 200px; height: 200px;" />
                 </div>
                 <br>
                 <div style="display: flex; justify-content: center;">
@@ -230,7 +230,7 @@
         </ion-button>
       </div>
       <div class="opciones">
-        <ion-button style="--border-radius: 50px;">
+        <ion-button (click)="historialPasajero()" style="--border-radius: 50px;">
           <ion-icon name="car-outline" style="margin-right: 10px;"></ion-icon> Historial de viajes realizados
         </ion-button>
       </div>
@@ -247,7 +247,7 @@
             </div>
             <div style="display: flex;">
               <h6 style="margin: 0 15px 0px 0px; font-weight: bold; font-size: 16px;">Pasajero:</h6>
-              {{ usuario.nombre | titlecase }} {{ usuario.apellido | titlecase }}
+              {{ solicitud.nombre | titlecase }} {{ solicitud.apellido | titlecase }}
             </div>
             <div style="display: flex; margin-top: 10px;">
               <ion-button expand="block" style="--border-radius: 50px; --background: #3880ff; color: white;"
