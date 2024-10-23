@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { PasajeroBienvenidaPageModule } from './point-register/pasajero-bienvenida/pasajero-bienvenida.module';
-import { ConductorBienvenidaPage } from './point-register/conductor-bienvenida/conductor-bienvenida.page';
-import { ConductorBienvenidaPageModule } from './point-register/conductor-bienvenida/conductor-bienvenida.module';
+import { authGuardsGuard } from './common/services/auth-guards.guard';
+
 
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
   },
   {
     path: '',
@@ -28,7 +27,8 @@ const routes: Routes = [
   },
   {
     path: 'register-driver',
-    loadChildren: () => import('./register-driver/register-driver.module').then( m => m.RegisterDriverPageModule)
+    loadChildren: () => import('./register-driver/register-driver.module').then( m => m.RegisterDriverPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'point-register',
@@ -36,35 +36,43 @@ const routes: Routes = [
   },
   {
     path: 'inicio-passenger',
-    loadChildren: () => import('./inicio-passenger/inicio-passenger.module').then( m => m.InicioPassengerPageModule)
+    loadChildren: () => import('./inicio-passenger/inicio-passenger.module').then( m => m.InicioPassengerPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'travel-history',
-    loadChildren: () => import('./travel-history/travel-history.module').then( m => m.TravelHistoryPageModule)
+    loadChildren: () => import('./travel-history/travel-history.module').then( m => m.TravelHistoryPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'travel-history-conductor',
-    loadChildren: () => import('./travel-history/travel-history-conductor/travel-history-conductor.module').then( m => m.TravelHistoryConductorPageModule)
+    loadChildren: () => import('./travel-history/travel-history-conductor/travel-history-conductor.module').then( m => m.TravelHistoryConductorPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'welcome',
-    loadChildren: () => import('./point-register/pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule)
+    loadChildren: () => import('./point-register/pasajero-bienvenida/pasajero-bienvenida.module').then( m => m.PasajeroBienvenidaPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'inicio-conductor',
-    loadChildren: () => import('./register-driver/inicio-conductor/inicio-conductor.module').then( m => m.InicioConductorPageModule)
+    loadChildren: () => import('./register-driver/inicio-conductor/inicio-conductor.module').then( m => m.InicioConductorPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'welcome2',
-    loadChildren: () => import('./point-register/conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule)
+    loadChildren: () => import('./point-register/conductor-bienvenida/conductor-bienvenida.module').then( m => m.ConductorBienvenidaPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'create-travel',
-    loadChildren: () => import('./create-travel/create-travel.module').then( m => m.CreateTravelPageModule)
+    loadChildren: () => import('./create-travel/create-travel.module').then( m => m.CreateTravelPageModule),
+    canActivate: [authGuardsGuard]
   },
   {
     path: 'viaje-creado-conductor',
-    loadChildren: () => import('./viaje-creado-conductor/viaje-creado-conductor.module').then( m => m.ViajeCreadoConductorPageModule)
+    loadChildren: () => import('./viaje-creado-conductor/viaje-creado-conductor.module').then( m => m.ViajeCreadoConductorPageModule),
+    canActivate: [authGuardsGuard]
   },
 
 
