@@ -119,8 +119,8 @@ export class CreateTravelPage implements OnInit {
       }
 
       try {
-        // Llamar al servicio para crear el viaje, pasando el objeto viaje y el nombre del conductor
-        await this.crearViajeService.crearViaje(viajeCreado, this.usuario?.nombre,this.usuario?.apellido);
+        // Llamar al servicio para crear el viaje
+        await this.crearViajeService.crearViaje(viajeCreado, this.usuario?.nombre, this.usuario?.apellido);
 
         // Mostrar la alerta de confirmación
         const alert = await this.alertController.create({
@@ -129,7 +129,7 @@ export class CreateTravelPage implements OnInit {
           buttons: [{
             text: 'OK',
             handler: () => {
-              // Volver hacia atrás con un pop
+              // Redirigir de vuelta a inicio-conductor
               this.navController.pop();
             }
           }]

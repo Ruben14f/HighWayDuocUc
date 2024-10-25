@@ -9,26 +9,27 @@
   <br>
 
   <div class="crear-viaje">
-    <form  [formGroup]="crearViajeForm" (ngSubmit)="paraCrearViaje()">
+    <form [formGroup]="crearViajeForm" (ngSubmit)="paraCrearViaje()">
       <div class="input-crear-viaje">
         <label for="sede-de-salida">Sede del viaje</label>
-          <input class="input-field" type="text" formControlName="salida" readonly>
+        <input class="input-field" type="text" formControlName="salida" readonly />
       </div>
 
       <div class="input-crear-viaje">
         <label for="destino">Destino</label>
-        <input class="input-field" type="text" formControlName="destino" readonly>
+        <input class="input-field" type="text" formControlName="destino" readonly />
       </div>
+
       <div class="input-crear-viaje">
         <label for="hora-salida">Hora de salida</label>
-        <input class="input-field" type="time" formControlName="hora">
+        <input class="input-field" type="time" formControlName="hora" />
       </div>
 
       <div class="input-crear-viaje">
         <label for="pasajeros">Pasajeros</label>
         <ion-item lines="none">
           <ion-icon name="people-outline" slot="start" class="text-gray-400"></ion-icon>
-          <ion-select  formControlName="pasajeros" placeholder="Pasajeros" interface="popover">
+          <ion-select formControlName="pasajeros" placeholder="Pasajeros" interface="popover">
             <ion-select-option value="1">1 pasajero</ion-select-option>
             <ion-select-option value="2">2 pasajeros</ion-select-option>
             <ion-select-option value="3">3 pasajeros</ion-select-option>
@@ -39,29 +40,29 @@
 
       <div class="input-crear-viaje">
         <label for="precio">Precio</label>
-        <input class="input-field" type="text" formControlName="precio" placeholder="Precio del viaje">
+        <input class="input-field" type="text" formControlName="precio" placeholder="Precio del viaje" />
       </div>
-
 
       <div class="input-crear-viaje">
         <label for="pago">Pago</label>
         <ion-item lines="none">
           <ion-icon name="card-outline" slot="start" class="text-gray-400"></ion-icon>
-          <ion-select formControlName="metodoPago" placeholder="Metodo de Pago" interface="popover">
+          <ion-select formControlName="metodoPago" placeholder="Método de Pago" interface="popover">
             <ion-select-option value="Efectivo">Efectivo</ion-select-option>
             <ion-select-option value="Tarjeta">Tarjeta</ion-select-option>
-            <ion-select-option value="Tranferencia">Transferencia</ion-select-option>
+            <ion-select-option value="Transferencia">Transferencia</ion-select-option>
             <ion-select-option value="Todo medio de pago">Todo medio de pago</ion-select-option>
           </ion-select>
         </ion-item>
       </div>
+
       <div class="botones">
-        <ion-button type="submit" fill="Outline">Crear Viaje</ion-button>
+        <ion-button type="submit" class="btn-submit" fill="Outline">Crear Viaje</ion-button>
         <ion-button fill="Outline" (click)="volver()">Volver</ion-button>
       </div>
     </form>
-
   </div>
+
 
 
 

@@ -1,11 +1,11 @@
 import { Component, OnInit,inject } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
-import { DataService } from '../register/info-sedes/data.service';
 import { Sede } from '../register/info-sedes/sede.model';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -72,17 +72,22 @@ export class ViajeCreadoConductorPage implements OnInit {
   async finalizarCarrera() {
     try {
       // Obtener el viaje del usuario desde Firestore
-      const viajeSnapshot = await this.afs
+      const viajeObservable = this.afs
         .collection('viajes', (ref) => ref.where('userId', '==', this.userId))
-        .get()
-        .toPromise();
+        .get();
+
+      // Convertir el observable a una promesa con lastValueFrom
+      const viajeSnapshot = await lastValueFrom(viajeObservable);
 
       if (viajeSnapshot && !viajeSnapshot.empty) {
         const viajeDoc = viajeSnapshot.docs[0]; // Asume que solo hay un viaje por usuario
         const viajeData = viajeDoc.data(); // Datos del viaje
 
         // Mover el documento a viajeHistorial
-        await this.afs.collection('viajeHistorial').add(viajeData);
+        const viajeHistorialRef = await this.afs.collection('viajeHistorial').add(viajeData);
+
+        // Actualizar el estado del viaje en viajeHistorial a "finalizado"
+        await this.afs.collection('viajeHistorial').doc(viajeHistorialRef.id).update({ estado: 'finalizado' });
 
         // Eliminar el documento de la colección original
         await this.afs.collection('viajes').doc(viajeDoc.id).delete();
@@ -92,6 +97,7 @@ export class ViajeCreadoConductorPage implements OnInit {
 
         // Mostrar alerta de éxito
         await this.finaliza3();
+
       } else {
         await this.errorFinaliza3();
       }
@@ -99,6 +105,8 @@ export class ViajeCreadoConductorPage implements OnInit {
       console.error('Error al finalizar la carrera y mover los datos:', error);
     }
   }
+
+
 
   // Método para mostrar alerta
   async finaliza3() {
@@ -109,7 +117,7 @@ export class ViajeCreadoConductorPage implements OnInit {
         {
           text: 'Aceptar',
           handler: () => {
-            this.NavController.pop(); // Redirigir a la página anterior
+            this.NavController.pop();
           },
         },
       ],
@@ -125,13 +133,9 @@ export class ViajeCreadoConductorPage implements OnInit {
       buttons: [
         {
           text: 'Ok',
-          handler: () => {
-            this.NavController.pop(); // Redirigir a la página anterior
-          },
         },
       ],
     });
-
     await alert.present(); // Muestra la alerta
   }
 

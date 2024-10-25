@@ -266,6 +266,9 @@
     <ng-template #noSolicitudes>
       <p>No hay solicitudes de viaje.</p>
     </ng-template>
+    <div>
+      <h6 *ngIf="viajeActivo" style="display: flex; justify-content: center; color:white; background-color: rgba(0, 39, 195, 0.99); margin: 0px 40px 0px 40px; padding: 10px; padding-left: 15px; border-radius: 30px 60px;" >Recuerda que tienes un viaje activo!</h6>
+    </div>
   </div>
   <!-- Footer -->
   <ion-footer>

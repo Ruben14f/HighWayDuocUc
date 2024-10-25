@@ -7,6 +7,7 @@ import { AlertController } from '@ionic/angular';
 import { finalize } from 'rxjs';
 import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
+import { SolicitudesService } from 'src/app/common/services/solicitudes.service';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -25,6 +26,7 @@ export class InicioConductorPage implements OnInit {
   fotoPerfil: any;
   uploadProgress: number = 0;
   solicitudes: any[] = []; // Almacenar solicitudes
+  viajeActivo:boolean = false;
 
   constructor(
     private router: Router,
@@ -33,7 +35,8 @@ export class InicioConductorPage implements OnInit {
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
     private crearViajeService: CrearviajeService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private solicitud: SolicitudesService
   ) { }
 
   ngOnInit() {
@@ -91,7 +94,7 @@ export class InicioConductorPage implements OnInit {
     }
 
     // Llama al método obtenerSolicitudesPorConductor del servicio
-    this.crearViajeService.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
+    this.solicitud.obtenerSolicitudesPorConductor(this.userId).subscribe((solicitudes) => {
       console.log('Solicitudes obtenidas:', solicitudes);  // Depuración
       this.solicitudes = solicitudes; // Asigna las solicitudes obtenidas a la variable
     }, error => {
@@ -100,7 +103,7 @@ export class InicioConductorPage implements OnInit {
   }
   // Aceptar solicitud de viaje
   aceptarSolicitud(solicitudId: string, viajeId: string) {
-    this.crearViajeService.aceptarSolicitud(solicitudId, viajeId).then(() => {
+    this.solicitud.aceptarSolicitud(solicitudId, viajeId).then(() => {
       this.alertController.create({
         header: 'Solicitud Aceptada',
         message: 'Has aceptado la solicitud de viaje.',
@@ -114,7 +117,7 @@ export class InicioConductorPage implements OnInit {
 
   // Rechazar solicitud de viaje
   rechazarSolicitud(solicitudId: string) {
-    this.crearViajeService.rechazarSolicitud(solicitudId).then(() => {
+    this.solicitud.rechazarSolicitud(solicitudId).then(() => {
       this.alertController.create({
         header: 'Solicitud Rechazada',
         message: 'Has rechazado la solicitud de viaje.',
@@ -212,8 +215,22 @@ export class InicioConductorPage implements OnInit {
   }
 
   async crearViaje() {
-    this.router.navigate(['/create-travel']);
+    // Verificar si hay un viaje activo
+    this.crearViajeService.tieneViajeActivo(this.userId).subscribe(async (viajesActivos) => {
+      if (viajesActivos.length > 0) {
+        // Si hay un viaje activo, mostrar mensaje en la vista y evitar crear un nuevo viaje
+        this.viajeActivo = true;
+
+      } else {
+        // Si no hay viaje activo, permitir la creación de un nuevo viaje
+        this.viajeActivo = false; // No hay viaje activo, ocultar el mensaje
+        this.router.navigate(['/create-travel']);
+      }
+    });
   }
+
+
+
 
   async irViajeCreado() {
     this.router.navigate(['/viaje-creado-conductor']);

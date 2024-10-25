@@ -10,6 +10,7 @@ import { finalize } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
 import { Subscription } from 'rxjs';
+import { SolicitudesService } from '../common/services/solicitudes.service';
 
 
 @Component({
@@ -50,6 +51,7 @@ export class InicioPassengerPage implements OnInit {
     private _authService: AuthService,
     private crearViajeService: CrearviajeService,
     private toastController: ToastController,
+    private solicitud: SolicitudesService
   ) { }
 
   sedes: Sede[] = [];
@@ -334,7 +336,7 @@ export class InicioPassengerPage implements OnInit {
 
 
     // Crear la solicitud
-    this.crearViajeService.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino, this.usuario.nombre, this.usuario.apellido )
+    this.solicitud.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino, this.usuario.nombre, this.usuario.apellido )
       .then((solicitudCreada) => {
         this.alertController.create({
           header: 'Solicitud Enviada',
@@ -360,7 +362,7 @@ export class InicioPassengerPage implements OnInit {
 
   // Método para observar los cambios de estado de la solicitud
 observarEstadoSolicitud(solicitudId: string) {
-  this.solicitudSubscription = this.crearViajeService.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
+  this.solicitudSubscription = this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
     if (solicitud.estado === 'aceptada') {
       this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
       this.mostrarEstadoViaje = true;
