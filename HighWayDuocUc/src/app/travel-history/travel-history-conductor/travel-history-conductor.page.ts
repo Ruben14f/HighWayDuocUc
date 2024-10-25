@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AuthService } from 'src/app/common/services/auth.service';
+import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service'; // Importar el servicio correctamente
 
 @Component({
   selector: 'app-travel-history-conductor',
@@ -15,13 +16,13 @@ export class TravelHistoryConductorPage implements OnInit {
   userId: string = '';
   viajeHistorial: any[] = [];
   navController = inject(NavController);
-  CrearviajeService: any;
 
   constructor(
     private auth: AngularFireAuth,
     private _authService: AuthService,
     private storage: AngularFireStorage,
     private firestore: AngularFirestore,
+    private crearViajeService: CrearviajeService // Inyectar correctamente CrearviajeService
   ) { }
 
   ngOnInit() {
@@ -37,7 +38,7 @@ export class TravelHistoryConductorPage implements OnInit {
         this.userId = user.uid;
         console.log("User ID:", this.userId); // Verificar si se obtiene correctamente el userId
 
-        // Llamamos a la función que obtiene el historial de viajes filtrado por pasajeroId
+        // Llamamos a la función que obtiene el historial de viajes
         this.obtenerViajeHistorial();
       } else {
         console.error('No hay usuario autenticado');
@@ -45,13 +46,14 @@ export class TravelHistoryConductorPage implements OnInit {
     });
   }
 
-
   obtenerViajeHistorial() {
-    this.CrearviajeService.obtenerViajeHistorial().subscribe((viajes: any[]) => {
+    this.crearViajeService.obtenerViajeHistorial().subscribe((viajes: any[]) => {
       this.viajeHistorial = viajes;
+      console.log('Historial de viajes:', viajes);
+    }, error => {
+      console.error('Error al obtener el historial de viajes:', error);
     });
   }
-
 
   async volver() {
     this.navController.pop();

@@ -14,11 +14,20 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { environment } from 'src/environments/environment.prod';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AngularFireModule.initializeApp(environment.firebaseConfig), AngularFireAuthModule,AngularFirestoreModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, provideFirebaseApp(() => initializeApp({"projectId":"highway-a2ce7","appId":"1:679610281048:web:a71ec4bec6775a9708ae2d","storageBucket":"highway-a2ce7.appspot.com","apiKey":"AIzaSyAZDIkwQ6u4IVFu8d20-87Wx3tC9UPUhDE","authDomain":"highway-a2ce7.firebaseapp.com","messagingSenderId":"679610281048"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()), provideStorage(() => getStorage())],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideFirebaseApp(() => initializeApp({"projectId":"highway-a2ce7","appId":"1:679610281048:web:a71ec4bec6775a9708ae2d","storageBucket":"highway-a2ce7.appspot.com",
+      "apiKey":"AIzaSyAZDIkwQ6u4IVFu8d20-87Wx3tC9UPUhDE","authDomain":"highway-a2ce7.firebaseapp.com","messagingSenderId":"679610281048"})),
+      provideAuth(() => getAuth()),
+      provideFirestore(() => getFirestore()),
+      provideStorage(() => getStorage()),
+      provideHttpClient()
+    ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

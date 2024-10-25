@@ -4,10 +4,13 @@
       <ion-title id="titulo-historial" size="large">Historial de viajes</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <br>
   <br>
+
   <div class="viajes-container">
     <div class="viajes" style="padding: 10px;">
+      <!-- Mostrar viajes solo si hay elementos en la lista -->
       <ng-container *ngIf="viajeHistorial.length > 0; else noViajes">
         <div *ngFor="let viaje of viajeHistorial" class="viaje-card"
           style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
@@ -15,14 +18,16 @@
             <ion-icon name="car-outline" style="font-size: 30px; margin-right: 15px;"></ion-icon>
             <div>
               <h6 style="margin: 0; font-weight: bold; font-size: 16px;">Hora de salida: {{ viaje.hora }}</h6>
+              <h6 style="margin: 5px 0; font-size: 14px;">Fecha viaje: {{viaje.fechaCreacion}}</h6>
               <h6 style="margin: 5px 0; font-size: 15px;">Sede: {{ viaje.salida }}</h6>
               <h6 style="margin: 5px 0; font-size: 15px;">Precio: {{ viaje.precio | currency:'CLP':'$':'1.0-0' }}</h6>
               <h6 style="margin: 5px 0; font-size: 15px;">Método: {{ viaje.metodoDePago }}</h6>
+
               <div *ngIf="viaje.pasajerosAceptados && viaje.pasajerosAceptados.length > 0">
                 <h6 style="margin: 5px 0; font-size: 15px;">Pasajeros aceptados:</h6>
                 <ul>
                   <li *ngFor="let pasajero of viaje.pasajerosAceptados">
-                    {{ pasajero.nombre }} {{ pasajero.apellido }} <!-- Muestra nombre y apellido del pasajero -->
+                    {{ pasajero.nombre }} {{ pasajero.apellido }}
                   </li>
                 </ul>
               </div>
@@ -30,9 +35,8 @@
                 <h6 style="margin: 5px 0; font-size: 15px;">No hay pasajeros aceptados</h6>
               </div>
             </div>
-
-            </div>
           </div>
+        </div>
       </ng-container>
 
       <ng-template #noViajes>
@@ -45,4 +49,3 @@
     <ion-button (click)="volver()" fill="Outline">Volver</ion-button>
   </div>
 </ion-content>
-

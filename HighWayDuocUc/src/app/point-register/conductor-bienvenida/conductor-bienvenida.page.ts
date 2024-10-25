@@ -16,7 +16,7 @@ export class ConductorBienvenidaPage implements OnInit {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     if (usuarioRegistrado) {
       const usuario = JSON.parse(usuarioRegistrado);
-      this.cnombreUsuario = usuario.correo;
+      this.cnombreUsuario = usuario.email;
 
       // Redirige a la pantalla de inicio después de 3 segundos
       setTimeout(() => {

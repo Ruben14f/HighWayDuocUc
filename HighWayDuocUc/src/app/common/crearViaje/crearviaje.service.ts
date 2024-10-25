@@ -2,23 +2,39 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
+import { DateService } from '../services/date.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrearviajeService {
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore,
+              private date: DateService
+  ) { }
 
   // Guardar viaje en Firestore
-  crearViaje(viaje: any) {
-    return this.firestore.collection('viajes').add(viaje)
-      .then(() => {
-        console.log('Viaje creado exitosamente');
-      })
-      .catch((error) => {
-        console.error('Error al crear el viaje:', error);
-        throw error;
-      });
+  async crearViaje(viaje: any, nombreConductor: string, apellidoConductor: string) {
+
+    try {
+      // Obtener la fecha actual desde la API
+      const fechaActual = await this.date.getFechaActual();
+      const fechaFormateada = fechaActual.currentDateTime.split('T')[0]; // Formatear la fecha (quitar la hora)
+
+      const nuevoViaje = {
+        ...viaje,
+        nombreConductor: nombreConductor,
+        apellidoConductor: apellidoConductor,
+        fechaCreacion: fechaFormateada
+      };
+
+      // Guardar el nuevo viaje en la colección 'viajes' en Firestore
+      await this.firestore.collection('viajes').add(nuevoViaje);
+      console.log('Viaje creado exitosamente con el conductor:', nombreConductor);
+
+    } catch (error) {
+      console.error('Error al crear el viaje:', error);
+      throw error;
+    }
   }
 
   // Obtener todos los viajes

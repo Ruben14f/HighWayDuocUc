@@ -47,6 +47,7 @@ export class TravelHistoryPage implements OnInit {
     });
   }
 
+
   obtenerViajeHistorial() {
     this.crearViajeService.obtenerViajeHistorial().subscribe(viajes => {
       this.viajeHistorial = viajes;

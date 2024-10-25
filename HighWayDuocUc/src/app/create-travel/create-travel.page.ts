@@ -110,6 +110,7 @@ export class CreateTravelPage implements OnInit {
         userId: this.userId // Incluye el ID del usuario que crea el viaje
       };
 
+      // Verificar si el vehículo es una moto y el número de pasajeros
       if (this.usuario?.tipoVehiculo == 'moto') {
         if (viajeCreado.pasajeros > 1) {
           await this.errorMasPasajeros();
@@ -118,8 +119,8 @@ export class CreateTravelPage implements OnInit {
       }
 
       try {
-        // Guardar el viaje en Firestore
-        await this.crearViajeService.crearViaje(viajeCreado);
+        // Llamar al servicio para crear el viaje, pasando el objeto viaje y el nombre del conductor
+        await this.crearViajeService.crearViaje(viajeCreado, this.usuario?.nombre,this.usuario?.apellido);
 
         // Mostrar la alerta de confirmación
         const alert = await this.alertController.create({
@@ -144,6 +145,7 @@ export class CreateTravelPage implements OnInit {
       await this.errorDeFormulario();
     }
   }
+
 
 
   // Alerta de error al elegir más pasajeros
