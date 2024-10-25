@@ -29,8 +29,6 @@ export class TravelHistoryPage implements OnInit {
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
-
-    this.obtenerViajeHistorial();
   }
 
   ionViewWillEnter() {
@@ -39,7 +37,7 @@ export class TravelHistoryPage implements OnInit {
         this.userId = user.uid;
         console.log("User ID:", this.userId); // Verificar si se obtiene correctamente el userId
 
-        // Llamamos a la función que obtiene el historial de viajes filtrado por pasajeroId
+        // Llamar al servicio para obtener el historial de viajes
         this.obtenerViajeHistorial();
       } else {
         console.error('No hay usuario autenticado');
@@ -47,13 +45,23 @@ export class TravelHistoryPage implements OnInit {
     });
   }
 
-
   obtenerViajeHistorial() {
-    this.crearViajeService.obtenerViajeHistorial().subscribe(viajes => {
-      this.viajeHistorial = viajes;
+    if (!this.userId) {
+      console.error("No se ha cargado el userId aún");
+      return;
+    }
+
+    this.crearViajeService.obtenerViajeHistorialPasajero(this.userId).subscribe(viajes => {
+      if (viajes.length > 0) {
+        console.log('Historial de viajes del pasajero:', viajes);
+        this.viajeHistorial = viajes;
+      } else {
+        console.log('No se encontraron viajes para este pasajero.');
+      }
+    }, error => {
+      console.error('Error al obtener el historial de viajes del pasajero:', error);
     });
   }
-
 
   async volver() {
     this.navController.pop();

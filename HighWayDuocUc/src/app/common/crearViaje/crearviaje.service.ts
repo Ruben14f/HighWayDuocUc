@@ -97,26 +97,37 @@ export class CrearviajeService {
     );
   }
 
+  // Obtener historial de viajes creados por el conductor
+  obtenerViajeHistorialConductor(userId: string): Observable<any[]> {
+    return this.firestore.collection('viajeHistorial', ref => ref.where('userId', '==', userId))
+      .snapshotChanges().pipe(
+        map(actions => actions.map(a => {
+          const data = a.payload.doc.data() as any;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        })),
+        catchError((error) => {
+          console.error('Error al obtener el historial de viajes del conductor:', error);
+          return of([]); // Retorna un array vacío en caso de error
+        })
+      );
+  }
 
 
-
-
-
-
-  // Obtener todos los viajes por id del historial
-  obtenerViajeHistorial() {
-    return this.firestore.collection('viajeHistorial').snapshotChanges().pipe(
+  obtenerViajeHistorialPasajero(pasajeroId: string) {
+    return this.firestore.collection('viajeHistorial', ref =>
+      ref.where('pasajeroIds', 'array-contains', pasajeroId) // Busca el id dentro de la lista de IDs
+    ).snapshotChanges().pipe(
       map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as any; // Obtiene los datos del documento
-        const id = a.payload.doc.id; // Obtiene el ID del documento
-        return { id, ...data }; // Retorna un objeto que incluye el ID
-      })),
-      catchError((error) => {
-        console.error('Error al obtener viajeHistorial:', error);
-        return of([]); // Retorna un array vacío en caso de error
-      })
+        const data = a.payload.doc.data() as any;
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      }))
     );
   }
+
+
+
 
   obtenerUsuarioPorId(userId: string): Observable<any> {
     return this.firestore.collection('usuarios').doc(userId).valueChanges();

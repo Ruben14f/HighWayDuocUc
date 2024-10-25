@@ -59,6 +59,10 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
         })
       );
   }
+
+
+
+
   // Aceptar solicitud de un pasajero y actualizar asientos
   aceptarSolicitud(solicitudId: string, viajeId: string) {
     const viajeRef = this.firestore.collection('viajes').doc(viajeId).ref;

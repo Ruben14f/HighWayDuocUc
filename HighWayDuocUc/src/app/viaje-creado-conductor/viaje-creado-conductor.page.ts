@@ -71,25 +71,35 @@ export class ViajeCreadoConductorPage implements OnInit {
   }
   async finalizarCarrera() {
     try {
+
       // Obtener el viaje del usuario desde Firestore
       const viajeObservable = this.afs
         .collection('viajes', (ref) => ref.where('userId', '==', this.userId))
         .get();
 
-      // Convertir el observable a una promesa con lastValueFrom
       const viajeSnapshot = await lastValueFrom(viajeObservable);
 
       if (viajeSnapshot && !viajeSnapshot.empty) {
-        const viajeDoc = viajeSnapshot.docs[0]; // Asume que solo hay un viaje por usuario
-        const viajeData = viajeDoc.data(); // Datos del viaje
+        const viajeDoc = viajeSnapshot.docs[0];
+        const viajeData: any = viajeDoc.data();
 
-        // Mover el documento a viajeHistorial
-        const viajeHistorialRef = await this.afs.collection('viajeHistorial').add(viajeData);
+        console.log("Datos del viaje antes de mover al historial:", viajeData);
 
-        // Actualizar el estado del viaje en viajeHistorial a "finalizado"
-        await this.afs.collection('viajeHistorial').doc(viajeHistorialRef.id).update({ estado: 'finalizado' });
+        // Verificar si hay pasajeros aceptados y obtener sus IDS
+        const pasajerosAceptados = viajeData.pasajerosAceptados || [];
+        const pasajeroIds = pasajerosAceptados.map((pasajero: any) => pasajero.pasajeroId);
 
-        // Eliminar el documento de la colección original
+        // Crear nuevo objeto con la lista de IDs de pasajeros
+        const nuevoViajeData = {
+          ...viajeData,
+          pasajeroIds: pasajeroIds, // Añadir la lista de IDs de pasajeros
+          estado: 'finalizado'
+        };
+
+        // Mover el documento a viajeHistorial con los cambios
+        await this.afs.collection('viajeHistorial').add(nuevoViajeData);
+
+        // Eliminar el documento de la colección original de 'viajes'
         await this.afs.collection('viajes').doc(viajeDoc.id).delete();
 
         // Limpia los datos del viaje en localStorage
@@ -105,6 +115,7 @@ export class ViajeCreadoConductorPage implements OnInit {
       console.error('Error al finalizar la carrera y mover los datos:', error);
     }
   }
+
 
 
 

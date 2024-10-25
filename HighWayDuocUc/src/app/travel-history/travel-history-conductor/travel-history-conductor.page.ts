@@ -47,13 +47,13 @@ export class TravelHistoryConductorPage implements OnInit {
   }
 
   obtenerViajeHistorial() {
-    this.crearViajeService.obtenerViajeHistorial().subscribe((viajes: any[]) => {
-      this.viajeHistorial = viajes;
-      console.log('Historial de viajes:', viajes);
-    }, error => {
-      console.error('Error al obtener el historial de viajes:', error);
-    });
-  }
+  this.crearViajeService.obtenerViajeHistorialConductor(this.userId).subscribe((viajes: any[]) => {
+    this.viajeHistorial = viajes;
+    console.log('Historial de viajes del conductor:', viajes);
+  }, error => {
+    console.error('Error al obtener el historial de viajes del conductor:', error);
+  });
+}
 
   async volver() {
     this.navController.pop();
