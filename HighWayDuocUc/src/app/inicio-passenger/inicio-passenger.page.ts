@@ -45,7 +45,6 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-
   constructor(
     private alertController: AlertController,
     private router: Router,
@@ -74,6 +73,12 @@ export class InicioPassengerPage implements OnInit {
 
     const viajeCreado = localStorage.getItem('viajeCreado');
     this.viajeCreado = viajeCreado ? JSON.parse(viajeCreado) : null;
+
+    // Recuperar `viajeSeleccionado` desde `localStorage`
+    const viajeSeleccionadoData = localStorage.getItem('viajeSeleccionado');
+    if (viajeSeleccionadoData) {
+      this.viajeSeleccionado = JSON.parse(viajeSeleccionadoData);
+    }
 
     if (this.usuario?.sede) {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
@@ -108,6 +113,7 @@ export class InicioPassengerPage implements OnInit {
           this.solicitudPendiente = false;
           this.solicitudAceptada = false; // Restablecer solicitud aceptada
           localStorage.setItem('solicitudPendiente', 'false');
+          localStorage.removeItem('viajeSeleccionado'); // Elimina `viajeSeleccionado` de `localStorage` cuando finaliza
           this.mostrarToast('El viaje ha finalizado y puedes tomar otro.', 'dark');
         }
       });
@@ -122,14 +128,23 @@ export class InicioPassengerPage implements OnInit {
         if (estado === 'aceptada') {
           this.solicitudPendiente = true; // Desactiva el botón al aceptar la solicitud
           this.solicitudAceptada = true; // Indica que la solicitud fue aceptada
+
+          // Guarda los datos de `viajeSeleccionado` en `localStorage`
+          this.crearViajeService.obtenerViajePorId(this.viajeCreado.id).subscribe(viajeData => {
+            this.viajeSeleccionado = viajeData;
+            localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
+            this.isModalOpen5 = true;  // Abre el modal con los detalles del viaje
+          });
         } else if (estado === 'finalizado') {
           this.solicitudPendiente = false; // Permite al usuario tomar otro viaje
           this.solicitudAceptada = false; // Restablece solicitud aceptada
+          localStorage.removeItem('viajeSeleccionado'); // Elimina `viajeSeleccionado` de `localStorage` cuando finaliza
           this.mostrarToast('El viaje ha finalizado y puedes tomar otro.', 'dark');
         }
       });
     }
   }
+
 
 
 
@@ -401,7 +416,6 @@ export class InicioPassengerPage implements OnInit {
         }).then(alert => alert.present());
       });
   }
-
   observarEstadoSolicitud(solicitudId: string) {
     this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
       if (solicitud.estado === 'aceptada') {
@@ -410,6 +424,23 @@ export class InicioPassengerPage implements OnInit {
         this.solicitudAceptada = true;
         localStorage.setItem('solicitudPendiente', 'false');
         this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
+
+        // Establece los detalles del viaje en `viajeSeleccionado` y guárdalo en `localStorage`
+        this.crearViajeService.obtenerViajePorId(solicitud.viajeId).subscribe(viajeData => {
+          this.viajeSeleccionado = viajeData;
+          this.isModalOpen5 = true;  // Abre el modal con los detalles del viaje
+
+          // Guarda `viajeSeleccionado` en `localStorage`
+          localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
+        });
+
+        // Llama a agregarPasajeroAlViaje para agregar el `pasajeroId` y los datos completos del pasajero
+        this.crearViajeService.agregarPasajeroAlViaje(solicitud.viajeId, {
+          id: this.usuario.uid,
+          nombre: this.usuario.nombre,
+          apellido: this.usuario.apellido
+        });
+
       } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
         this.viajeActivo = false;
         this.solicitudPendiente = false;
@@ -419,6 +450,7 @@ export class InicioPassengerPage implements OnInit {
       }
     });
   }
+
 
 
 
@@ -461,7 +493,7 @@ export class InicioPassengerPage implements OnInit {
                   this.usuario.viajeActivo = false; // Establece que el usuario ya no tiene un viaje activo
                   this.mostrarEstadoViaje = false;
                   this.yaTieneViaje = true;
-                  localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+                  localStorage.removeItem('viajeSeleccionado'); // Elimina `viajeSeleccionado` de `localStorage`
                 })
                 .catch(error => {
                   console.error('Error al cancelar el viaje en Firestore:', error);
@@ -474,6 +506,7 @@ export class InicioPassengerPage implements OnInit {
 
     await confirmAlert.present(); // Muestra la alerta de confirmación
   }
+
 
 
 

@@ -3,6 +3,8 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { catchError, map } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import { DateService } from '../services/date.service';
+import { arrayUnion } from 'firebase/firestore';
+
 
 @Injectable({
   providedIn: 'root'
@@ -159,8 +161,29 @@ actualizarEstadoSolicitud(solicitudId: string, nuevoEstado: string) {
     });
 }
 
+async agregarPasajeroAlViaje(viajeId: string, pasajeroData: { id: string, nombre: string, apellido: string }) {
+  try {
+    const viajeRef = this.firestore.collection('viajes').doc(viajeId);
+
+    // Agregar `pasajeroId` y los datos completos a `pasajeroIds` y `pasajerosAceptados`
+    await viajeRef.update({
+      pasajeroIds: arrayUnion(pasajeroData.id),
+      pasajerosAceptados: arrayUnion({
+        pasajeroId: pasajeroData.id,
+        nombre: pasajeroData.nombre,
+        apellido: pasajeroData.apellido
+      })
+    });
+    console.log(`Pasajero ${pasajeroData.nombre} ${pasajeroData.apellido} agregado correctamente al viaje ${viajeId}.`);
+  } catch (error) {
+    console.error('Error al agregar el pasajero al viaje:', error);
+  }
+}
 
 
+obtenerViajePorId(viajeId: string): Observable<any> {
+  return this.firestore.collection('viajes').doc(viajeId).valueChanges();
+}
 
   obtenerUsuarioPorId(userId: string): Observable<any> {
     return this.firestore.collection('usuarios').doc(userId).valueChanges();

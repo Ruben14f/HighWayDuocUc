@@ -76,8 +76,7 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
         throw new Error('El viaje no existe');
       }
 
-      // Verificar que el viaje tiene el campo 'pasajeros'
-      const viajeData = viajeDoc.data() as { pasajeros: number, pasajerosAceptados?: any[] } | undefined;
+      const viajeData = viajeDoc.data() as { pasajeros: number, pasajerosAceptados?: any[], pasajeroIds?: string[] } | undefined;
 
       if (viajeData?.pasajeros !== undefined && viajeData.pasajeros > 0) {
         const nuevosPasajeros = viajeData.pasajeros - 1;
@@ -96,16 +95,17 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
         // Actualizar el estado de la solicitud a 'aceptada'
         transaction.update(solicitudRef, { estado: 'aceptada' });
 
-        // Preparar los datos de la solicitud que se van a mover a la colección 'viajes'
+        // Agregar el `pasajeroId` a `pasajeroIds` y el objeto completo a `pasajerosAceptados`
         const pasajeroAceptado = {
           nombre: solicitudData.nombre,
           apellido: solicitudData.apellido,
           pasajeroId: solicitudData.pasajeroId,
         };
-
-        // Actualizar la cantidad de pasajeros y agregar el pasajero aceptado al viaje
         const nuevosPasajerosAceptados = viajeData.pasajerosAceptados ? [...viajeData.pasajerosAceptados, pasajeroAceptado] : [pasajeroAceptado];
-        transaction.update(viajeRef, { pasajeros: nuevosPasajeros, pasajerosAceptados: nuevosPasajerosAceptados });
+        const nuevosPasajeroIds = viajeData.pasajeroIds ? [...viajeData.pasajeroIds, solicitudData.pasajeroId] : [solicitudData.pasajeroId];
+
+        // Actualizar el documento del viaje con los nuevos datos
+        transaction.update(viajeRef, { pasajeros: nuevosPasajeros, pasajerosAceptados: nuevosPasajerosAceptados, pasajeroIds: nuevosPasajeroIds });
 
         console.log('Solicitud aceptada, asientos actualizados y datos movidos al viaje');
       } else {
@@ -113,6 +113,7 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
       }
     });
   }
+
 
 
   // Escuchar los cambios de estado de una solicitud específica
