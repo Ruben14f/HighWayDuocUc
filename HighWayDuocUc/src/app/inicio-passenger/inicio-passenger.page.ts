@@ -37,6 +37,8 @@ export class InicioPassengerPage implements OnInit {
   solicitudSubscription: Subscription | null = null;
   mostrarEstadoViaje: boolean = false;
   viajeActivo: boolean = false;
+  solicitudPendiente: boolean = false;
+
 
 
 
@@ -61,6 +63,9 @@ export class InicioPassengerPage implements OnInit {
   ngOnInit() {
     const usuarioRegistrado = localStorage.getItem('usuarioRegistrado');
     this.usuario = usuarioRegistrado ? JSON.parse(usuarioRegistrado) : null;
+
+    const solicitudPendiente = localStorage.getItem('solicitudPendiente');
+    this.solicitudPendiente = solicitudPendiente === 'true';
 
     this.obtenerViajes();
     this.obtenerSedes();
@@ -321,14 +326,14 @@ export class InicioPassengerPage implements OnInit {
 
 
   tomarViaje(viaje: any) {
-    // Verificar si ya tiene un viaje activo
-    if (this.viajeActivo || localStorage.getItem('viajeActivo') === 'true') {
+    // Verificar si el pasajero ya tiene una solicitud en espera
+    if (this.solicitudPendiente) {
       this.alertController.create({
-        header: 'Ya tienes un viaje activo',
-        message: 'No puedes tomar otro viaje mientras ya tienes uno en curso.',
+        header: 'Solicitud en espera',
+        message: 'Ya has enviado una solicitud para este viaje. Por favor, espera la respuesta del conductor.',
         buttons: ['OK']
       }).then(alert => alert.present());
-      return; // Detenemos la ejecución si ya hay un viaje activo
+      return;
     }
 
     if (!viaje.id) {
@@ -336,7 +341,6 @@ export class InicioPassengerPage implements OnInit {
       return;
     }
 
-    // Verificar si el viaje tiene pasajeros disponibles
     if (viaje.pasajeros === 0) {
       this.alertController.create({
         header: 'Viaje no disponible',
@@ -358,8 +362,12 @@ export class InicioPassengerPage implements OnInit {
           buttons: ['OK']
         }).then(alert => alert.present());
 
+        // Establecer la solicitud como pendiente y guardarla en el localStorage
+        this.solicitudPendiente = true;
+        localStorage.setItem('solicitudPendiente', 'true');
+
         // Observar cambios en la solicitud
-        this.observarEstadoSolicitud(solicitudCreada.id); // Llama a observarCambiosDeSolicitud
+        this.observarEstadoSolicitud(solicitudCreada.id);
       })
       .catch(error => {
         console.error('Error al enviar la solicitud de viaje:', error);
@@ -374,19 +382,23 @@ export class InicioPassengerPage implements OnInit {
 
 
 
-  // Método para observar los cambios de estado de la solicitud
-  // Método para observar los cambios de estado de la solicitud
-observarEstadoSolicitud(solicitudId: string) {
-  this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
-    if (solicitud.estado === 'aceptada') {
-      this.viajeActivo = true; // El viaje está activo
-      this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
-    } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
-      this.viajeActivo = false; // No hay viaje activo
-      this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
-    }
-  });
-}
+  observarEstadoSolicitud(solicitudId: string) {
+    this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
+      if (solicitud.estado === 'aceptada') {
+        this.viajeActivo = true; // El viaje está activo
+        this.solicitudPendiente = false; // La solicitud ya no está pendiente
+        localStorage.setItem('solicitudPendiente', 'false'); // Actualizar el localStorage
+        this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
+      } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
+        this.viajeActivo = false; // No hay viaje activo
+        this.solicitudPendiente = false; // La solicitud ya no está pendiente
+        localStorage.setItem('solicitudPendiente', 'false'); // Actualizar el localStorage
+        this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
+      }
+    });
+  }
+
+
 
 
 
