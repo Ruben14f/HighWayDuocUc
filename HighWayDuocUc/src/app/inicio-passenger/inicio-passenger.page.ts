@@ -38,6 +38,8 @@ export class InicioPassengerPage implements OnInit {
   mostrarEstadoViaje: boolean = false;
   viajeActivo: boolean = false;
   solicitudPendiente: boolean = false;
+  solicitudAceptada: boolean = false;
+
 
 
 
@@ -77,19 +79,17 @@ export class InicioPassengerPage implements OnInit {
       this.usuario.sede = this.usuario.sede.replace(/^Sede\s+/i, '');
     }
 
-    // Obtener las sedes desde el servicio
     this.dataService.getSedes().subscribe((sedes) => {
       this.sedes = sedes;
     });
 
-    // Cargar la imagen de perfil directamente desde Firestore
     this.auth.user.subscribe(async user => {
       if (user) {
-        this.userId = user.uid; // Guardamos el UID del usuario autenticado
+        this.userId = user.uid;
         try {
           this.usuario = await this._authService.getUserData(this.userId);
           if (this.usuario && this.usuario.fotoPerfil) {
-            this.imagePreview = this.usuario.fotoPerfil; // Carga la imagen directamente de Firestore
+            this.imagePreview = this.usuario.fotoPerfil;
           } else {
             this.imagePreview = null;
           }
@@ -99,34 +99,37 @@ export class InicioPassengerPage implements OnInit {
       }
     });
 
-    // Observa el estado del viaje en la colección 'viajeHistorial' para verificar si está finalizado
+    // Observa el estado del viaje en la colección 'viajeHistorial' solo cuando esté finalizado
     if (this.usuario?.uid) {
       this.crearViajeService.observarViajeFinalizado(this.usuario.uid).subscribe(finalizado => {
-        console.log("Finalizado desde viajeHistorial:", finalizado); // Verificar el estado en consola
+        console.log("Finalizado desde viajeHistorial:", finalizado);
         if (finalizado) {
           this.viajeActivo = false;
           this.solicitudPendiente = false;
+          this.solicitudAceptada = false; // Restablecer solicitud aceptada
           localStorage.setItem('solicitudPendiente', 'false');
-          this.mostrarToast('El viaje ha finalizado.', 'dark');
+          this.mostrarToast('El viaje ha finalizado y puedes tomar otro.', 'dark');
         }
       });
     }
 
-    // Observa el estado del viaje actual para actualizar cuando esté activo
-    if (this.viajeCreado && this.viajeCreado.id) { // Verifica si hay un viaje creado
+    // Observa el estado de la solicitud y actualiza solicitudAceptada
+    if (this.viajeCreado && this.viajeCreado.id) {
       this.crearViajeService.observarEstadoViaje(this.viajeCreado.id).subscribe(estado => {
-        console.log("Estado actual del viaje:", estado); // Log para ver el estado en consola
+        console.log("Estado actual del viaje:", estado);
         this.viajeActivo = estado !== 'finalizado';
 
-        // Si el viaje está finalizado, actualiza `solicitudPendiente` a false
-        if (estado === 'finalizado') {
-          this.solicitudPendiente = false;
-          localStorage.setItem('solicitudPendiente', 'false'); // Actualiza el localStorage
+        if (estado === 'aceptada') {
+          this.solicitudPendiente = true; // Desactiva el botón al aceptar la solicitud
+          this.solicitudAceptada = true; // Indica que la solicitud fue aceptada
+        } else if (estado === 'finalizado') {
+          this.solicitudPendiente = false; // Permite al usuario tomar otro viaje
+          this.solicitudAceptada = false; // Restablece solicitud aceptada
+          this.mostrarToast('El viaje ha finalizado y puedes tomar otro.', 'dark');
         }
       });
     }
   }
-
 
 
 
@@ -351,10 +354,10 @@ export class InicioPassengerPage implements OnInit {
 
 
   tomarViaje(viaje: any) {
-    if (this.solicitudPendiente) {
+    if (this.solicitudPendiente || this.solicitudAceptada) {
       this.alertController.create({
         header: 'Solicitud en espera',
-        message: 'Ya has enviado una solicitud para este viaje. Por favor, espera la respuesta del conductor.',
+        message: 'No puedes tomar otro viaje mientras haya una solicitud en curso o ya esté aceptada.',
         buttons: ['OK']
       }).then(alert => alert.present());
       return;
@@ -387,8 +390,6 @@ export class InicioPassengerPage implements OnInit {
 
         this.solicitudPendiente = true;
         localStorage.setItem('solicitudPendiente', 'true');
-
-        // Observar cambios en el estado de la solicitud
         this.observarEstadoSolicitud(solicitudCreada.id);
       })
       .catch(error => {
@@ -401,26 +402,23 @@ export class InicioPassengerPage implements OnInit {
       });
   }
 
-
-
-
-
   observarEstadoSolicitud(solicitudId: string) {
     this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
       if (solicitud.estado === 'aceptada') {
-        this.viajeActivo = true; // El viaje está activo solo si la solicitud fue aceptada
+        this.viajeActivo = true;
         this.solicitudPendiente = false;
+        this.solicitudAceptada = true;
         localStorage.setItem('solicitudPendiente', 'false');
         this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
       } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
-        this.viajeActivo = false; // El viaje no está activo si la solicitud es rechazada o cancelada
+        this.viajeActivo = false;
         this.solicitudPendiente = false;
+        this.solicitudAceptada = false;
         localStorage.setItem('solicitudPendiente', 'false');
         this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
       }
     });
   }
-
 
 
 

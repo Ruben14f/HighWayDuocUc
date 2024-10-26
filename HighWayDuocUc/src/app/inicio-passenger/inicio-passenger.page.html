@@ -230,13 +230,17 @@
             </div>
           </div>
           <div>
-            <ion-button *ngIf="yaTieneViaje" id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
-              style="--border-radius: 50px; --background: #3880ff; color: white;" [disabled]="solicitudPendiente">
+            <ion-button *ngIf="!viajeActivo" id="toma-viaje" (click)="tomarViaje(viaje)" expand="block"
+            style="--border-radius: 50px; --background: #3880ff; color: white;"
+            [disabled]="solicitudPendiente || solicitudAceptada">
               Tomar Viaje
-            </ion-button>
+          </ion-button>
           </div>
         </div>
       </ng-container>
+
+
+
 
       <ng-template #noViajes>
         <p style="text-align: center; font-size: 16px; color: #666;">No hay viajes disponibles</p>
