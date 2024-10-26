@@ -33,9 +33,10 @@ export class InicioPassengerPage implements OnInit {
   uploadProgress: number = 0;
   userId: string = '';  // UID del usuario autenticado
   viajeSeleccionado: any = null; // Nueva variable para almacenar el viaje tomado
-  mostrarEstadoViaje: boolean = false; // Controla la visibilidad del botón de estado de viaje
   yaTieneViaje: boolean = true;
   solicitudSubscription: Subscription | null = null;
+  mostrarEstadoViaje: boolean = false;
+  viajeActivo: boolean = false;
 
 
 
@@ -100,6 +101,21 @@ export class InicioPassengerPage implements OnInit {
 
   }
 
+  async verificarViajeActivo() {
+    this.solicitud.obtenerSolicitudesPorPasajero(this.userId).subscribe(async (solicitudes) => {
+      const solicitudActiva = solicitudes.find(solicitud => {
+        const data = solicitud.payload.doc.data() as { estado: string }; // Definir el tipo correcto aquí
+        return data.estado === 'aceptada'; // Solo si la solicitud ha sido aceptada
+      });
+
+      if (solicitudActiva) {
+        this.viajeActivo = true; // Muestra el mensaje si el viaje está activo
+      } else {
+        this.viajeActivo = false; // Oculta el mensaje si no hay viaje activo
+      }
+    });
+  }
+
 
   obtenerViajes() {
     this.crearViajeService.obtenerViajes().subscribe(viajes => {
@@ -138,6 +154,7 @@ export class InicioPassengerPage implements OnInit {
     this.auth.user.subscribe(async user => {
       if (user) {
         this.userId = user.uid;
+        await this.verificarViajeActivo();
         try {
           this.usuario = await this._authService.getUserData(this.userId);
           if (this.usuario && this.usuario.fotoPerfil) {
@@ -304,6 +321,16 @@ export class InicioPassengerPage implements OnInit {
 
 
   tomarViaje(viaje: any) {
+    // Verificar si ya tiene un viaje activo
+    if (this.viajeActivo || localStorage.getItem('viajeActivo') === 'true') {
+      this.alertController.create({
+        header: 'Ya tienes un viaje activo',
+        message: 'No puedes tomar otro viaje mientras ya tienes uno en curso.',
+        buttons: ['OK']
+      }).then(alert => alert.present());
+      return; // Detenemos la ejecución si ya hay un viaje activo
+    }
+
     if (!viaje.id) {
       console.error('El viaje no tiene un ID válido.');
       return;
@@ -316,27 +343,14 @@ export class InicioPassengerPage implements OnInit {
         message: 'No quedan asientos disponibles para este viaje.',
         buttons: ['OK']
       }).then(alert => alert.present());
-      return; // Salir si no hay pasajeros disponibles
-    }
-
-    // Verificar si el usuario ya tiene un viaje activo
-    if (this.usuario.viajeActivo) {
-      this.alertController.create({
-        header: 'Error',
-        message: 'Ya tienes un viaje activo. No puedes solicitar otro viaje.',
-        buttons: ['OK']
-      }).then(alert => alert.present());
-      return; // No permitir tomar otro viaje
+      return;
     }
 
     const destino = viaje.destino || 'Destino no especificado';
+    const conductorId = viaje.userId;
 
-    // Obtener el conductorId (userId) del viaje antes de crear la solicitud
-    const conductorId = viaje.userId; // Aquí obtenemos el userId del conductor desde el documento del viaje
-
-
-    // Crear la solicitud
-    this.solicitud.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino, this.usuario.nombre, this.usuario.apellido )
+    // Crear la solicitud de viaje
+    this.solicitud.crearSolicitud(viaje.id, this.usuario.uid, conductorId, destino, this.usuario.nombre, this.usuario.apellido)
       .then((solicitudCreada) => {
         this.alertController.create({
           header: 'Solicitud Enviada',
@@ -344,11 +358,8 @@ export class InicioPassengerPage implements OnInit {
           buttons: ['OK']
         }).then(alert => alert.present());
 
-        // Aquí llamamos al método para observar los cambios de estado de la solicitud
-        this.observarEstadoSolicitud(solicitudCreada.id); // Observar cambios en la solicitud
-
-        this.usuario.viajeActivo = true; // Establecer que el usuario tiene un viaje activo
-        localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario)); // Actualiza el localStorage
+        // Observar cambios en la solicitud
+        this.observarEstadoSolicitud(solicitudCreada.id); // Llama a observarCambiosDeSolicitud
       })
       .catch(error => {
         console.error('Error al enviar la solicitud de viaje:', error);
@@ -360,29 +371,23 @@ export class InicioPassengerPage implements OnInit {
       });
   }
 
+
+
+
+  // Método para observar los cambios de estado de la solicitud
   // Método para observar los cambios de estado de la solicitud
 observarEstadoSolicitud(solicitudId: string) {
-  this.solicitudSubscription = this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
+  this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
     if (solicitud.estado === 'aceptada') {
+      this.viajeActivo = true; // El viaje está activo
       this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
-      this.mostrarEstadoViaje = true;
-      this.viajeSeleccionado = solicitud.viajeId;
-
-    } else if (solicitud.estado === 'rechazada') {
-      this.mostrarToast('Tu solicitud de viaje ha sido rechazada por el conductor. Intenta con otro.', 'danger');
-      this.mostrarEstadoViaje = false;
-      this.usuario.viajeActivo = false;
-
-      localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario));
-    } else if (solicitud.estado === 'cancelada') {
-      this.mostrarToast('El conductor ha cancelado el viaje. Puedes tomar otro.', 'danger');
-
-      this.mostrarEstadoViaje = false;
-      this.usuario.viajeActivo = false;
-      localStorage.setItem('usuarioRegistrado', JSON.stringify(this.usuario));
+    } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
+      this.viajeActivo = false; // No hay viaje activo
+      this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
     }
   });
 }
+
 
 
 

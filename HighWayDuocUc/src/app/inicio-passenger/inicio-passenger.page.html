@@ -195,19 +195,23 @@
   <div class="container-inicio" style="margin-bottom: 80px;">
     <div class="opciones-inicio">
       <div class="opciones">
-        <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
-        <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede"
-          (ionChange)="filtrarPorSede($event)">
-          <ion-select-option [value]="null">Todas las sedes</ion-select-option>
-          <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre">{{ sede.nombre }}</ion-select-option>
-        </ion-select>
+          <ion-icon style="margin-right: 10px; font-size: 25px;" name="location-outline"></ion-icon>
+          <ion-select style="border-bottom: 1px solid black;" placeholder="Selecciona una sede"
+              (ionChange)="filtrarPorSede($event)">
+              <ion-select-option [value]="null">Todas las sedes</ion-select-option>
+              <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre">{{ sede.nombre }}</ion-select-option>
+          </ion-select>
       </div>
-      <div class="opciones">
-        <ion-button style="--border-radius: 50px;" (click)="irHistorialViajes()">
-          <ion-icon name="time-outline"></ion-icon> Historial de viajes
-        </ion-button>
+      <div class="opciones" style="display: flex; flex-direction: column; align-items: center;">
+          <ion-button style="--border-radius: 50px; margin-bottom: 10px;" (click)="irHistorialViajes()">
+              <ion-icon name="time-outline"></ion-icon> Historial de viajes
+          </ion-button>
+          <ion-button *ngIf="viajeActivo" style="--border-radius: 50px;" (click)="ModalEstadoViaje()">
+            Estado de viaje
+          </ion-button>
       </div>
-    </div>
+  </div>
+
 
     <!-- LISTADO DE VIAJES -->
     <div class="viajes" style="padding: 10px;">
@@ -238,11 +242,13 @@
       </ng-template>
     </div>
 
-    <!-- Botón de Estado de Viaje (solo visible si mostrarEstadoViaje es true) -->
-    <ion-button *ngIf="mostrarEstadoViaje" style="--border-radius: 50px; margin: 175px 100px 0px 100px ;"
-      (click)="ModalEstadoViaje()">
-      Estado de viaje
-    </ion-button>
+    <div *ngIf="viajeActivo">
+      <h6 style="display: flex; justify-content: center; color:white; background-color: rgba(0, 39, 195, 0.99); margin: 0px 40px 0px 40px; padding: 10px; padding-left: 15px; border-radius: 30px 60px;">
+        Recuerda que tienes un viaje activo!
+      </h6>
+    </div>
+
+
   </div>
 
   <ion-modal [isOpen]="isModalOpen5">
