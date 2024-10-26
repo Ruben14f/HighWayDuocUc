@@ -273,13 +273,13 @@
                 <ion-label><strong>Hora inicio viaje:</strong> {{viajeSeleccionado?.hora}}</ion-label>
               </ion-item>
               <ion-item lines="full">
-                <ion-label><strong>Valor pagado:</strong> {{viajeSeleccionado?.precio}}</ion-label>
+                <ion-label><strong>Valor pagado:</strong> {{viajeSeleccionado?.precio | currency:'CLP':'$':'1.0-0' }}</ion-label>
               </ion-item>
               <ion-item lines="full">
                 <ion-label><strong>Metodo de pago:</strong> {{viajeSeleccionado?.metodoDePago}}</ion-label>
               </ion-item>
               <ion-item lines="full">
-                <ion-label><strong>Estado del viaje:</strong> {{viajeSeleccionado?.estado}}</ion-label>
+                <ion-label><strong>Estado del viaje:</strong> {{viajeSeleccionado?.estado | titlecase}}</ion-label>
               </ion-item>
               <ion-item lines="full">
                 <ion-label><strong>Nombre chofer:</strong> {{viajeSeleccionado?.nombreConductor | titlecase}} {{viajeSeleccionado?.apellidoConductor | titlecase}}</ion-label>

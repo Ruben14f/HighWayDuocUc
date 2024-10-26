@@ -28,7 +28,7 @@ export class CrearviajeService {
         apellidoConductor: apellidoConductor,
         fechaCreacion: fechaFormateada, // Guardar la fecha de creación obtenida de la API
         horaFinalizacion: null, // Inicialmente en null
-        estado: 'activo' // El viaje se marca como activo cuando se crea
+        estado: 'En curso' // El viaje se marca como activo cuando se crea
       };
 
       // Guardar el nuevo viaje en la colección 'viajes' en Firestore
@@ -87,7 +87,7 @@ export class CrearviajeService {
 
   tieneViajeActivo(userId: string): Observable<any[]> {
     return this.firestore.collection('viajes', ref =>
-      ref.where('userId', '==', userId).where('estado', '==', 'activo')
+      ref.where('userId', '==', userId).where('estado', '==', 'En curso')
     ).snapshotChanges().pipe(
       map(actions => actions.map(a => {
         const data = a.payload.doc.data() as any; // Obtener los datos del documento
