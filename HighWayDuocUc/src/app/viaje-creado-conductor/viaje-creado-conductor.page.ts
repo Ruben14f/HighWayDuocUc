@@ -6,6 +6,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { lastValueFrom } from 'rxjs';
+import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -25,7 +26,8 @@ export class ViajeCreadoConductorPage implements OnInit {
               private auth: AngularFireAuth,
               private afs: AngularFirestore,
               private NavController: NavController,
-              private alertController: AlertController
+              private alertController: AlertController,
+              private CrearviajeService: CrearviajeService
             ) { }
 
   sedes: Sede[] = [];
@@ -71,7 +73,6 @@ export class ViajeCreadoConductorPage implements OnInit {
   }
   async finalizarCarrera() {
     try {
-
       // Obtener el viaje del usuario desde Firestore
       const viajeObservable = this.afs
         .collection('viajes', (ref) => ref.where('userId', '==', this.userId))
@@ -102,6 +103,20 @@ export class ViajeCreadoConductorPage implements OnInit {
         // Eliminar el documento de la colección original de 'viajes'
         await this.afs.collection('viajes').doc(viajeDoc.id).delete();
 
+        // Cambiar el estado de cada solicitud de pasajero a "viaje tomado"
+        for (const pasajeroId of pasajeroIds) {
+          const solicitudesRef = this.afs.collection('solicitudes', ref =>
+            ref.where('pasajeroId', '==', pasajeroId).where('viajeId', '==', viajeDoc.id)
+          );
+
+          const solicitudesSnapshot = await lastValueFrom(solicitudesRef.get());
+          if (!solicitudesSnapshot.empty) {
+            for (const doc of solicitudesSnapshot.docs) {
+              await this.CrearviajeService.actualizarEstadoSolicitud(doc.id, 'viaje realizado');
+            }
+          }
+        }
+
         // Limpia los datos del viaje en localStorage
         localStorage.removeItem('viajeCreado');
 
@@ -115,6 +130,7 @@ export class ViajeCreadoConductorPage implements OnInit {
       console.error('Error al finalizar la carrera y mover los datos:', error);
     }
   }
+
 
 
 

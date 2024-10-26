@@ -126,6 +126,37 @@ export class CrearviajeService {
     );
   }
 
+  observarEstadoViaje(viajeId: string): Observable<string> {
+    return this.firestore.collection('viajes').doc(viajeId).valueChanges().pipe(
+      map((viaje: any) => viaje?.estado) // Asegúrate de que viaje?.estado esté definido
+    );
+  }
+
+// CrearviajeService
+observarViajeFinalizado(pasajeroId: string): Observable<boolean> {
+    return this.firestore.collection('viajeHistorial', ref =>
+      ref.where('pasajeroIds', 'array-contains', pasajeroId).where('estado', '==', 'finalizado')
+    ).snapshotChanges().pipe(
+      map(actions => actions.length > 0), // Retorna true si hay un viaje finalizado
+      catchError((error) => {
+        console.error('Error al observar estado de viaje en viajeHistorial:', error);
+        return of(false); // Retorna false en caso de error
+      })
+    );
+  }
+
+
+  // CrearviajeService
+actualizarEstadoSolicitud(solicitudId: string, nuevoEstado: string) {
+  return this.firestore.collection('solicitudes').doc(solicitudId).update({ estado: nuevoEstado })
+    .then(() => {
+      console.log(`Estado de la solicitud actualizado a ${nuevoEstado}`);
+    })
+    .catch(error => {
+      console.error('Error al actualizar el estado de la solicitud:', error);
+    });
+}
+
 
 
 
