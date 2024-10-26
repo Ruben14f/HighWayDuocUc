@@ -7,6 +7,7 @@ import { AuthService } from '../common/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { lastValueFrom } from 'rxjs';
 import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
+import { DateService } from '../common/services/date.service';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -27,7 +28,8 @@ export class ViajeCreadoConductorPage implements OnInit {
               private afs: AngularFirestore,
               private NavController: NavController,
               private alertController: AlertController,
-              private CrearviajeService: CrearviajeService
+              private CrearviajeService: CrearviajeService,
+              private date: DateService
             ) { }
 
   sedes: Sede[] = [];
@@ -73,6 +75,12 @@ export class ViajeCreadoConductorPage implements OnInit {
   }
   async finalizarCarrera() {
     try {
+
+
+      const ahora = new Date();
+      const horaLocal = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+
       // Obtener el viaje del usuario desde Firestore
       const viajeObservable = this.afs
         .collection('viajes', (ref) => ref.where('userId', '==', this.userId))
@@ -93,8 +101,9 @@ export class ViajeCreadoConductorPage implements OnInit {
         // Crear nuevo objeto con la lista de IDs de pasajeros
         const nuevoViajeData = {
           ...viajeData,
-          pasajeroIds: pasajeroIds, // Añadir la lista de IDs de pasajeros
-          estado: 'finalizado'
+          pasajeroIds: pasajeroIds,
+          estado: 'finalizado',
+          horaFinalizacion: horaLocal
         };
 
         // Mover el documento a viajeHistorial con los cambios

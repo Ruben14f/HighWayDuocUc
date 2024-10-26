@@ -19,11 +19,13 @@ export class CrearviajeService {
       const fechaActual = await this.date.getFechaActual();
       const fechaFormateada = fechaActual.currentDateTime.split('T')[0]; // Formatear la fecha (quitar la hora)
 
+
       const nuevoViaje = {
         ...viaje,
         nombreConductor: nombreConductor,
         apellidoConductor: apellidoConductor,
         fechaCreacion: fechaFormateada, // Guardar la fecha de creación obtenida de la API
+        horaFinalizacion: null, // Inicialmente en null
         estado: 'activo' // El viaje se marca como activo cuando se crea
       };
 
