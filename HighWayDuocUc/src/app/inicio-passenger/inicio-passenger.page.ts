@@ -104,14 +104,14 @@ export class InicioPassengerPage implements OnInit {
   async verificarViajeActivo() {
     this.solicitud.obtenerSolicitudesPorPasajero(this.userId).subscribe(async (solicitudes) => {
       const solicitudActiva = solicitudes.find(solicitud => {
-        const data = solicitud.payload.doc.data() as { estado: string }; // Definir el tipo correcto aquí
-        return data.estado === 'aceptada'; // Solo si la solicitud ha sido aceptada
+        const data = solicitud.payload.doc.data() as { estado: string };
+        return data.estado === 'aceptada';
       });
 
       if (solicitudActiva) {
-        this.viajeActivo = true; // Muestra el mensaje si el viaje está activo
+        this.viajeActivo = true;
       } else {
-        this.viajeActivo = false; // Oculta el mensaje si no hay viaje activo
+        this.viajeActivo = false;
       }
     });
   }
