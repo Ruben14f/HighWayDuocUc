@@ -96,13 +96,13 @@ export class CrearviajeService {
       ref.where('userId', '==', userId).where('estado', '==', 'En curso')
     ).snapshotChanges().pipe(
       map(actions => actions.map(a => {
-        const data = a.payload.doc.data() as any; // Obtener los datos del documento
-        const id = a.payload.doc.id; // Obtener el ID del documento
-        return { id, estado: data.estado, userId: data.userId }; // Retornar solo el estado y userId
+        const data = a.payload.doc.data() as any;
+        const id = a.payload.doc.id;
+        return { id, estado: data.estado, userId: data.userId };
       })),
       catchError((error) => {
         console.error('Error al verificar si hay viajes activos:', error);
-        return of([]); // Retorna un array vacío en caso de error
+        return of([]);
       })
     );
   }
@@ -118,7 +118,7 @@ export class CrearviajeService {
         })),
         catchError((error) => {
           console.error('Error al obtener el historial de viajes del conductor:', error);
-          return of([]); // Retorna un array vacío en caso de error
+          return of([]);
         })
       );
   }
@@ -142,7 +142,6 @@ export class CrearviajeService {
     );
   }
 
-// CrearviajeService
 observarViajeFinalizado(pasajeroId: string): Observable<boolean> {
     return this.firestore.collection('viajeHistorial', ref =>
       ref.where('pasajeroIds', 'array-contains', pasajeroId).where('estado', '==', 'finalizado')
@@ -156,7 +155,6 @@ observarViajeFinalizado(pasajeroId: string): Observable<boolean> {
   }
 
 
-  // CrearviajeService
 actualizarEstadoSolicitud(solicitudId: string, nuevoEstado: string) {
   return this.firestore.collection('solicitudes').doc(solicitudId).update({ estado: nuevoEstado })
     .then(() => {
@@ -171,7 +169,6 @@ async agregarPasajeroAlViaje(viajeId: string, pasajeroData: { id: string, nombre
   try {
     const viajeRef = this.firestore.collection('viajes').doc(viajeId);
 
-    // Agregar `pasajeroId` y los datos completos a `pasajeroIds` y `pasajerosAceptados`
     await viajeRef.update({
       pasajeroIds: arrayUnion(pasajeroData.id),
       pasajerosAceptados: arrayUnion({

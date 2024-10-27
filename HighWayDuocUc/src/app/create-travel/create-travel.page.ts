@@ -148,7 +148,6 @@ export class CreateTravelPage implements OnInit {
 
 
 
-  // Alerta de error al elegir más pasajeros
   async errorMasPasajeros() {
     const alert = await this.alertController.create({
       header: 'Error (USO DE VEHICULO: MOTO)',

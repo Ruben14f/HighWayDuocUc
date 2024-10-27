@@ -20,9 +20,6 @@ export class TravelHistoryPage implements OnInit {
 
   constructor(
     private auth: AngularFireAuth,
-    private _authService: AuthService,
-    private storage: AngularFireStorage,
-    private firestore: AngularFirestore,
     private crearViajeService: CrearviajeService,
   ) { }
 

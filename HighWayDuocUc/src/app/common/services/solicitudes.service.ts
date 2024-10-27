@@ -115,9 +115,6 @@ crearSolicitud(viajeId: string, pasajeroId: string, conductorId: string, destino
   }
 
 
-
-  // Escuchar los cambios de estado de una solicitud específica
-// Escuchar los cambios de estado de una solicitud específica
 observarCambiosDeSolicitud(solicitudId: string) {
   return this.firestore.collection('solicitudes').doc(solicitudId).snapshotChanges().pipe(
     map(a => {

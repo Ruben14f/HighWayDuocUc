@@ -429,11 +429,9 @@ export class InicioPassengerPage implements OnInit {
             this.crearViajeService.obtenerViajePorId(solicitud.viajeId).subscribe(viajeData => {
                 this.viajeSeleccionado = { ...viajeData, id: solicitud.viajeId, solicitudId }; // Agregar `solicitudId`
 
-                // Guarda `viajeSeleccionado` en `localStorage`
                 localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
             });
 
-            // Llama a agregarPasajeroAlViaje para agregar el `pasajeroId` y los datos completos del pasajero
             this.crearViajeService.agregarPasajeroAlViaje(solicitud.viajeId, {
                 id: this.usuario.uid,
                 nombre: this.usuario.nombre,
@@ -469,15 +467,11 @@ async cancelarViaje() {
               text: 'Sí',
               handler: async () => {
                   if (this.viajeSeleccionado) {
-                      // Sumar 1 al número actual de pasajeros disponibles
                       const nuevosPasajerosDisponibles = this.viajeSeleccionado.pasajeros + 1;
-
-                      // Actualizar el número de pasajeros en Firestore en el documento del viaje
                       this.crearViajeService.actualizarViaje(this.viajeSeleccionado.id, { pasajeros: nuevosPasajerosDisponibles })
                           .then(async () => {
                               console.log('Pasajero eliminado y el número de pasajeros actualizado en Firestore');
 
-                              // Actualiza el estado de la solicitud a "cancelada por pasajero" usando `solicitudId`
                               if (this.viajeSeleccionado.solicitudId) {
                                   this.solicitud.actualizarEstadoSolicitud(this.viajeSeleccionado.solicitudId)
                                       .then(() => {
@@ -522,12 +516,6 @@ async cancelarViaje() {
 
   await confirmAlert.present();
 }
-
-
-
-
-
-
 
 
 

@@ -8,7 +8,6 @@
   <br>
   <div class="viajes-container">
     <div class="viajes" style="padding: 10px;">
-      <!-- Mostrar viajes solo si hay elementos en la lista -->
       <ng-container *ngIf="viajeHistorial.length > 0; else noViajes">
         <div *ngFor="let viaje of viajeHistorial" class="viaje-card"
           style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #e0e0e0; border-radius: 10px; margin-bottom: 10px;">
@@ -37,7 +36,6 @@
                 Estado de viaje: {{ viaje.estado }}
               </h6>
 
-              <!-- Mostrar la lista de pasajeros aceptados si existen -->
               <div *ngIf="viaje.pasajerosAceptados && viaje.pasajerosAceptados.length > 0">
                 <h6 style="margin: 5px 0; font-size: 14px;">Pasajeros aceptados:</h6>
                 <ul>
@@ -47,7 +45,6 @@
                 </ul>
               </div>
 
-              <!-- Mostrar mensaje si no hay pasajeros aceptados -->
               <div *ngIf="!viaje.pasajerosAceptados || viaje.pasajerosAceptados.length === 0">
                 <h6 style="margin: 5px 0; font-size: 15px;">No hay pasajeros aceptados</h6>
               </div>
@@ -56,7 +53,6 @@
         </div>
       </ng-container>
 
-      <!-- Plantilla de mensaje si no hay viajes -->
       <ng-template #noViajes>
         <p style="text-align: center; font-size: 16px; color: #666;">
           Aún no tienes un viaje realizado
