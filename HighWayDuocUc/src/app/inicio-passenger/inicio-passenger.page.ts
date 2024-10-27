@@ -133,7 +133,6 @@ export class InicioPassengerPage implements OnInit {
           this.crearViajeService.obtenerViajePorId(this.viajeCreado.id).subscribe(viajeData => {
             this.viajeSeleccionado = viajeData;
             localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
-            this.isModalOpen5 = true;  // Abre el modal con los detalles del viaje
           });
         } else if (estado === 'finalizado') {
           this.solicitudPendiente = false; // Permite al usuario tomar otro viaje
@@ -416,96 +415,119 @@ export class InicioPassengerPage implements OnInit {
         }).then(alert => alert.present());
       });
   }
+
   observarEstadoSolicitud(solicitudId: string) {
     this.solicitud.observarCambiosDeSolicitud(solicitudId).subscribe(solicitud => {
-      if (solicitud.estado === 'aceptada') {
-        this.viajeActivo = true;
-        this.solicitudPendiente = false;
-        this.solicitudAceptada = true;
-        localStorage.setItem('solicitudPendiente', 'false');
-        this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
+        if (solicitud.estado === 'aceptada') {
+            this.viajeActivo = true;
+            this.solicitudPendiente = false;
+            this.solicitudAceptada = true;
+            localStorage.setItem('solicitudPendiente', 'false');
+            this.mostrarToast('Tu solicitud de viaje ha sido aceptada por el conductor.', 'success');
 
-        // Establece los detalles del viaje en `viajeSeleccionado` y guárdalo en `localStorage`
-        this.crearViajeService.obtenerViajePorId(solicitud.viajeId).subscribe(viajeData => {
-          this.viajeSeleccionado = viajeData;
-          this.isModalOpen5 = true;  // Abre el modal con los detalles del viaje
+            // Obtén los detalles del viaje, incluyendo `solicitudId` en `viajeSeleccionado`
+            this.crearViajeService.obtenerViajePorId(solicitud.viajeId).subscribe(viajeData => {
+                this.viajeSeleccionado = { ...viajeData, id: solicitud.viajeId, solicitudId }; // Agregar `solicitudId`
 
-          // Guarda `viajeSeleccionado` en `localStorage`
-          localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
-        });
+                // Guarda `viajeSeleccionado` en `localStorage`
+                localStorage.setItem('viajeSeleccionado', JSON.stringify(this.viajeSeleccionado));
+            });
 
-        // Llama a agregarPasajeroAlViaje para agregar el `pasajeroId` y los datos completos del pasajero
-        this.crearViajeService.agregarPasajeroAlViaje(solicitud.viajeId, {
-          id: this.usuario.uid,
-          nombre: this.usuario.nombre,
-          apellido: this.usuario.apellido
-        });
+            // Llama a agregarPasajeroAlViaje para agregar el `pasajeroId` y los datos completos del pasajero
+            this.crearViajeService.agregarPasajeroAlViaje(solicitud.viajeId, {
+                id: this.usuario.uid,
+                nombre: this.usuario.nombre,
+                apellido: this.usuario.apellido
+            });
 
-      } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
-        this.viajeActivo = false;
-        this.solicitudPendiente = false;
-        this.solicitudAceptada = false;
-        localStorage.setItem('solicitudPendiente', 'false');
-        this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
-      }
+        } else if (solicitud.estado === 'rechazada' || solicitud.estado === 'cancelada') {
+            this.viajeActivo = false;
+            this.solicitudPendiente = false;
+            this.solicitudAceptada = false;
+            localStorage.setItem('solicitudPendiente', 'false');
+            this.mostrarToast('Tu solicitud de viaje ha sido rechazada o cancelada.', 'danger');
+        }
     });
-  }
+}
 
 
 
-
-
-
-
-  async cancelarViaje() {
-    const confirmAlert = await this.alertController.create({
+async cancelarViaje() {
+  const confirmAlert = await this.alertController.create({
       header: 'Confirmación',
       message: '¿Deseas cancelar el viaje?',
       buttons: [
-        {
-          text: 'No',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Cancelación de viaje cancelada');
-          }
-        },
-        {
-          text: 'Sí',
-          handler: async () => {
-            if (this.viajeSeleccionado) {
-              let pasajerosDisponibles = parseInt(this.viajeSeleccionado.pasajeros) + 1; // Libera un pasajero
+          {
+              text: 'No',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                  console.log('Cancelación de viaje cancelada');
+              }
+          },
+          {
+              text: 'Sí',
+              handler: async () => {
+                  if (this.viajeSeleccionado) {
+                      // Sumar 1 al número actual de pasajeros disponibles
+                      const nuevosPasajerosDisponibles = this.viajeSeleccionado.pasajeros + 1;
 
-              // Actualiza la información del viaje en Firestore
-              this.crearViajeService.actualizarViaje(this.viajeSeleccionado.id, { pasajeros: pasajerosDisponibles })
-                .then(async () => {
-                  console.log('Viaje cancelado y actualizado en Firestore');
+                      // Actualizar el número de pasajeros en Firestore en el documento del viaje
+                      this.crearViajeService.actualizarViaje(this.viajeSeleccionado.id, { pasajeros: nuevosPasajerosDisponibles })
+                          .then(async () => {
+                              console.log('Pasajero eliminado y el número de pasajeros actualizado en Firestore');
 
-                  // Muestra la alerta de éxito
-                  const successAlert = await this.alertController.create({
-                    header: 'Éxito',
-                    message: 'Viaje cancelado',
-                    buttons: ['OK'],
-                  });
-                  await successAlert.present();
-                  this.closeModalEstadoViaje();
-                  this.viajeSeleccionado = null; // Reinicia el viaje seleccionado
-                  this.usuario.viajeActivo = false; // Establece que el usuario ya no tiene un viaje activo
-                  this.mostrarEstadoViaje = false;
-                  this.yaTieneViaje = true;
-                  localStorage.removeItem('viajeSeleccionado'); // Elimina `viajeSeleccionado` de `localStorage`
-                })
-                .catch(error => {
-                  console.error('Error al cancelar el viaje en Firestore:', error);
-                });
-            }
+                              // Actualiza el estado de la solicitud a "cancelada por pasajero" usando `solicitudId`
+                              if (this.viajeSeleccionado.solicitudId) {
+                                  this.solicitud.actualizarEstadoSolicitud(this.viajeSeleccionado.solicitudId)
+                                      .then(() => {
+                                          console.log('Estado de solicitud actualizado a "cancelada por pasajero" en Firestore');
+                                      })
+                                      .catch(error => {
+                                          console.error('Error al actualizar el estado de la solicitud en Firestore:', error);
+                                      });
+                              } else {
+                                  console.error('No se encontró solicitudId en viajeSeleccionado');
+                              }
+
+                              const historialCancelado = {
+                                  ...this.viajeSeleccionado,
+                                  estado: 'cancelado',
+                                  canceladoPor: this.usuario.uid
+                              };
+                              await this.crearViajeService.agregarHistorialPasajero(this.usuario.uid, historialCancelado);
+
+                              this.mostrarToast('El viaje ha sido cancelado y puedes tomar otro.', 'green');
+                              this.closeModalEstadoViaje();
+
+                              this.viajeActivo = false;
+                              this.solicitudPendiente = false;
+                              this.solicitudAceptada = false;
+                              this.mostrarEstadoViaje = false;
+                              this.yaTieneViaje = true;
+
+                              this.isModalOpen5 = false;
+
+                              localStorage.removeItem('viajeSeleccionado');
+                              localStorage.setItem('solicitudPendiente', 'false');
+                          })
+                          .catch(error => {
+                              console.error('Error al cancelar el viaje y actualizar en Firestore:', error);
+                          });
+                  }
+              }
           }
-        }
       ]
-    });
+  });
 
-    await confirmAlert.present(); // Muestra la alerta de confirmación
-  }
+  await confirmAlert.present();
+}
+
+
+
+
+
+
 
 
 

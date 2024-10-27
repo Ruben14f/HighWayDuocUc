@@ -42,15 +42,21 @@ export class CrearviajeService {
   }
 
   actualizarViaje(viajeId: string, data: any) {
-    return this.firestore.collection('viajes').doc(viajeId).update(data)
-      .then(() => {
-        console.log('Viaje actualizado en Firestore');
-      })
-      .catch((error) => {
-        console.error('Error al actualizar el viaje en Firestore:', error);
-      });
-  }
+    console.log("Intentando actualizar el viaje con ID:", viajeId); // Log para verificar el ID
 
+    if (!viajeId) {
+        console.error("No se proporcionó un ID de viaje válido para la actualización.");
+        return Promise.reject("No se proporcionó un ID de viaje válido.");
+    }
+
+    return this.firestore.collection('viajes').doc(viajeId).update(data)
+        .then(() => {
+            console.log('Viaje actualizado en Firestore');
+        })
+        .catch((error) => {
+            console.error('Error al actualizar el viaje en Firestore:', error);
+        });
+}
 
   // Obtener todos los viajes
   obtenerViajes() {
@@ -177,6 +183,21 @@ async agregarPasajeroAlViaje(viajeId: string, pasajeroData: { id: string, nombre
     console.log(`Pasajero ${pasajeroData.nombre} ${pasajeroData.apellido} agregado correctamente al viaje ${viajeId}.`);
   } catch (error) {
     console.error('Error al agregar el pasajero al viaje:', error);
+  }
+}
+
+
+async agregarHistorialPasajero(pasajeroId: string, viajeData: any) {
+  try {
+    await this.firestore.collection('viajeHistorial').add({
+      ...viajeData,
+      pasajeroId: pasajeroId, // ID del pasajero que canceló
+      estado: 'cancelado', // Estado del viaje
+      fechaCancelacion: new Date().toISOString() // Fecha de cancelación
+    });
+    console.log(`Viaje cancelado agregado al historial del pasajero ${pasajeroId}`);
+  } catch (error) {
+    console.error('Error al agregar el viaje cancelado al historial:', error);
   }
 }
 

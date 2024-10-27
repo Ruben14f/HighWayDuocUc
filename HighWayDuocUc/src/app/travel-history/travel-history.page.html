@@ -33,6 +33,9 @@
               <h6 style="margin: 5px 0; font-size: 14px;">
                 Método de pago: {{ viaje.metodoDePago }}
               </h6>
+              <h6 style="margin: 5px 0; font-size: 14px;">
+                Estado de viaje: {{ viaje.estado }}
+              </h6>
 
               <!-- Mostrar la lista de pasajeros aceptados si existen -->
               <div *ngIf="viaje.pasajerosAceptados && viaje.pasajerosAceptados.length > 0">

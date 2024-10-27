@@ -141,4 +141,27 @@ observarCambiosDeSolicitud(solicitudId: string) {
       ref.where('pasajeroId', '==', pasajeroId)
     ).snapshotChanges();
   }
+
+cancelarSolicitudPorPasajero(solicitudId: string) {
+  console.log(`Intentando cancelar la solicitud con ID: ${solicitudId}`); // Agrega este log
+
+  return this.firestore.collection('solicitudes').doc(solicitudId).update({
+    estado: 'cancelada por pasajero'
+  })
+  .then(() => {
+    console.log(`Estado de la solicitud actualizado a "cancelada por pasajero" para solicitud ID: ${solicitudId}`);
+  })
+  .catch(error => {
+    console.error('Error al actualizar el estado de la solicitud a "cancelada por pasajero":', error);
+  });
+}
+
+
+
+
+  actualizarEstadoSolicitud(solicitudId: string) {
+    return this.firestore.collection('solicitudes').doc(solicitudId).update({
+      estado: 'cancelada por pasajero'
+    });
+  }
 }
