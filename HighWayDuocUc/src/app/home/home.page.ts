@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnimationController } from '@ionic/angular';
 
@@ -7,24 +7,27 @@ import { AnimationController } from '@ionic/angular';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements AfterViewInit {
+export class HomePage {
   @ViewChild('logo', { read: ElementRef }) logo!: ElementRef<HTMLIonImgElement>;
 
-  constructor(private animationCtrl: AnimationController, private router: Router) {}
+  constructor(
+    private animationCtrl: AnimationController,
+    private router: Router
+  ) {}
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      const animation = this.animationCtrl
-        .create()
-        .addElement(this.logo.nativeElement)
-        .duration(2500)
-        .fromTo('transform', 'translateY(0px) scale(1)', 'translateY(180px) scale(1.5)')
-        .fromTo('transform-origin', 'center', 'center');
+  ionViewWillEnter() {
+    // Configura la animación
+    const animation = this.animationCtrl
+      .create()
+      .addElement(this.logo.nativeElement)
+      .duration(2500)
+      .fromTo('transform', 'translateY(0px) scale(1)', 'translateY(180px) scale(1.5)')
+      .fromTo('transform-origin', 'center', 'center');
 
-      animation.play();
-    }, 0);  // Esto asegura que la animación empieza justo después de que se carga la vista
+    animation.play();
   }
-  //Rutita para irse al login post click de la imagen
+
+  // Navegar al login
   palLogin() {
     this.router.navigate(['/login']);
   }

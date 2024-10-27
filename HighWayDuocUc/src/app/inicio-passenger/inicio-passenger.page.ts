@@ -11,6 +11,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AuthService } from '../common/services/auth.service';
 import { Subscription } from 'rxjs';
 import { SolicitudesService } from '../common/services/solicitudes.service';
+import { AudioService } from '../audio.service';
 
 
 @Component({
@@ -55,7 +56,8 @@ export class InicioPassengerPage implements OnInit {
     private _authService: AuthService,
     private crearViajeService: CrearviajeService,
     private toastController: ToastController,
-    private solicitud: SolicitudesService
+    private solicitud: SolicitudesService,
+    public audioService: AudioService
   ) { }
 
   sedes: Sede[] = [];
@@ -581,6 +583,9 @@ async cancelarViaje() {
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error);
     });
+  }
+  toggleMusic() {
+    this.audioService.toggleMusic();
   }
 
 }

@@ -8,6 +8,7 @@ import { finalize } from 'rxjs';
 import { CrearviajeService } from 'src/app/common/crearViaje/crearviaje.service';
 import { AuthService } from 'src/app/common/services/auth.service';
 import { SolicitudesService } from 'src/app/common/services/solicitudes.service';
+import { AudioService } from 'src/app/audio.service';
 
 @Component({
   selector: 'app-inicio-conductor',
@@ -36,7 +37,8 @@ export class InicioConductorPage implements OnInit {
     private firestore: AngularFirestore,
     private crearViajeService: CrearviajeService,
     private alertController: AlertController,
-    private solicitud: SolicitudesService
+    private solicitud: SolicitudesService,
+    public audioService: AudioService
   ) { }
 
   ngOnInit() {
@@ -260,5 +262,8 @@ export class InicioConductorPage implements OnInit {
     }).catch((error) => {
       console.error('Error al cerrar sesión:', error);
     });
+  }
+  toggleMusic() {
+    this.audioService.toggleMusic();
   }
 }

@@ -16,12 +16,10 @@
               <ion-card-content>
                 <ion-list>
                   <ion-item>
-                    <ion-thumbnail slot="start" style="display: flex; align-items: center;">
-                      <ion-icon name="color-wand-outline" style="font-size: 30px;"></ion-icon>
-                    </ion-thumbnail>
-
-                    <ion-label>Modo
-                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle> </ion-label>
+                      <ion-icon name="musical-notes-outline" style="font-size: 30px;"></ion-icon>
+                      <ion-button (click)="toggleMusic()">
+                        {{ audioService.getIsPlaying() ? 'Apagar Música' : 'Encender Música' }}
+                      </ion-button>
 
                   </ion-item>
                   <ion-item>
@@ -304,7 +302,7 @@
     <ion-toolbar style="--background: rgb(231, 231, 231);">
       <div style="display: flex; justify-content: center; margin-bottom: 20px;">
         <ion-button (click)="modoConductor()" fill="Outline" style="--background: rgb(199, 197, 197); --color: black;">
-          Modo conductor
+          Cambiar a Modo conductor
         </ion-button>
       </div>
     </ion-toolbar>

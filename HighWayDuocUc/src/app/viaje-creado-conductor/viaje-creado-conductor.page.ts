@@ -75,8 +75,6 @@ export class ViajeCreadoConductorPage implements OnInit {
   }
   async finalizarCarrera() {
     try {
-
-
       const ahora = new Date();
       const horaLocal = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -153,7 +151,7 @@ export class ViajeCreadoConductorPage implements OnInit {
         {
           text: 'Aceptar',
           handler: () => {
-            this.NavController.pop();
+            this.router.navigate(['/inicio-conductor']);
           },
         },
       ],

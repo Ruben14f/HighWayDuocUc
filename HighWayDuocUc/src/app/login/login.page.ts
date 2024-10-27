@@ -30,7 +30,6 @@ export class LoginPage{
   //Para el tema de olvidar la contraseña
   olvidoSuContrasenia() {
     this.isModalOpen = true;
-    this.reproducirError();
   }
 
   closeModal() {
@@ -42,14 +41,6 @@ export class LoginPage{
     this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
   }
 
-  //Sonidito para el olvido de contra
-  reproducirError() {
-    const audio = new Audio('assets/music/error.mp3');
-    //El validador en caso de
-    audio.play().catch(error => {
-      console.error('Error al reproducir el sonido:', error);
-    });
-  }
   // Nuevo método para manejar el inicio de sesión
   async iniciarSesion(){
     try{

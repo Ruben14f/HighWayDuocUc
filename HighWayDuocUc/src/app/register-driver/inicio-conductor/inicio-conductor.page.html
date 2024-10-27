@@ -16,13 +16,12 @@
               <ion-card-content>
                 <ion-list>
                   <ion-item>
-                    <ion-thumbnail slot="start" style="display: flex; align-items: center;">
-                      <ion-icon name="color-wand-outline" style="font-size: 30px;"></ion-icon>
-                    </ion-thumbnail>
-                    <ion-label>Modo
-                      <ion-toggle aria-label="Dark toggle" color="dark" [checked]="true"></ion-toggle>
-                    </ion-label>
-                  </ion-item>
+                    <ion-icon name="musical-notes-outline" style="font-size: 30px;"></ion-icon>
+                    <ion-button (click)="toggleMusic()">
+                      {{ audioService.getIsPlaying() ? 'Apagar Música' : 'Encender Música' }}
+                    </ion-button>
+
+                </ion-item>
                   <ion-item>
                     <ion-thumbnail slot="start" style="display: flex; align-items: center;">
                       <ion-icon name="help-outline" style="font-size: 30px;"></ion-icon>
