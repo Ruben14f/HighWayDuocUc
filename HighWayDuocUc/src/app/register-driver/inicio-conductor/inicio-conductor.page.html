@@ -11,28 +11,24 @@
           <ion-content>
             <ion-card>
               <ion-card-header>
-                <ion-card-title>Configuraciones</ion-card-title>
+                <ion-card-title style="display: flex; justify-content: center;">Configuraciones</ion-card-title>
               </ion-card-header>
               <ion-card-content>
                 <ion-list>
-                  <ion-item>
-                    <ion-icon name="musical-notes-outline" style="font-size: 30px;"></ion-icon>
-                      <ion-button class="music-button" size="large" (click)="toggleMusic()">
-                        {{ audioService.getIsPlaying() ? 'Apagar Música' : 'Encender Música' }}
-                      </ion-button>
-
-                </ion-item>
-                  <ion-item>
-                    <ion-thumbnail slot="start" style="display: flex; align-items: center;">
-                      <ion-icon name="help-outline" style="font-size: 30px;"></ion-icon>
-                    </ion-thumbnail>
-                    <ion-button (click)="preguntas()">Ayuda</ion-button>
+                  <ion-item lines="full" class="config-item">
+                    <ion-icon name="musical-notes-outline" style="font-size: 30px; margin-right: 8px;"></ion-icon>
+                    <ion-button expand="block" class="config-button" (click)="toggleMusic()">
+                      {{ audioService.getIsPlaying() ? 'Apagar Música' : 'Encender Música' }}
+                    </ion-button>
+                  </ion-item>
+                  <ion-item lines="full" class="config-item">
+                    <ion-icon name="help-outline" style="font-size: 30px; margin-right: 8px;"></ion-icon>
+                    <ion-button expand="block" class="config-button" (click)="preguntas()">Ayuda</ion-button>
                   </ion-item>
                 </ion-list>
               </ion-card-content>
               <div style="display: flex; justify-content: center;">
-                <ion-button fill="Outline" style="--color: white; --background: #1a65eb;"
-                  (click)="closeModal()">Cerrar</ion-button>
+                <ion-button fill="outline" style="--color: white; --background: #1a65eb;" (click)="closeModal()">Cerrar</ion-button>
               </div>
             </ion-card>
           </ion-content>

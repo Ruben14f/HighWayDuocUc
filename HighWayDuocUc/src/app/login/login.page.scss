@@ -1,7 +1,6 @@
-
 //ESTILOS MAS GENERALES PARA EL CONTENEDOR DEL FORMULARIO DE REGISTRO
 
-ion-content{
+ion-content {
   --overflow: hidden; // evita que se desplaze hacia abajo
   display: flex;
   flex-direction: column;
@@ -10,7 +9,8 @@ ion-content{
 .logo-container {
   display: flex;
   flex-direction: row;
-  align-items: center; /* Centra verticalmente el logo y el título si están en la misma fila */
+  align-items: center;
+  /* Centra verticalmente el logo y el título si están en la misma fila */
   max-width: 350px;
 }
 
@@ -20,7 +20,7 @@ ion-content{
   margin: 0 auto;
 }
 
-#titulo-inicio-sesion{
+#titulo-inicio-sesion {
   justify-content: center;
   padding-bottom: 50px;
 }
@@ -37,11 +37,11 @@ ion-input {
   color: white;
 }
 
-h5{
+h5 {
   color: white;
 }
 
-.container-password-ocultar-contra{
+.container-password-ocultar-contra {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,3 +59,42 @@ h5{
 
 
 
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+}
+
+ion-toolbar{
+  --background: #ffffff;
+}
+
+.centered-container ion-item {
+  margin: 10px;
+}
+
+.large-card {
+  width: 90%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.enviar-soli {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.enviar-soli ion-button {
+  --border-radius: 10px;
+  --background: #1962cf;
+  --color: white;
+  margin: 15px 45px;
+}
+
+.enviar-soli ion-button:hover {
+  --background: #1962cf;
+  --color: #ffffff;
+}
