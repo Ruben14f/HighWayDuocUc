@@ -170,7 +170,6 @@ export class InicioConductorPage implements OnInit {
 
   mantencion() {
     this.isModalOpen = true;
-    this.reproducirError();
   }
 
   closeModal() {
@@ -205,12 +204,6 @@ export class InicioConductorPage implements OnInit {
     this.isModalOpen3 = false;
   }
 
-  reproducirError() {
-    const audio = new Audio('assets/music/error.mp3');
-    audio.play().catch((error) => {
-      console.error('Error al reproducir el sonido:', error);
-    });
-  }
 
   async cambiarModo() {
     this.router.navigate(['/inicio-passenger']);

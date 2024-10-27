@@ -11,13 +11,13 @@
           <ion-content>
             <ion-card>
               <ion-card-header>
-                <ion-card-title>Configuraciones</ion-card-title>
+                <ion-card-title style="display: aling-items;">Configuraciones</ion-card-title>
               </ion-card-header>
               <ion-card-content>
                 <ion-list>
                   <ion-item>
                       <ion-icon name="musical-notes-outline" style="font-size: 30px;"></ion-icon>
-                      <ion-button (click)="toggleMusic()">
+                      <ion-button class="music-button" size="large" (click)="toggleMusic()">
                         {{ audioService.getIsPlaying() ? 'Apagar Música' : 'Encender Música' }}
                       </ion-button>
 

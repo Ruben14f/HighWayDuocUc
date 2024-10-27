@@ -359,14 +359,7 @@ export class InicioPassengerPage implements OnInit {
     this.isModalOpen5 = false;
   }
 
-  //Sonidito para el error de la ruedita
-  reproducirError() {
-    const audio = new Audio('assets/music/error.mp3');
-    //El validador en caso de
-    audio.play().catch(error => {
-      console.error('Error al reproducir el sonido:', error);
-    });
-  }
+
 
 
   tomarViaje(viaje: any) {
