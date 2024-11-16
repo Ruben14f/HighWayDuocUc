@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">HighWayDuocUc</string>
+    <string name="title_activity_main">HighWayDuocUc</string>
+    <string name="package_name">com.duocuc.highway</string>
+    <string name="custom_url_scheme">com.duocuc.highway</string>
+</resources>
