@@ -46,3 +46,7 @@ ion-content {
 ion-content {
   background-color: var(--ion-background-color);
 }
+
+html {
+  --ion-mode: ios; /* Cambia a 'md' para Material Design */
+}

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AudioService } from '../../../audio.service';
 
 @Component({
   selector: 'app-pre-home',
@@ -8,14 +9,15 @@ import { Router } from '@angular/router';
 })
 export class PreHomePage implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private audioService: AudioService) { }
 
   ngOnInit() {
-    // Espera 3 segundos, redirige a la página principal y hace un refresh
-    setTimeout(() => {
-      this.router.navigate(['/home']).then(() => {
-        window.location.reload();// Fuerza un refresh de la página principal
-      });
-    }, 3000); // 3000 milisegundos = 3 segundos
+  }
+  startJourney() {
+    // Reproduce la música usando AudioService
+    this.audioService.playMusic();
+
+    // Navega a la página 'home'
+    this.router.navigate(['/home']);
   }
 }
