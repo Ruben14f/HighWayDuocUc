@@ -1,16 +1,11 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>pre-home</ion-title>
-  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <div class="container">
-        <h1>¡Es hora de iniciar un buen viaje!</h1>
-        <ion-button fill="clear" (click)="startJourney()">Haz click aquí</ion-button>
-      </div>
-    </ion-toolbar>
-  </ion-header>
+  <div class="container">
+    <h1>¡Es hora de iniciar un buen viaje!</h1>
+    <ion-button fill="solid" (click)="startJourney()" class="custom-button">
+      Haz click aquí
+    </ion-button>
+  </div>
 </ion-content>
