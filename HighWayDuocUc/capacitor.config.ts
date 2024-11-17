@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.duocuc.highway',
+  appId: 'cl.duocuc.highway',
   appName: 'HighWayDuocUc',
   webDir: 'www'
 };
