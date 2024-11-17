@@ -8,7 +8,6 @@ import { AudioService } from './audio.service';
 })
 export class AppComponent {
   constructor(private audioService: AudioService) {
-    this.audioService.playMusic();
   }
 
 

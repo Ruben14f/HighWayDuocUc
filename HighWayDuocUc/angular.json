@@ -55,7 +55,7 @@
                 }
               ],
               "outputHashing": "all",
-              "baseHref": "/HighWayDuocUc/"
+              "baseHref": "./"
             },
             "development": {
               "buildOptimizer": false,

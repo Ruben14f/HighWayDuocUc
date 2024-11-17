@@ -5,12 +5,16 @@ import { authGuardsGuard } from './common/services/auth-guards.guard';
 
 const routes: Routes = [
   {
+    path: 'pre-home',
+    loadChildren: () => import('./home/pre-home/pre-home/pre-home.module').then( m => m.PreHomePageModule),
+  },
+  {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
   },
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'pre-home',
     pathMatch: 'full'
   },
   {

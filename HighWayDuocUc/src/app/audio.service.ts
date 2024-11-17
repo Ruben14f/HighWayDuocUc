@@ -8,9 +8,6 @@ export class AudioService {
   private isPlaying = false; // Estado para verificar si la música está sonando
 
   constructor() {
-    this.audio.src = 'assets/music/Life is a highway.mp3'; // Ruta a tu archivo de música
-    this.audio.loop = true; // Para que la música se repita
-    this.audio.volume = 0.3;
   }
 
   // Reproduce la música

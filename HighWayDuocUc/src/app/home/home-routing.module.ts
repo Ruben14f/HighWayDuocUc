@@ -6,7 +6,11 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage,
+  },  {
+    path: 'pre-home',
+    loadChildren: () => import('./pre-home/pre-home/pre-home.module').then( m => m.PreHomePageModule)
   }
+
 ];
 
 @NgModule({
