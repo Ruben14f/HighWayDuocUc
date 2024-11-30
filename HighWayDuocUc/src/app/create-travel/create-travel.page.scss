@@ -4,6 +4,10 @@ ion-content {
   flex-direction: column;
   --background: red;
 }
+.input-field {
+  background-color: #ffffff; /* Fondo blanco */
+  color: #000000; /* Texto negro */
+}
 
 ion-toolbar #titulo-crear-viaje {
   display: flex;

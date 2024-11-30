@@ -79,8 +79,19 @@ export class CreateTravelPage implements OnInit {
   // Validador personalizado para la hora
   validarHora(control: any) {
     const horaSeleccionada = control.value;
-    // Verificar si la hora seleccionada está fuera del rango permitido (19:00 a 23:59)
-    if (horaSeleccionada && (horaSeleccionada < '19:00' || horaSeleccionada >= '24:00')) {
+
+    if(!horaSeleccionada){
+      return { horaInvalida: true }
+    }
+
+    const horaRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+    if (!horaRegex.test(horaSeleccionada)) {
+      return { horaInvalida: true };
+    }
+
+    const [horas, minutos] = horaSeleccionada.split(':').map(Number);
+
+    if (horas < 19 || horas > 23 || (horas === 23 && minutos > 59)) {
       this.errorDeHora();
       return { horaInvalida: true };
     }
