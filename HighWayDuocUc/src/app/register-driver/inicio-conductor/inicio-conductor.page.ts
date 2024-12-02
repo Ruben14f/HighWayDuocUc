@@ -116,7 +116,6 @@ export class InicioConductorPage implements OnInit {
     });
   }
 
-
   // Rechazar solicitud de viaje
   rechazarSolicitud(solicitudId: string) {
     this.solicitud.rechazarSolicitud(solicitudId).then(() => {
@@ -223,9 +222,6 @@ export class InicioConductorPage implements OnInit {
       }
     });
   }
-
-
-
 
   async irViajeCreado() {
     this.router.navigate(['/viaje-creado-conductor']);
