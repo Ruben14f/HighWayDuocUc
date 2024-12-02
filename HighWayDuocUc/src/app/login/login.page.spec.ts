@@ -7,6 +7,16 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from '../../environments/environment.test';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
+class AngularFireAuthMock {
+  signInWithEmailAndPassword(email: string, password: string) {
+    if (email === 'mansilla@gmail.com' && password === 'Ruben123') {
+      return Promise.resolve({ user: { uid: 'mock-user-id' } });
+    } else {
+      return Promise.reject(new Error('Invalid credentials'));
+    }
+  }
+}
+
 describe('LoginPage', () => {
   let component: LoginPage;
   let fixture: ComponentFixture<LoginPage>;
@@ -21,7 +31,7 @@ describe('LoginPage', () => {
         AngularFireModule.initializeApp(environment.firebaseConfig),
       ],
       providers: [
-        AngularFireAuth,
+        { provide: AngularFireAuth, useClass: AngularFireAuthMock },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();

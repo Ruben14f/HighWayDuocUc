@@ -1,9 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { AuthService } from 'src/app/common/services/auth.service';
 import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
 
 @Component({

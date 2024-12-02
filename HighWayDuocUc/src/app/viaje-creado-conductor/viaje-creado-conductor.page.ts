@@ -1,13 +1,11 @@
-import { Component, OnInit,inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { Sede } from '../register/info-sedes/sede.model';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AuthService } from '../common/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { lastValueFrom } from 'rxjs';
 import { CrearviajeService } from '../common/crearViaje/crearviaje.service';
-import { DateService } from '../common/services/date.service';
 
 @Component({
   selector: 'app-viaje-creado-conductor',
@@ -23,13 +21,11 @@ export class ViajeCreadoConductorPage implements OnInit {
 
 
   constructor(private router: Router,
-              private _authService: AuthService,
               private auth: AngularFireAuth,
               private afs: AngularFirestore,
               private NavController: NavController,
               private alertController: AlertController,
               private CrearviajeService: CrearviajeService,
-              private date: DateService
             ) { }
 
   sedes: Sede[] = [];

@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { doc, getDoc, setDoc } from '@firebase/firestore';
 import { AlertController, NavController } from '@ionic/angular';
-import { AuthService } from '../common/services/auth.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
