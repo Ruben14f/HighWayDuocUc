@@ -83,16 +83,13 @@ export class CreateTravelPage implements OnInit {
     return `${horas.padStart(2, '0')}:${minutos.padStart(2, '0')}`;
   }
 
-  // Validador personalizado para la hora
   async validarHora(control: AbstractControl) {
     const horaSeleccionada = control.value;
 
-    // Si no hay valor en la hora, lo consideramos como inválido
     if (!horaSeleccionada) {
       return { horaInvalida: true };
     }
 
-    // Expresiones regulares para los formatos 24 horas y 12 horas
     const horaRegex24 = /^([01]?\d|2[0-3]):([0-5]?\d)$/;  // Formato 24 horas
     const horaRegex12 = /^(0?[1-9]|1[0-2]):([0-5][0-9]) ?(AM|PM)$/i; // Formato 12 horas (AM/PM)
 
@@ -100,7 +97,6 @@ export class CreateTravelPage implements OnInit {
     let horas: number;
     let minutos: number;
 
-    // Verificar si la hora es válida en formato 24 horas
     if (horaRegex24.test(horaSeleccionada)) {
       const [hora, min] = horaSeleccionada.split(':');
       horas = parseInt(hora, 10);
@@ -108,7 +104,6 @@ export class CreateTravelPage implements OnInit {
       horaNormalizada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
     }
 
-    // Verificar si la hora es válida en formato 12 horas (AM/PM)
     else if (horaRegex12.test(horaSeleccionada)) {
       const [_, horasStr, minutosStr, periodo] = horaSeleccionada.match(horaRegex12);
       horas = parseInt(horasStr, 10);
@@ -124,17 +119,16 @@ export class CreateTravelPage implements OnInit {
 
       horaNormalizada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
     } else {
-      return { horaInvalida: true }; // Si no es un formato válido, retornar error
+      return { horaInvalida: true };
     }
 
-    // Validar que la hora esté en el rango de 19:00 a 23:59
     const [horaFinal, minutosFinal] = horaNormalizada.split(':').map(num => parseInt(num, 10));
     if (horaFinal < 19 || (horaFinal === 19 && minutosFinal < 0) || horaFinal > 23 || (horaFinal === 23 && minutosFinal > 59)) {
       await this.errorDeHora();
-      return { horaInvalida: true }; // Si está fuera de rango, retornar error
+      return { horaInvalida: true };
     }
 
-    return null; // Hora válida
+    return null;
   }
 
 
@@ -195,18 +189,6 @@ export class CreateTravelPage implements OnInit {
         await this.errorDeFormulario();
       }
     } else {
-      console.log('Formulario inválido:', this.crearViajeForm.value);
-      console.log('Estado del formulario:', this.crearViajeForm.invalid);
-      console.log('Errores de formulario:', this.crearViajeForm.errors);
-
-
-      console.log('Salida:', this.crearViajeForm.get('salida')?.valid);
-      console.log('Destino:', this.crearViajeForm.get('destino')?.valid);
-      console.log('Hora:', this.crearViajeForm.get('hora')?.valid);
-      console.log('Errores de campo hora:', this.crearViajeForm.get('hora')?.errors);
-      console.log('Pasajeros:', this.crearViajeForm.get('pasajeros')?.valid);
-      console.log('Precio:', this.crearViajeForm.get('precio')?.valid);
-      console.log('Metodo de pago:', this.crearViajeForm.get('metodoPago')?.valid);
       await this.errorDeFormulario();
     }
   }
