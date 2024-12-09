@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl  } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../common/services/auth.service';
@@ -32,8 +32,8 @@ export class CreateTravelPage implements OnInit {
       salida: ['', Validators.required],
       destino: ['', Validators.required],
       hora: ['', [Validators.required, this.validarHora.bind(this)]],
-      pasajeros: ['', Validators.required],
-      precio: ['', Validators.required],
+      pasajeros: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      precio: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
       metodoPago: ['', Validators.required]
     });
   }
@@ -76,27 +76,71 @@ export class CreateTravelPage implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 
+
+  normalizarHora(hora: string): string {
+    if (!hora) return '';
+    const [horas, minutos] = hora.split(':');
+    return `${horas.padStart(2, '0')}:${minutos.padStart(2, '0')}`;
+  }
+
   // Validador personalizado para la hora
-  validarHora(control: any) {
+  async validarHora(control: AbstractControl) {
     const horaSeleccionada = control.value;
 
-    if(!horaSeleccionada){
-      return { horaInvalida: true }
-    }
-
-    const horaRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    if (!horaRegex.test(horaSeleccionada)) {
+    // Si no hay valor en la hora, lo consideramos como inválido
+    if (!horaSeleccionada) {
       return { horaInvalida: true };
     }
 
-    const [horas, minutos] = horaSeleccionada.split(':').map(Number);
+    // Expresiones regulares para los formatos 24 horas y 12 horas
+    const horaRegex24 = /^([01]?\d|2[0-3]):([0-5]?\d)$/;  // Formato 24 horas
+    const horaRegex12 = /^(0?[1-9]|1[0-2]):([0-5][0-9]) ?(AM|PM)$/i; // Formato 12 horas (AM/PM)
 
-    if (horas < 19 || horas > 23 || (horas === 23 && minutos > 59)) {
-      this.errorDeHora();
-      return { horaInvalida: true };
+    let horaNormalizada: string;
+    let horas: number;
+    let minutos: number;
+
+    // Verificar si la hora es válida en formato 24 horas
+    if (horaRegex24.test(horaSeleccionada)) {
+      const [hora, min] = horaSeleccionada.split(':');
+      horas = parseInt(hora, 10);
+      minutos = parseInt(min, 10);
+      horaNormalizada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
     }
-    return null;
+
+    // Verificar si la hora es válida en formato 12 horas (AM/PM)
+    else if (horaRegex12.test(horaSeleccionada)) {
+      const [_, horasStr, minutosStr, periodo] = horaSeleccionada.match(horaRegex12);
+      horas = parseInt(horasStr, 10);
+      minutos = parseInt(minutosStr, 10);
+
+      // Convertir a formato 24 horas
+      if (periodo.toUpperCase() === 'PM' && horas < 12) {
+        horas += 12; // Convertir PM a 24 horas
+      }
+      if (periodo.toUpperCase() === 'AM' && horas === 12) {
+        horas = 0; // Convertir 12 AM a 00:00
+      }
+
+      horaNormalizada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
+    } else {
+      return { horaInvalida: true }; // Si no es un formato válido, retornar error
+    }
+
+    // Validar que la hora esté en el rango de 19:00 a 23:59
+    const [horaFinal, minutosFinal] = horaNormalizada.split(':').map(num => parseInt(num, 10));
+    if (horaFinal < 19 || (horaFinal === 19 && minutosFinal < 0) || horaFinal > 23 || (horaFinal === 23 && minutosFinal > 59)) {
+      await this.errorDeHora();
+      return { horaInvalida: true }; // Si está fuera de rango, retornar error
+    }
+
+    return null; // Hora válida
   }
+
+
+
+
+
 
   // Alerta para el error de hora fuera del rango de horario permitido
   async errorDeHora() {
@@ -111,36 +155,34 @@ export class CreateTravelPage implements OnInit {
 
   async paraCrearViaje() {
     if (this.crearViajeForm.valid) {
+      const horaNormalizada = this.normalizarHora(this.crearViajeForm.value.hora);
+
       const viajeCreado = {
         salida: this.crearViajeForm.value.salida,
         destino: this.crearViajeForm.value.destino,
-        hora: this.crearViajeForm.value.hora,
-        pasajeros: this.crearViajeForm.value.pasajeros,
-        precio: this.crearViajeForm.value.precio,
+        hora: horaNormalizada,
+        pasajeros: Number(this.crearViajeForm.value.pasajeros),
+        precio: Number(this.crearViajeForm.value.precio),
         metodoDePago: this.crearViajeForm.value['metodoPago'],
-        userId: this.userId // Incluye el ID del usuario que crea el viaje
+        userId: this.userId
       };
 
+      console.log('Viaje creado:', viajeCreado);
+
       // Verificar si el vehículo es una moto y el número de pasajeros
-      if (this.usuario?.tipoVehiculo == 'moto') {
-        if (viajeCreado.pasajeros > 1) {
-          await this.errorMasPasajeros();
-          return;
-        }
+      if (this.usuario?.tipoVehiculo == 'moto' && viajeCreado.pasajeros > 1) {
+        await this.errorMasPasajeros();
+        return;
       }
 
       try {
-        // Llamar al servicio para crear el viaje
         await this.crearViajeService.crearViaje(viajeCreado, this.usuario?.nombre, this.usuario?.apellido);
-
-        // Mostrar la alerta de confirmación
         const alert = await this.alertController.create({
           header: 'Viaje creado',
           message: 'El viaje se ha creado exitosamente.',
           buttons: [{
             text: 'OK',
             handler: () => {
-              // Redirigir de vuelta a inicio-conductor
               this.navController.pop();
             }
           }]
@@ -150,9 +192,21 @@ export class CreateTravelPage implements OnInit {
 
       } catch (error) {
         console.error('Error al crear el viaje:', error);
-        await this.errorDeFormulario(); // Puedes mostrar una alerta de error aquí si lo prefieres
+        await this.errorDeFormulario();
       }
     } else {
+      console.log('Formulario inválido:', this.crearViajeForm.value);
+      console.log('Estado del formulario:', this.crearViajeForm.invalid);
+      console.log('Errores de formulario:', this.crearViajeForm.errors);
+
+
+      console.log('Salida:', this.crearViajeForm.get('salida')?.valid);
+      console.log('Destino:', this.crearViajeForm.get('destino')?.valid);
+      console.log('Hora:', this.crearViajeForm.get('hora')?.valid);
+      console.log('Errores de campo hora:', this.crearViajeForm.get('hora')?.errors);
+      console.log('Pasajeros:', this.crearViajeForm.get('pasajeros')?.valid);
+      console.log('Precio:', this.crearViajeForm.get('precio')?.valid);
+      console.log('Metodo de pago:', this.crearViajeForm.get('metodoPago')?.valid);
       await this.errorDeFormulario();
     }
   }

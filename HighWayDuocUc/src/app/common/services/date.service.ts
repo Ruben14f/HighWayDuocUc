@@ -11,7 +11,7 @@ export class DateService {
 
   // Método para obtener la fecha actual desde la API sin especificar el tipo
   async getFechaActual(): Promise<any> {
-    const obs = this.http.get('http://worldclockapi.com/api/json/utc/now');
+    const obs = this.http.get('https://timeapi.io/api/Time/current/zone?timeZone=UTC');
     return lastValueFrom(obs);
   }
 

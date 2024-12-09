@@ -19,7 +19,7 @@ export class CrearviajeService {
     try {
       // Obtener la fecha actual desde la API
       const fechaActual = await this.date.getFechaActual();
-      const fechaFormateada = fechaActual.currentDateTime.split('T')[0]; // Formatear la fecha (quitar la hora)
+      const fechaFormateada = fechaActual.dateTime.split('T')[0]; // Formatear la fecha (quitar la hora)
 
 
       const nuevoViaje = {
@@ -36,7 +36,7 @@ export class CrearviajeService {
       console.log('Viaje creado exitosamente con el conductor:', nombreConductor);
 
     } catch (error) {
-      console.error('Error al crear el viaje:', error);
+      console.error('Error al crear el viaje:', JSON.stringify(error, null, 2)); // Muestra el error completo
       throw error;
     }
   }
