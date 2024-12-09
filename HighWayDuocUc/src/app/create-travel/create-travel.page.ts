@@ -76,25 +76,29 @@ export class CreateTravelPage implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
   }
 
-  // Validador personalizado para la hora
   validarHora(control: any) {
     const horaSeleccionada = control.value;
 
-    if(!horaSeleccionada){
-      return { horaInvalida: true }
-    }
-
-    const horaRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
-    if (!horaRegex.test(horaSeleccionada)) {
+    if (!horaSeleccionada) {
       return { horaInvalida: true };
     }
 
-    const [horas, minutos] = horaSeleccionada.split(':').map(Number);
+    // Regex para formato 24 horas y 12 horas con AM/PM
+    const horaRegex24 = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+    const horaRegex12 = /^(0?[1-9]|1[0-2]):[0-5]\d (AM|PM)$/i;
 
-    if (horas < 19 || horas > 23 || (horas === 23 && minutos > 59)) {
-      this.errorDeHora();
+    if (!horaRegex24.test(horaSeleccionada) && !horaRegex12.test(horaSeleccionada)) {
       return { horaInvalida: true };
     }
+
+    // Validar rango solo si está en formato 24 horas
+    if (horaRegex24.test(horaSeleccionada)) {
+      const [horas, minutos] = horaSeleccionada.split(':').map(Number);
+      if (horas < 19 || horas > 23 || (horas === 23 && minutos > 59)) {
+        return { horaInvalida: true };
+      }
+    }
+
     return null;
   }
 
